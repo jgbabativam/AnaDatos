@@ -125,7 +125,7 @@ Usemos un conjunto de datos estándar del paquete `modelr`
 #| echo: true
 library(pacman)
 p_load(tidyverse, broom, modelr, 
-       skimr, corrplot)
+       skimr, corrplot, psych, gt, gtsummary)
 
 datos <- heights 
 ```
@@ -191,8 +191,6 @@ ggplot(data = datos, aes(x = income, y = education)) +
 
 ## Correlación
 
-La correlación mide el grado de asociación lineal y se calcula usando la función `cor()`, también se pueden representar gráficamente usando paquetes como `corrplot`
-
 ::: panel-tabset
 
 ## Correlación
@@ -207,7 +205,7 @@ cor(vars, use = "complete")
 
 ## Gráfico
 
-```{r}
+```{r, fig.height=4}
 #| eval: true
 #| echo: true
 vars <- datos |> select(height, weight, income, age, education)
@@ -217,88 +215,290 @@ corrplot(r)
 # vignette("corrplot-intro")
 ```
 
-
-::: 
-## You can add R code
-
-```{r}
-#| echo: true
-library(dplyr)
-library(ggplot2)
-g <- starwars |> 
-  ggplot() +
-  geom_point(aes(x = height, y = mass)) +
-  theme_light()
-```
-
-## And show the results aswell :)
-
-```{r}
-#| fig.align: center
-#| echo: true
-g 
-```
-
-## What about tables? {.smaller}
-
-### `knitr::kable()`
-
-::: columns
-::: {.column width="50%"}
-```{r}
-#| label: kable-ex
-#| echo: true
-#| eval: false
-tab <- starwars |>
-  tidyr::drop_na(species) |> 
-  group_by(species) |>
-  summarise(
-    n = n(),
-    mean_heigth = round(mean(height, na.rm = TRUE)),
-    mean_mass = round(mean(mass, na.rm = TRUE))
-  ) |> 
-  slice_max(order_by = n, n = 4) 
-
-knitr::kable(tab)
-```
 :::
 
-::: {.column width="50%"}
+## Matriz de correlación
+
+Puede ver una correlación en forma de matriz usando `pairs.panels()` del paquete `psych`
 ```{r}
-#| label: kable-ex
 #| eval: true
-```
-:::
-:::
-
-## `DT::datatable()` {.smaller}
-
-With the `smaller` class in the slide!
-Ex: `## slide name {.smaller}`
-
-```{r}
-DT::datatable(tab, options = list(pageLength = 5))
+#| echo: true
+pairs.panels(vars, main="Matriz de correlaciones")
 ```
 
-## `gt::gt()`
+
+# ESTUDIO DE CASO {background-color="#0077b6"}
+
+## DASS 21
+
+- El instrumento del DASS 21 permite construir una escala de Depresión, Ansiedad y Estrés (DASS-21). Investigue más sobre su contrucción y propiedades psicométricas. Una versión del instrumento puede ser consultada [aquí](https://blogs.konradlorenz.edu.co/files/dass-21.pdf)
+
+- Explore el conjunto del datos `DASS21.sav` el cual contiene los resultados para una muestra de 800 personas de Colombia realizada en el año 2022.
 
 ```{r}
+#| echo: true
+library(haven)
+
+dass <- read_sav("datos/DASS21.sav")
+```
+
+Puede usar `lapply(dass, function(x) attributes(x)$label)` para ver las etiquetas de las preguntas.
+
+## Taller
+
+1. Grafique el diagrama de dispersión y calcule la correlación entre las variables cuantitativas de nivel de depresión, estrés y ansiedad.
+
+2. ¿Considera que el grado de asociación se diferencia entre hombres y mujeres?, haga los gráficos de dispersión segmentados por sexo
+
+3. Realice los análisis que le permitan concluir sobre la asociación entre la depresión y la satisfacción con la vivienda, trabajo, amigos, vecinos y el barrio.
+
+4. Teniendo en cuenta que las variables sobre la participación en actividades no son cuantitativas, investigue y discuta sobre la forma en que podría identificarse alguna asociación con la depresión.
+
+# ANÁLISIS DE REGRESIÓN {background-color="#0077b6"}
+
+## Conceptos básicos
+
+- Sea $y$ una variable de resultado, también llamada variable dependiente o variable de respuesta, y
+
+. . .
+
+- una variable $X$ conocida como variable explicativa/predictora o variable independiente, también llamada _covariable_ cuando es cuantitativa o _factor_ cuando es de naturaleza cualitativa   
+
+. . .
+
+
+- En el caso de estudio se tiene la medida cuantitativa de la depresión y el grado de satisfacción con sus amigos. ¿cuál sería la variable $y$ y cuál sería la variable $X$ en este caso?.
+
+
+. . .
+
+- Mencione algunos ejemplos de situaciones donde se quiera definir una relación entre una variable $y$ y una variable $X$.
+
+
+## Formulación del modelo
+
+$$ y_i = \beta_0 + \beta_1 X_{i} + \varepsilon_i$$
+En donde
+
+- $\beta_0$ es el valor esperado en $y$ cuando $X=0$
+- $\beta_1$ representa el incremento o decremento en $y$ por cada unidad de cambio en $X$
+- $\varepsilon_i$ es el componente del error.
+
+## Objetivos del modelamiento
+
+Denominar a $X$ como explicativa o predictora se debe a que el modeladmiento de datos tiene uno de dos propósitos:
+
+- **Modelamiento para explicar las relaciones**: se usa cuando desea describir y cuantificar explícitamente la relación entre la variable de resultado $y$ y un conjunto de variables explicativas $X$, así como determinar la importancia de cualquier relación.
+
+. . .
+
+
+- **Modelamiento para la predicción**: se usa cuando el propósito es predecir una variable de resultado 
+$y$ basado en la información contenida en un conjunto de variables predictivas $X$. Acá no necesariamente importa que se pueda comprender cómo se relacionan e interactúan todas las variables entre sí, sino sólo si puede hacer buenas predicciones sobre $y$ utilizando la información en $X$. 
+
+## ¿Qué objetivo se persigue?
+
+En cada caso indique si el objetivo del modelo debe ser explicativo o predictivo. Suponga que  tenemos interés en identificar: 
+
+. . .
+
+1. ¿Cuáles son los factores de riesgo (como el hábito de fumar, la edad, etc) que se asocian con el cáncer de pulmón?.
+
+. . .
+
+2. ¿Qué contenido que le gustaría ver con mayor probabilidad a un usuario de una plataforma digital?.
+
+. . .
+
+3. ¿Cuál es el efecto de la edad de la mujer, nivel educativo de la pareja, hábitos de la pareja (fuma, toma, etc), composición del hogar (con hijos/sin hijos) sobre la violencia doméstica?.
+
+## Especificación del modelo
+
+. . .
+\vspace{2cm}
+
+![](images/EspecificaM.png){fig-align="center"}
+
+## ¿Es un buen modelo?
+
+. . .
+\vspace{2cm}
+
+![](images/EspecificaM2.png){fig-align="center"}
+
+## Análisis de los residuales
+
+. . .
+\vspace{2cm}
+
+![](images/EspecificaM3.png){fig-align="center"}
+
+## Pronósticos
+
+. . .
+\vspace{2cm}
+
+![](images/EspecificaM4.png){fig-align="center"}
+
+## Algoritmos
+
+Algunos modelos son:
+
+- Lineales: `lm()`.
+
+- Generalizados: `glm()`.
+
+- Bayesianos: `stan_glm()`
+
+- Penalizados: `glmnet()`
+
+- ML: `tidymodels`
+
+## Modelo de regresión lineal simple
+
+- Puntos: Valores observados
+- Recta: Valores ajustados
+
+![](images/ModeloSimple.png){fig-align="center"}
+
+## Estimación de los parámetros
+
+$$Y_i = \hat{Y}_i + (Y_i - \hat{Y}_i) = Y_i + e_i $$
+
+. . .
+
+El objetivo entonces es minimizar
+
+$$\sum_{i=1}^n e_i^2 = \sum_{i=1}^n (Y_i - \hat{Y}_i)^2 = \sum_{i=1}^n (Y_i - [\beta_0 + \beta_1 X_i])^2$$
+
+. . .
+
+El procedimiento se conoce como Mínimos Cuadrados Ordinarios (MCO).
+
+
+## Ejemplo
+
+Considere nuevamente los datos del paquete `modelr`
+
+```{r}
+#| echo: true
+modelo1 <- lm(income ~ education, data = datos)
+```
+
+. . .
+
+
+Teniendo en cuenta que el ingreso está medido en dolares al año:
+
+- ¿cuál debe ser la interpretación de los coeficientes de regresión?
+- ¿cómo debe interpretarse el p-value?
+
+```{r}
+#| echo: true
+library(gtsummary)
+tbl_regression(modelo1, intercept = TRUE)
+```
+
+## Visualización
+
+```{r, fig.height=4}
+#| echo: true
+
+ggplot(datos, aes(x = education, y = income)) +
+  geom_point() +
+  labs(x = "Años de educación", y = "Ingreso anual",
+       title = "Relación entre el ingreso y los años de educación") +  
+  geom_smooth(method = "lm", formula = 'y ~ x') + 
+  theme_classic()
+```
+
+## ¿Es bueno el modelo?
+
+Descomposición de la varianza
+
+```{r echo=FALSE, fig.align="center", out.width="68%"}
+knitr::include_graphics(here::here("images/descompVar.png"))
+```
+
+. . .
+
+$$\sum_{i=1}^n (Y_i - \hat{Y}_i)^2 = \sum_{i=1}^n (Y_i - \bar{Y})^2+ \sum_{i=1}^n e^2$$
+
+## Bondad del ajuste
+
+El coeficiente de determinación es un indicador entre 0 y 1:
+
+$$\sum_{i=1}^n (Y_i - \hat{Y}_i)^2 = \sum_{i=1}^n (Y_i - \bar{Y})^2+ \sum_{i=1}^n e^2$$
+
+. . .
+
+$$SCT = SCR + SCE$$
+
+. . .
+
+Se deduce que:
+ 
+ $$R^2 = \frac{SCR}{SCT} = 1 - \frac{SCE}{SCT}$$
+
+El valor de $R^2$ está entre 0 y 1. 
+
+## Bondad del ajuste
+
+```{r}
+#| echo: true
+tab <- modelo1 |> glance() 
 gt::gt(tab)
 ```
 
-## `reactable::reactable()`
+. . .
+
+- ¿cuál debe ser la interpretación del $R^2$?
+- ¿cómo debe interpretarse el p-value?
 
 ```{r}
-reactable::reactable(tab)
+#| echo: true
+
+tbl_regression(modelo1, intercept = TRUE) |> 
+  add_glance_table(include = c(r.squared, p.value))
 ```
 
-## Diagrams with Mermaid!
+## Variable explicativa categórica
 
-Read about how to create a diagram in this [post by Mine Çetinkaya-Rundel](https://mine-cetinkaya-rundel.github.io/quarto-tip-a-day/posts/21-diagrams/).
+Podemos preguntarnos si el ingreso depende del sexo de la persona. Para ello es clave que la variable categórica sea de clase `factor`.
 
-<center>
-<blockquote class="twitter-tweet" data-conversation="none"><p lang="en" dir="ltr"><a href="https://twitter.com/hashtag/quartotip?src=hash&amp;ref_src=twsrc%5Etfw">#quartotip</a> 21: Create diagrams in Quarto documents using Mermaid or Graphviz in executable code cells, similar to how you create figures.<br><br>Read more: <a href="https://t.co/3qx9oSNCay">https://t.co/3qx9oSNCay</a> <a href="https://t.co/fYzGcISl4h">pic.twitter.com/fYzGcISl4h</a></p>&mdash; Quarto (@quarto_pub) <a href="https://twitter.com/quarto_pub/status/1549271325943947270?ref_src=twsrc%5Etfw">July 19, 2022</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-</center>
+. . .
+
+Revisión de la clase de la variable del sexo
+```{r}
+#| echo: true
+class(datos$sex)
+levels(datos$sex)
+
+datos$sex <-relevel(datos$sex, ref = "male") 
+```
+
+. . .
+
+El ajuste del modelo no cambia, R identificará que la variable sexo es cualitativa
+
+```{r}
+modelo2 <- lm(income ~ sex, data = datos)
+```
+
+
+
+## Taller: DASS21
+
+1. Ajuste los modelos de regresión simple para interpretar las relaciones entre:
+- Depresión y  Satisfacción con su trabajo
+- Ansiedad y  Satisfacción con su trabajo
+- Depresión y  Satisfacción con su trabajo
+
+2. ¿Considera que el grado de asociación se diferencia entre hombres y mujeres?, haga los gráficos de dispersión segmentados por sexo
+
+3. Realice los análisis que le permitan concluir sobre la asociación entre la depresión y la satisfacción con la vivienda, trabajo, amigos, vecinos y el barrio.
+
+4. Teniendo en cuenta que las variables sobre la participación en actividades no son cuantitativas, investigue y discuta sobre la forma en que podría identificarse alguna asociación con la depresión.
 
 
 ## Exporting into PDF
