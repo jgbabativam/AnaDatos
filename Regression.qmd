@@ -10,26 +10,16 @@ embed-resources: true
 highlight-style: dracula
 ---
 
-```{css, echo=FALSE}
-.my_class1 {
-height: 200px;
-width: 100px;
-}
-
-.my_class2 {
-height: 100px;
-width: 200px;
-}
-```
-
 ## Sobre Mi
+
+PhD en Estadística, más de 15 años de experiencia en el sector académico, actual director de analítica en CNC y consultor experto de la División de Estadística de la CEPAL. Ex-decano de la Facultad de Estadística USTA, ex-director de operaciones en el ICFES, experto cuantitativo en más de 20 evaluaciones de impacto o de resultados...
 
 > Puedes encontrarme en:
 
 - {{< ai google-scholar >}} [Google scholar](https://scholar.google.es/citations?user=2NJRNg8AAAAJ&hl=es)
 - {{< fa brands github >}} [GitHub. https://github.com/jgbabativam](https://github.com/jgbabativam)
 - {{< fa brands linkedin >}} [linkedin](https://www.linkedin.com/in/giovany-babativa-marquez/?originalSubdomain=co)
-- {{< fa solid envelope >}} jgbabativam@unal.edu.co
+- {{< fa solid envelope >}} j.babativamarquez@uniandes.edu.co
 
 
 ## Proceso de analítica
@@ -244,7 +234,7 @@ dass <- read_sav("datos/DASS21.sav")
 
 Puede usar `lapply(dass, function(x) attributes(x)$label)` para ver las etiquetas de las preguntas.
 
-## Taller
+## Punto 1 - Taller
 
 1. Grafique el diagrama de dispersión y calcule la correlación entre las variables cuantitativas de nivel de depresión, estrés y ansiedad.
 
@@ -274,15 +264,6 @@ Puede usar `lapply(dass, function(x) attributes(x)$label)` para ver las etiqueta
 
 - Mencione algunos ejemplos de situaciones donde se quiera definir una relación entre una variable $y$ y una variable $X$.
 
-
-## Formulación del modelo
-
-$$ y_i = \beta_0 + \beta_1 X_{i} + \varepsilon_i$$
-En donde
-
-- $\beta_0$ es el valor esperado en $y$ cuando $X=0$
-- $\beta_1$ representa el incremento o decremento en $y$ por cada unidad de cambio en $X$
-- $\varepsilon_i$ es el componente del error.
 
 ## Objetivos del modelamiento
 
@@ -354,7 +335,20 @@ Algunos modelos son:
 
 - ML: `tidymodels`
 
-## Modelo de regresión lineal simple
+# REGRESIÓN SIMPLE {background-color="#0077b6"}
+
+## Formulación del modelo
+
+$$ y_i = \beta_0 + \beta_1 X_{i} + \varepsilon_i$$
+
+En donde
+
+- $y$ es una variable cuantitativa.
+- $\beta_0$ es el valor esperado en $y$ cuando $X=0$
+- $\beta_1$ representa el incremento o decremento en $y$ por cada unidad de cambio en $X$
+- $\varepsilon_i$ es el componente del error.
+
+## Estimación de los parámetros
 
 - Puntos: Valores observados
 - Recta: Valores ajustados
@@ -390,6 +384,7 @@ modelo1 <- lm(income ~ education, data = datos)
 
 Teniendo en cuenta que el ingreso está medido en dolares al año:
 
+- Escriba la ecuación del modelo
 - ¿cuál debe ser la interpretación de los coeficientes de regresión?
 - ¿cómo debe interpretarse el p-value?
 
@@ -479,32 +474,205 @@ datos$sex <-relevel(datos$sex, ref = "male")
 
 . . .
 
-El ajuste del modelo no cambia, R identificará que la variable sexo es cualitativa
+El ajuste del modelo no cambia:
 
 ```{r}
+#| echo: true
 modelo2 <- lm(income ~ sex, data = datos)
 ```
 
+## Resultados
+
+```{r}
+#| echo: true
+
+tbl_regression(modelo2, intercept = TRUE) |> 
+  add_glance_table(include = c(r.squared, p.value))
+```
+
+ - ¿Por qué no hay coeficiente para los hombres?. Escriba la ecuación del modelo.
+ - ¿Cómo se interpreta el coeficiente de las mujeres y su valor p?
+ - ¿Qué se puede decir acerca de la bondad del ajuste?
 
 
-## Taller: DASS21
+## Punto 2 - Taller: DASS21
 
 1. Ajuste los modelos de regresión simple para interpretar las relaciones entre:
 - Depresión y  Satisfacción con su trabajo
-- Ansiedad y  Satisfacción con su trabajo
-- Depresión y  Satisfacción con su trabajo
+- Ansiedad  y  Satisfacción con su trabajo
+- Estrés y Satisfacción con su trabajo
 
-2. ¿Considera que el grado de asociación se diferencia entre hombres y mujeres?, haga los gráficos de dispersión segmentados por sexo
-
-3. Realice los análisis que le permitan concluir sobre la asociación entre la depresión y la satisfacción con la vivienda, trabajo, amigos, vecinos y el barrio.
-
-4. Teniendo en cuenta que las variables sobre la participación en actividades no son cuantitativas, investigue y discuta sobre la forma en que podría identificarse alguna asociación con la depresión.
+2. Interprete los coeficientes de los modelos ajustados y discuta la bondad del ajuste.
 
 
-## Exporting into PDF
+## Punto 3  - Taller: DASS21
 
-You can use the function `pagedown::chrome_print()` to print the HTML version into a PDF!
+Ajuste un modelo de regresión simple que le permita identificar si el puntaje de depresión se relaciona con el sexo
 
-```r
-pagedown::chrome_print("path-to-file.html")
+1. Convierta la variable `sexo` en factor así: `dass$sexo <- as_factor(dass$sexo)`
+
+2. Ajuste el modelo de regresión y presente los resultados.
+
+3. Interprete los coeficientes y el valor p.
+
+# REGRESIÓN MÚLTIPLE {background-color="#0077b6"}
+
+## Formulación del modelo
+
+$$y_i = \beta_0 + \beta_1 X_{1i} + \beta_2 X_{2i} + \cdots + \beta_k X_{ki} + \varepsilon_i$$
+
+. . . 
+
+- $\varepsilon \sim N(0, \sigma^2)$
+- No hay presencia de multicolinealidad
+
+. . .
+
+Matricialmente se puede expresar como
+
+$$\mathbf{y} = \mathbf{X}'\mathbf{B} + \mathbf{\varepsilon}$$
+
+. . . 
+
+El estimador MCO es:
+
+$$\hat{\mathbf{B}} = (\mathbf{X}'\mathbf{X})^{-1}\mathbf{X}'\mathbf{y}$$
+
+## Ejemplo
+
+Ajuste un modelo para el ingreso en función de las variables de años de eduación, sexo y estado civil.
+
+. . . 
+
+$$Ingreso_i = f(Educa, Sexo, Est. Civil) + \varepsilon_i$$
+
+. . . 
+
+Observe que las variables explicativas son cuantitativas y cualitativas. Verifique que la clase esté bien definida.
+
+```{r}
+#| echo: true
+modelo3 <-lm(income ~ education + sex + marital, data = datos)
 ```
+
+. . .
+
+Esciba la ecuación del modelo e interprete los resultados.
+
+## Resultados
+
+```{r}
+#| echo: true
+
+tbl_regression(modelo3, intercept = TRUE) |> 
+  add_glance_table(include = c(r.squared, p.value))
+```
+
+## Análisis de los supuestos
+
+Que no se cumplan los supuestos puede afectar varios aspectos: sesgos, problemas de pronóstico, error de contraste.
+
+![](images/supuestos.png){fig-align="center"}
+
+## Análisis de los supuestos
+
+```{r}
+#| echo: true
+
+par(mfrow = c(2, 2))
+plot(modelo3)
+```
+
+## Análisis de los supuestos
+
+
+::: panel-tabset
+
+## Linealidad
+
+```{r}
+#| eval: true
+#| echo: true
+#| output-location: column
+
+
+plot(modelo3, 1)
+```
+
+No se debe presentar un patrón, así que la línea roja debe estar aproximadamente de forma horizontal en cero.
+
+## Homogeneidad
+
+```{r}
+#| eval: true
+#| echo: true
+#| output-location: column
+plot(modelo3, 3)
+```
+
+Se espera que que los puntos queden igualmente distribuidos dentro de una banda estable.
+
+## Normalidad 
+
+```{r}
+#| eval: true
+#| echo: true
+#| output-location: column
+
+plot(modelo3, 2)
+```
+
+Un ajuste cercano a la línea de 45 grados es indice de que el supuesto de normalidad se satisface.
+
+## Influyentes
+
+```{r, fig.height=4}
+#| eval: true
+#| echo: true
+
+plot(modelo3, 4)
+```
+
+:::
+
+## Análisis de los supuestos
+
+```{r}
+#| eval: true
+#| echo: true
+
+ajuste <- augment(modelo3)
+
+ajuste |> 
+  slice_max(.cooksd, n=3)
+```
+
+## Punto 4 - Taller: DASS 21
+
+1. Ajuste un modelo de regresión lineal múltiple con al menos 3 variables explicativas que resulten significativas para modelar el puntaje de depresión. Escriba la ecuación, interprete los coeficientes, revise los supuestos y concluya.
+
+2. Ajuste un modelo de regresión lineal múltiple con al menos 3 variables explicativas que resulten significativas para modelar el puntaje de estrés.  Escriba la ecuación, interprete los coeficientes, revise los supuestos y concluya.
+
+
+# TALLER {background-color="#0077b6"}
+
+## Reglas
+
+- Se deben realizar los 4 ejercicios propuestos a lo largo de la sesión.
+- El trabajo se debe realizar en parejas.
+- Fecha de entrega: 23 de septiembre.
+- Debe entregar un documento PDF o Word con un script reproducible en R o R-markdown.
+- Si existen dos trabajos exactamente iguales, la nota será dividida entre el número de personas involucradas..
+
+
+# GRACIAS! {background-color="#ddf3ff"}
+
+# Referencias
+
+- Çetinkaya-Rundel, M. and Hardin, J. (2021) Introduction to modern statistics. Sections of
+Regression modeling: 7, 8, 9 y 10. Disponible aquí: https://openintro-ims.netlify.app/
+
+- Ismay, C., & Kim, A.Y. (2019). Statistical Inference via Data Science: A ModernDive into R and the Tidyverse (1st ed.). Chapman and Hall/CRC. https://doi.org/10.1201/9780367409913
+
+- Thompson, J. (2019). Tidy Data Science with the tidyverse and tidymodels. https://tidyds-2021.wjakethompson.com
+
