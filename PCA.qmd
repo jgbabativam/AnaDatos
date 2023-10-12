@@ -26,6 +26,8 @@ knitr::include_graphics(here::here("images/Ciclo.png"))
 knitr::include_graphics(here::here("images/Metodos.png"))
 ```
 
+# ANÁLISIS DE COMPONENTES PRINCIPALES {background-color="#0077b6"}
+
 ## Análisis de Componentes Principales
 
 Método para reducir la dimensionalidad de los datos cuando las variables son cuantitativas y existe presencia de correlación
@@ -94,559 +96,131 @@ Reproducir la matriz original en menos dimensiones.
 
 El conjunto de datos `RESUMEN.sav` contiene un preprocesamiento de la GEIH del DANE a nivel departamental para algunas variables de interés.
 
+<br> 
 
 ```{r}
 #| echo: true
 library(pacman)
-p_load(tidyverse, broom, modelr, 
-       skimr, corrplot, psych, gt, gtsummary)
+p_load(tidyverse, janitor,
+       FactoMineR, factoextra, Factoshiny, 
+       skimr, corrplot, psych, gt, gtsummary, haven)
 
-datos <- heights 
+url <- "https://github.com/jgbabativam/AnaDatos/raw/main/datos/RESUMEN.sav"
+datos <- read_sav(url) |> as_factor()
 ```
+
+<br> 
+
+Use el comando `glimpse()` y `skim()` para explorar el conjunto de datos.
+
+## Preparación del conjunto de datos
+
+<br> 
+
+```{r}
+#| echo: true
+datos <- datos |> 
+         column_to_rownames(var = "DPTO")
+```
+
+<br> 
+
+- Use la función `Factoshiny(datos)` y ajuste los parámetros del modelo.
+
+- Explore el peso de las variables mediante la función `PCA(datos)` del paquete `FactoMineR`. 
+
+## Analice los resultados
+
+```{r}
+#| echo: true
+res <- PCA(datos, scale.unit = T, graph = F)
+fviz_screeplot(res, addlabels = TRUE, ylim = c(0, 60))
+```
+
+## Primer plano factorial para las variables
+
+```{r, fig.align='center'}
+#| echo: true
+fviz_pca_var(res, 
+             col.var="contrib",
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             repel = TRUE)
+```
+
+## Primer plano factorial para los individuos
+
+```{r, fig.align='center'}
+#| echo: true
+fviz_pca_ind(res, col.ind = "cos2",
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             repel = TRUE)
+```
+
+## Biplot
+
+```{r, fig.align='center'}
+#| echo: true
+fviz_pca_biplot(res, repel = TRUE, col.ind = "blue", col.var = "red")
+```
+
+## Construcción de índices sintéticos
+
+<br> 
+
+Tenga en cuenta que: 
+
+$$\mathbf{Y} =  \mathbf{XV}$$
+
+<br> 
+
+De manera que la matriz $\mathbf{V}$ son los ponderadores de las variables en la matriz $\mathbf{X}$, con lo cual $\mathbf{Y}$ es un índice que resume la información contenida en las variables originales.
+
+# ANÁLISIS DE CORRESPONDENCIAS {background-color="#0077b6"}
+
+## Análisis de correspondencias
+
+<br> 
+
+Mientras que el PCA se usa para tratar variables cuantitativas que tienen algún grado de asociación lineal, el *análisis de correspondencias* es un método que surge de las tablas de contingencia y permite estudiar las relaciones entre variables nominales. Este análisis permite:
+
+- Identificar patrones de asociación entre variables categóricas.
+- Hacer una reducción de la dimensionalidad.
+- Observar la proximidad entre individuos y entre variables.
+- Hacer un pre-procesamiento para el análisis de clúster.
+
+## Estructura del conjunto de datos
+
+<br> 
+
+<p align="center">
+<img src="images/ACM1.png" width="33%">
+</p>
+
+## Funcionamiento del análisis de correspondencias
+
+<br> 
+
+<p align="center">
+<img src="images/ACM2.png" width="90%">
+</p>
+
+## Generación de tablas de contingencia
+
+Al realizar la operación $\mathbf{X}^T\mathbf{X}$ se llega a la matriz que concatena todas las tablas de contingencia entre pares de variables, denominada matriz de *Burt*
 
 . . . 
 
-Ahora explore el conjunto de datos usando las funciones `glimpse()` y `skim()` y discuta la salida
-
-. . .
-
-```{r}
-#| eval: false
-#| echo: true
-glimpse(datos)
-skim(datos)
-```
-
-. . .
-
-Haga un diagrama de dispersión estre la estatura y el peso, el ingreso y la edad, el ingreso y los años de educación por sexo
-
-
-## Diagramas de dispersión
-
-::: panel-tabset
-## Diagrama 1
-
-```{r, fig.height=4}
-#| eval: true
-#| echo: true
-
-ggplot(data = datos, aes(x = height, y = weight)) +
-  geom_point() +
-  labs(x = 'Estatura', y = 'Peso')
-```
-## Diagrama 2
-
-```{r, fig.height=4}
-#| eval: true
-#| echo: true
-
-ggplot(data = datos, aes(x = income, y = age)) +
-  geom_point(color = "lightblue", alpha=0.1) +
-  labs(x = 'Ingreso', y = 'Edad') +
-  theme_bw() 
-```
-
-## Diagrama 3
-
-```{r, fig.height=4}
-#| eval: true
-#| echo: true
-
-ggplot(data = datos, aes(x = income, y = education)) +
-  geom_point(color = "lightblue", alpha=0.1) +
-  labs(x = 'Ingreso', y = 'Educación') +
-  theme_bw() +
-  facet_wrap(~sex, ncol = 2)
-```
-
-
-:::
-
-## Correlación
-
-::: panel-tabset
-
-## Correlación
-
-```{r}
-#| eval: true
-#| echo: true
-vars <- datos |> select(height, weight, income, age, education)
-
-cor(vars, use = "complete")
-```
-
-## Gráfico
-
-```{r, fig.height=4}
-#| eval: true
-#| echo: true
-vars <- datos |> select(height, weight, income, age, education)
-
-r <- cor(vars, use = "complete")
-corrplot(r)
-# vignette("corrplot-intro")
-```
-
-:::
-
-## Matriz de correlación
-
-Puede ver una correlación en forma de matriz usando `pairs.panels()` del paquete `psych`
-```{r}
-#| eval: true
-#| echo: true
-pairs.panels(vars, main="Matriz de correlaciones")
-```
-
-
-# ESTUDIO DE CASO {background-color="#0077b6"}
-
-## DASS 21
-
-- El instrumento del DASS 21 permite construir una escala de Depresión, Ansiedad y Estrés (DASS-21). Investigue más sobre su contrucción y propiedades psicométricas. Una versión del instrumento puede ser consultada [aquí](https://blogs.konradlorenz.edu.co/files/dass-21.pdf)
-
-- Explore el conjunto del datos `DASS21.sav` el cual contiene los resultados para una muestra de 800 personas de Colombia realizada en el año 2022.
-
-```{r}
-#| echo: true
-library(haven)
-
-dass <- read_sav("datos/DASS21.sav")
-```
-
-Puede usar `lapply(dass, function(x) attributes(x)$label)` para ver las etiquetas de las preguntas.
-
-## Punto 1 - Taller
-
-1. Grafique el diagrama de dispersión y calcule la correlación entre las variables cuantitativas de nivel de depresión, estrés y ansiedad.
-
-2. ¿Considera que el grado de asociación se diferencia entre hombres y mujeres?, haga los gráficos de dispersión segmentados por sexo
-
-3. Realice los análisis que le permitan concluir sobre la asociación entre la depresión y la satisfacción con la vivienda, trabajo, amigos, vecinos y el barrio.
-
-4. Teniendo en cuenta que las variables sobre la participación en actividades no son cuantitativas, investigue y discuta sobre la forma en que podría identificarse alguna asociación con la depresión.
-
-# ANÁLISIS DE REGRESIÓN {background-color="#0077b6"}
-
-## Conceptos básicos
-
-- Sea $y$ una variable de resultado, también llamada variable dependiente o variable de respuesta, y
-
-. . .
-
-- una variable $X$ conocida como variable explicativa/predictora o variable independiente, también llamada _covariable_ cuando es cuantitativa o _factor_ cuando es de naturaleza cualitativa   
-
-. . .
-
-
-- En el caso de estudio se tiene la medida cuantitativa de la depresión y el grado de satisfacción con sus amigos. ¿cuál sería la variable $y$ y cuál sería la variable $X$ en este caso?.
-
-
-. . .
-
-- Mencione algunos ejemplos de situaciones donde se quiera definir una relación entre una variable $y$ y una variable $X$.
-
-
-## Objetivos del modelamiento
-
-Denominar a $X$ como explicativa o predictora se debe a que el modeladmiento de datos tiene uno de dos propósitos:
-
-- **Modelamiento para explicar las relaciones**: se usa cuando desea describir y cuantificar explícitamente la relación entre la variable de resultado $y$ y un conjunto de variables explicativas $X$, así como determinar la importancia de cualquier relación.
-
-. . .
-
-
-- **Modelamiento para la predicción**: se usa cuando el propósito es predecir una variable de resultado 
-$y$ basado en la información contenida en un conjunto de variables predictivas $X$. Acá no necesariamente importa que se pueda comprender cómo se relacionan e interactúan todas las variables entre sí, sino sólo si puede hacer buenas predicciones sobre $y$ utilizando la información en $X$. 
-
-## ¿Qué objetivo se persigue?
-
-En cada caso indique si el objetivo del modelo debe ser explicativo o predictivo. Suponga que  tenemos interés en identificar: 
-
-. . .
-
-1. ¿Cuáles son los factores de riesgo (como el hábito de fumar, la edad, etc) que se asocian con el cáncer de pulmón?.
-
-. . .
-
-2. ¿Qué contenido que le gustaría ver con mayor probabilidad a un usuario de una plataforma digital?.
-
-. . .
-
-3. ¿Cuál es el efecto de la edad de la mujer, nivel educativo de la pareja, hábitos de la pareja (fuma, toma, etc), composición del hogar (con hijos/sin hijos) sobre la violencia doméstica?.
-
-## Especificación del modelo
-
-. . .
-\vspace{2cm}
-
-![](images/EspecificaM.png){fig-align="center"}
-
-## ¿Es un buen modelo?
-
-. . .
-\vspace{2cm}
-
-![](images/EspecificaM2.png){fig-align="center"}
-
-## Análisis de los residuales
-
-. . .
-\vspace{2cm}
-
-![](images/EspecificaM3.png){fig-align="center"}
-
-## Pronósticos
-
-. . .
-\vspace{2cm}
-
-![](images/EspecificaM4.png){fig-align="center"}
-
-## Algoritmos
-
-Algunos modelos son:
-
-- Lineales: `lm()`.
-
-- Generalizados: `glm()`.
-
-- Bayesianos: `stan_glm()`
-
-- Penalizados: `glmnet()`
-
-- ML: `tidymodels`
-
-# REGRESIÓN SIMPLE {background-color="#0077b6"}
-
-## Formulación del modelo
-
-$$ y_i = \beta_0 + \beta_1 X_{i} + \varepsilon_i$$
-
-En donde
-
-- $y$ es una variable cuantitativa.
-- $\beta_0$ es el valor esperado en $y$ cuando $X=0$
-- $\beta_1$ representa el incremento o decremento en $y$ por cada unidad de cambio en $X$
-- $\varepsilon_i$ es el componente del error.
-
-## Estimación de los parámetros
-
-- Puntos: Valores observados
-- Recta: Valores ajustados
-
-![](images/ModeloSimple.png){fig-align="center"}
-
-## Estimación de los parámetros
-
-$$Y_i = \hat{Y}_i + (Y_i - \hat{Y}_i) = \hat{Y}_i + e_i $$
-
-. . .
-
-El objetivo entonces es minimizar
-
-$$\sum_{i=1}^n e_i^2 = \sum_{i=1}^n (Y_i - \hat{Y}_i)^2 = \sum_{i=1}^n (Y_i - [\beta_0 + \beta_1 X_i])^2$$
-
-. . .
-
-El procedimiento se conoce como Mínimos Cuadrados Ordinarios (MCO).
-
+<p align="center">
+<img src="images/ACM3.png" width="50%">
+</p>
+
+## Proyección sobre el espacio factorial
+
+<p align="center">
+<img src="images/ACM4.png" width="45%">
+</p>
 
 ## Ejemplo
-
-Considere nuevamente los datos del paquete `modelr`
-
-```{r}
-#| echo: true
-modelo1 <- lm(income ~ education, data = datos)
-```
-
-. . .
-
-
-Teniendo en cuenta que el ingreso está medido en dolares al año:
-
-- Escriba la ecuación del modelo
-- ¿cuál debe ser la interpretación de los coeficientes de regresión?
-- ¿cómo debe interpretarse el p-value?
-
-```{r}
-#| echo: true
-library(gtsummary)
-tbl_regression(modelo1, intercept = TRUE)
-```
-
-## Visualización
-
-```{r, fig.height=4}
-#| echo: true
-
-ggplot(datos, aes(x = education, y = income)) +
-  geom_point() +
-  labs(x = "Años de educación", y = "Ingreso anual",
-       title = "Relación entre el ingreso y los años de educación") +  
-  geom_smooth(method = "lm", formula = 'y ~ x') + 
-  theme_classic()
-```
-
-## ¿Es bueno el modelo?
-
-Descomposición de la varianza
-
-```{r echo=FALSE, fig.align="center", out.width="68%"}
-knitr::include_graphics(here::here("images/descompVar.png"))
-```
-
-. . .
-
-$$\sum_{i=1}^n (Y_i - \bar{Y}_i)^2 = \sum_{i=1}^n (Y_i - \hat{Y})^2+ \sum_{i=1}^n e^2$$
-
-## Bondad del ajuste
-
-El coeficiente de determinación es un indicador entre 0 y 1:
-
-$$\sum_{i=1}^n (Y_i - \bar{Y}_i)^2 = \sum_{i=1}^n (Y_i - \hat{Y})^2+ \sum_{i=1}^n e^2$$
-
-. . .
-
-$$SCT = SCR + SCE$$
-
-. . .
-
-Se deduce que:
- 
- $$R^2 = \frac{SCR}{SCT} = 1 - \frac{SCE}{SCT}$$
-
-El valor de $R^2$ está entre 0 y 1. 
-
-## Bondad del ajuste
-
-```{r}
-#| echo: true
-tab <- modelo1 |> glance() 
-gt::gt(tab)
-```
-
-. . .
-
-- ¿cuál debe ser la interpretación del $R^2$?
-- ¿cómo debe interpretarse el p-value?
-
-```{r}
-#| echo: true
-
-tbl_regression(modelo1, intercept = TRUE) |> 
-  add_glance_table(include = c(r.squared, p.value))
-```
-
-## Variable explicativa categórica
-
-Podemos preguntarnos si el ingreso depende del sexo de la persona. Para ello es clave que la variable categórica sea de clase `factor`.
-
-. . .
-
-Revisión de la clase de la variable del sexo
-```{r}
-#| echo: true
-class(datos$sex)
-levels(datos$sex)
-
-datos$sex <-relevel(datos$sex, ref = "male") 
-```
-
-. . .
-
-El ajuste del modelo no cambia:
-
-```{r}
-#| echo: true
-modelo2 <- lm(income ~ sex, data = datos)
-```
-
-## Resultados
-
-```{r}
-#| echo: true
-
-tbl_regression(modelo2, intercept = TRUE) |> 
-  add_glance_table(include = c(r.squared, p.value))
-```
-
- - ¿Por qué no hay coeficiente para los hombres?. Escriba la ecuación del modelo.
- - ¿Cómo se interpreta el coeficiente de las mujeres y su valor p?
- - ¿Qué se puede decir acerca de la bondad del ajuste?
-
-
-## Punto 2 - Taller: DASS21
-
-1. Ajuste los modelos de regresión simple para interpretar las relaciones entre:
-- Depresión y  Satisfacción con su trabajo
-- Ansiedad  y  Satisfacción con su trabajo
-- Estrés y Satisfacción con su trabajo
-
-2. Interprete los coeficientes de los modelos ajustados y discuta la bondad del ajuste.
-
-
-## Punto 3  - Taller: DASS21
-
-Ajuste un modelo de regresión simple que le permita identificar si el puntaje de depresión se relaciona con el sexo
-
-1. Convierta la variable `sexo` en factor así: `dass$sexo <- as_factor(dass$sexo)`
-
-2. Ajuste el modelo de regresión y presente los resultados.
-
-3. Interprete los coeficientes y el valor p.
-
-# REGRESIÓN MÚLTIPLE {background-color="#0077b6"}
-
-## Formulación del modelo
-
-$$y_i = \beta_0 + \beta_1 X_{1i} + \beta_2 X_{2i} + \cdots + \beta_k X_{ki} + \varepsilon_i$$
-
-. . . 
-
-- $\varepsilon \sim N(0, \sigma^2)$
-- No hay presencia de multicolinealidad
-
-. . .
-
-Matricialmente se puede expresar como
-
-$$\mathbf{y} = \mathbf{X}'\mathbf{B} + \mathbf{\varepsilon}$$
-
-. . . 
-
-El estimador MCO es:
-
-$$\hat{\mathbf{B}} = (\mathbf{X}'\mathbf{X})^{-1}\mathbf{X}'\mathbf{y}$$
-
-## Ejemplo
-
-Ajuste un modelo para el ingreso en función de las variables de años de eduación, sexo y estado civil.
-
-. . . 
-
-$$Ingreso_i = f(Educa, Sexo, Est. Civil) + \varepsilon_i$$
-
-. . . 
-
-Observe que las variables explicativas son cuantitativas y cualitativas. Verifique que la clase esté bien definida.
-
-```{r}
-#| echo: true
-modelo3 <-lm(income ~ education + sex + marital, data = datos)
-```
-
-. . .
-
-Esciba la ecuación del modelo e interprete los resultados.
-
-## Resultados
-
-```{r}
-#| echo: true
-
-tbl_regression(modelo3, intercept = TRUE) |> 
-  add_glance_table(include = c(r.squared, p.value))
-```
-
-## Análisis de los supuestos
-
-Que no se cumplan los supuestos puede afectar varios aspectos: sesgos, problemas de pronóstico, error de contraste.
-
-![](images/supuestos.png){fig-align="center"}
-
-## Análisis de los supuestos
-
-```{r}
-#| echo: true
-
-par(mfrow = c(2, 2))
-plot(modelo3)
-```
-
-## Análisis de los supuestos
-
-
-::: panel-tabset
-
-## Linealidad
-
-```{r}
-#| eval: true
-#| echo: true
-#| output-location: column
-
-
-plot(modelo3, 1)
-```
-
-No se debe presentar un patrón, así que la línea roja debe estar aproximadamente de forma horizontal en cero.
-
-## Homogeneidad
-
-```{r}
-#| eval: true
-#| echo: true
-#| output-location: column
-plot(modelo3, 3)
-```
-
-Se espera que que los puntos queden igualmente distribuidos dentro de una banda estable.
-
-## Normalidad 
-
-```{r}
-#| eval: true
-#| echo: true
-#| output-location: column
-
-plot(modelo3, 2)
-```
-
-Un ajuste cercano a la línea de 45 grados es indice de que el supuesto de normalidad se satisface.
-
-## Influyentes
-
-```{r, fig.height=4}
-#| eval: true
-#| echo: true
-
-plot(modelo3, 4)
-```
-
-:::
-
-## Análisis de los supuestos
-
-```{r}
-#| eval: true
-#| echo: true
-
-ajuste <- augment(modelo3)
-
-ajuste |> 
-  slice_max(.cooksd, n=3)
-```
-
-## Punto 4 - Taller: DASS 21
-
-1. Ajuste un modelo de regresión lineal múltiple con al menos 3 variables explicativas que resulten significativas para modelar el puntaje de depresión. Escriba la ecuación, interprete los coeficientes, revise los supuestos y concluya.
-
-2. Ajuste un modelo de regresión lineal múltiple con al menos 3 variables explicativas que resulten significativas para modelar el puntaje de estrés.  Escriba la ecuación, interprete los coeficientes, revise los supuestos y concluya.
-
-
-# TALLER {background-color="#0077b6"}
-
-## Reglas
-
-- Se deben realizar los 4 ejercicios propuestos a lo largo de la sesión.
-- El trabajo se debe realizar en parejas.
-- Fecha de entrega: 23 de septiembre.
-- Debe entregar un documento PDF o Word con un script reproducible en R o R-markdown.
-- Si existen dos trabajos exactamente iguales, la nota será dividida entre el número de personas involucradas..
 
 
 # GRACIAS! {background-color="#ddf3ff"}
