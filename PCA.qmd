@@ -222,15 +222,80 @@ Al realizar la operación $\mathbf{X}^T\mathbf{X}$ se llega a la matriz que conc
 
 ## Ejemplo
 
+El conjunto de datos `corresp.sav` contiene 50 respuestas de una encuesta.
+
+<br> 
+
+```{r}
+#| echo: true
+library(pacman)
+p_load(tidyverse, janitor, patchwork,
+       FactoMineR, factoextra, Factoshiny, 
+       skimr, corrplot, psych, gt, gtsummary, haven)
+
+url <- "https://github.com/jgbabativam/AnaDatos/raw/main/datos/corresp.sav"
+datos <- read_sav(url) |> as_factor()
+```
+
+. . .
+
+Use `glimpse()` y `skim()` para explorar el conjunto de datos.
+
+
+## Preparación de los datos
+
+
+<br> 
+
+```{r}
+#| echo: true
+datos <- datos |> 
+         column_to_rownames(var = "encuesta")
+```
+
+<br> 
+
+- Use la función `Factoshiny(datos)` y ajuste los parámetros del modelo.
+
+- Explore la contibución y el coseno al cuadrado usando `MCA(datos)` del paquete `FactoMineR`. 
+
+## Analice los resultados
+
+```{r}
+#| echo: true
+res <- MCA(datos, graph = F)
+fviz_screeplot(res, addlabels = TRUE, ylim = c(0, 40))
+```
+
+## Análisis de las contribuciones
+
+```{r}
+#| echo: true
+corrplot(res$var$contrib, is.corr=FALSE, tl.col = "black")
+```
+
+## Análisis de los cosenos
+
+```{r}
+#| echo: true
+corrplot(res$var$cos2, is.corr=FALSE, tl.col = "black")
+```
+
+## Primer plano factorial
+
+```{r}
+#| echo: true
+fviz_mca_var(res, repel = TRUE, col.var = "blue")
+```
+
 
 # GRACIAS! {background-color="#ddf3ff"}
 
 # Referencias
 
-- Çetinkaya-Rundel, M. and Hardin, J. (2021) Introduction to modern statistics. Sections of
-Regression modeling: 7, 8, 9 y 10. Disponible aquí: https://openintro-ims.netlify.app/
+- Husson, F., Lê, S., & Pagès, J. (2017). Exploratory multivariate analysis by example using R. CRC press.
 
-- Ismay, C., & Kim, A.Y. (2019). Statistical Inference via Data Science: A ModernDive into R and the Tidyverse (1st ed.). Chapman and Hall/CRC. https://doi.org/10.1201/9780367409913
+- Hair, J. F., Black, W. C., Babin, B. J., Anderson, R. E., & Tatham, R. L. (2006). Multivariate data analysis 6th Edition.  https://doi.org/10.1201/9780367409913
 
-- Thompson, J. (2019). Tidy Data Science with the tidyverse and tidymodels. https://tidyds-2021.wjakethompson.com
+-	Aldás Manzano, J., & Uriel Jiménez, E. (2017). Análisis multivariante aplicado con R. Ediciones Paraninfo, SA. 
 
