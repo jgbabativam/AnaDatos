@@ -2,8 +2,11 @@
 
 Materiales del curso de analítica de datos aplicada a estudios sobre desarrollo
 
-Regresión:
+Regresión Lineal:
 https://jgbabativam.github.io/AnaDatos/Regression.html
+
+Regresión logística:
+https://jgbabativam.github.io/AnaDatos/Logit.html
 
 Introducción a las técnicas multivariantes:
 https://jgbabativam.github.io/AnaDatos/PCA.html 
