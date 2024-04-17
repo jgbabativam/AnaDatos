@@ -28,24 +28,33 @@ knitr::include_graphics(here::here("images/Metodos.png"))
 
 # ANÁLISIS DE COMPONENTES PRINCIPALES {background-color="#0077b6"}
 
-## Análisis de Componentes Principales
+## Objetivo general
 
-Método para reducir la dimensionalidad de los datos cuando las variables son cuantitativas y existe presencia de correlación
+Método para reducir la dimensionalidad de los datos conservando la mayor cantidad de información. El método se debe usar cuando las variables son cuantitativas y existe presencia de correlación
 
 . . .
 
-![](images/PCA1.png){fig-align="center"}
+![](images/PCA1.png){fig-align="center" style="font-size: 16px;"}
+
+## Objetivos específicos
+
+- **Visualizar patrones**: Sirve para visualizar la estructura de los datos y detectar patrones emergentes. 
+
+- **Construir de índices sintéticos**: Las variables originales se resumen en un conjunto menor de componentes principales que contienen información de todas las variables.
+
+- **Identificar factores clave**: Identifica los factores principales que explican los cambios relacionados con el tema de interés.
+
+- **Identificar grupos**: Ayuda a identificar grupos de individuos que comparten características similares. 
 
 
-
-## Cómo funciona la técnica
+## ¿Cómo funciona la técnica?
 
 
 ![](images/PCA2.png){fig-align="center"}
 
 ## Componentes principales
 
-Reproducir la matriz original en menos dimensiones
+Reproducir la matriz original usando menos dimensiones
 
 . . .
 
@@ -53,9 +62,9 @@ Reproducir la matriz original en menos dimensiones
 <img src="images/PCA3.png" width="60%">
 </p>
 
-## Problema de Optimización
+## Problema de optimización
 
-Enfoque de Hotelling (1933) o Pearson (1901)
+Enfoque de Hotelling (1933) vs Pearson (1901)
 
 <br>
 
@@ -63,7 +72,7 @@ Enfoque de Hotelling (1933) o Pearson (1901)
 
 ## Teorema de la factorización - SDV
 
-Reproducir la matriz original en menos dimensiones.
+Reproducir la matriz original con menos dimensiones.
 
 <br>
 
@@ -94,7 +103,7 @@ Reproducir la matriz original en menos dimensiones.
 
 ## Ejemplo
 
-El conjunto de datos `RESUMEN.sav` contiene un preprocesamiento de la GEIH del DANE a nivel departamental para algunas variables de interés.
+El conjunto de datos `RESUMEN.sav` contiene un preprocesamiento obtenido de la GEIH del DANE a nivel departamental para algunas variables de interés.
 
 <br> 
 
