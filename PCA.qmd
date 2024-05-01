@@ -314,11 +314,11 @@ El ambiente político en el momento electoral es decisivo, identificar patrones 
 #| echo: true
 library(pacman)
 p_load(tidyverse, janitor,
-       FactoMineR, factoextra, Factoshiny, 
-       skimr, corrplot, psych, gt, gtsummary, haven)
+       FactoMineR, factoextra, 
+       skimr, corrplot)
 
-url <- "https://github.com/jgbabativam/AnaDatos/raw/main/datos/RESUMEN.sav"
-datos <- read_sav(url) |> as_factor()
+url <- "https://github.com/jgbabativam/AnaDatos/raw/main/datos/AmbPol.RData"
+load(url)
 ```
 
 
