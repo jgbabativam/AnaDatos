@@ -134,9 +134,7 @@ datos <- datos |>
 
 <br> 
 
-- Use la función `Factoshiny(datos)` y ajuste los parámetros del modelo.
-
-- Explore el peso de las variables mediante la función `PCA(datos)` del paquete `FactoMineR`. 
+Observe que el conjunto de los datos está conformado únicamente por variables cuantitativas.
 
 ## Analice los resultados
 
@@ -184,13 +182,22 @@ $$\mathbf{Y} =  \mathbf{XV}$$
 
 De manera que la matriz $\mathbf{V}$ son los ponderadores de las variables en la matriz $\mathbf{X}$, con lo cual $\mathbf{Y}$ es un índice que resume la información contenida en las variables originales.
 
+## Complementos
+
+- Explore el peso de las variables mediante la función `PCA(datos)` del paquete `FactoMineR`. 
+
+- Construya un índice a partir de la primera componente principal
+
+- Use la función `Factoshiny(datos)` y ajuste los parámetros del modelo.
+
+
 # ANÁLISIS DE CORRESPONDENCIAS {background-color="#0077b6"}
 
 ## Análisis de correspondencias
 
 <br> 
 
-Mientras que el PCA se usa para tratar variables cuantitativas que tienen algún grado de asociación lineal, el *análisis de correspondencias* es un método que surge de las tablas de contingencia y permite estudiar las relaciones entre variables nominales. Este análisis permite:
+El *PCA* se usa para tratar variables cuantitativas que tienen algún grado de asociación lineal. De otra parte, el *análisis de correspondencias* es un método que surge de las tablas de contingencia y permite estudiar las relaciones entre variables cualitativas. Este análisis permite:
 
 - Identificar patrones de asociación entre variables categóricas.
 - Hacer una reducción de la dimensionalidad.
@@ -264,9 +271,9 @@ datos <- datos |>
 
 <br> 
 
-- Use la función `Factoshiny(datos)` y ajuste los parámetros del modelo.
+- Analice la asociación entre las variables cualitativas.
 
-- Explore la contibución y el coseno al cuadrado usando `MCA(datos)` del paquete `FactoMineR`. 
+- Explore la contribución y el coseno al cuadrado usando `MCA(datos)` del paquete `FactoMineR`. 
 
 ## Analice los resultados
 
@@ -295,6 +302,23 @@ corrplot(res$var$cos2, is.corr=FALSE, tl.col = "black")
 ```{r}
 #| echo: true
 fviz_mca_var(res, repel = TRUE, col.var = "blue")
+```
+
+# ESTUDIO DE CASO {background-color="#0077b6"}
+
+## Ambiente político
+
+El ambiente político en el momento electoral es decisivo, identificar patrones y asociaciones en las opiniones resulta clave en las estrategias que se deben seguir durante la campaña. Considere el siguiente conjunto de datos obtenido de una muestra aleatoria de 300 personas y construya el perfil de los candidatos a partir de un análisis de correspondencias.
+
+```{r}
+#| echo: true
+library(pacman)
+p_load(tidyverse, janitor,
+       FactoMineR, factoextra, Factoshiny, 
+       skimr, corrplot, psych, gt, gtsummary, haven)
+
+url <- "https://github.com/jgbabativam/AnaDatos/raw/main/datos/RESUMEN.sav"
+datos <- read_sav(url) |> as_factor()
 ```
 
 
