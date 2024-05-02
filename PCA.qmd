@@ -314,13 +314,202 @@ El ambiente político en el momento electoral es decisivo, identificar patrones 
 #| echo: true
 library(pacman)
 p_load(tidyverse, janitor,
-       FactoMineR, factoextra, 
-       skimr, corrplot)
+       FactoMineR, factoextra, Factoshiny, 
+       skimr, corrplot, psych, gt, gtsummary, haven)
 
-url <- "https://github.com/jgbabativam/AnaDatos/raw/main/datos/AmbPol.RData"
-load(url)
+url <- "https://github.com/jgbabativam/AnaDatos/raw/main/datos/df_clase.sav"
+clase <- read_sav(url) 
 ```
 
+Explore el conjunto de datos con `glimpse(as_factor(clase))` y compare con el cuestionario
+
+## Ordenar y transformar
+
+```{r, out.width= '100%', fig.align = 'center'}
+knitr::include_graphics(here::here("images/tidyr-pivoting.gif"))
+```
+[Fuente: tidyexplain](https://www.garrickadenbuie.com/project/tidyexplain/)
+
+## Ordenar y transformar
+
+Una forma de trabajar el conjunto de los datos es transformarlo a un formato largo:
+
+```{r}
+#| echo: true
+df <- clase |> 
+      pivot_longer(cols = starts_with("P21"), names_to = "P21", values_to = "respuesta")
+```
+
+Observe que hay respuestas múltiples en algunos atributos.
+
+. . . 
+
+```{r}
+#| echo: true
+head(df |> filter(as.numeric(respuesta)>10))
+```
+
+## Ordenar y transformar
+
+Separamos las respuestas en diferentes variables para poder tratarlas
+
+```{r}
+#| echo: true
+longitud_maxima <- max(nchar(df$respuesta))
+nombres_columnas <- paste0("respuesta_", 0:longitud_maxima)
+
+df1 <- df |> 
+       separate(respuesta, into = nombres_columnas, sep = "", fill = "right") |> 
+       select(-respuesta_0)
+```
+
+. . .
+
+Volvemos a reestructurar los datos para que cada persona quede solo con las respuestas que asignó en cada atributo
+
+```{r}
+#| echo: true
+df_reest <- df1 |> 
+            pivot_longer(cols = starts_with("respuesta_"),
+                         names_to = "var", values_to = "candidato", values_drop_na = TRUE) |> 
+            select(-var) 
+```
+
+## Asignación de atributos
+
+```{r}
+#| echo: true
+df_reest <- df_reest |> 
+             separate(P21, c("pregunta", "item"), sep = "_") |> 
+             mutate(item = factor(item, levels = 1:26,
+                                  labels = c(
+                                    'Representa la continuidad de Claudia',
+                                    'Tendencia política de izquierda',
+                                    'Garantiza mano dura en seguridad',
+                                    'Tendencia política de derecha',
+                                    'Representa a Petro en Bogotá',
+                                    'Tiene las mejores propuestas',
+                                    'Representa un peligro para Bogotá',
+                                    'Es el candidato más respetuoso',
+                                    'Es el más conciliador',
+                                    'Garantiza políticas para proteger a las mujeres',
+                                    'Garantiza que Bogotá va a avanzar',
+                                    'Respeta y garantiza la diversidad en la ciudad',
+                                    'Puede diseñar e implementar una verdadera política de seguridad',
+                                    'Es el que más apoyo tiene de los empresarios',
+                                    'Es el de mayor sensibilidad social',
+                                    'Mejor persona',
+                                    'Clientelista',
+                                    'Tibio/sin posiciones',
+                                    'Delfín',
+                                    'Se ha destacado en los cargos que ha ocupado',
+                                    'Mejor comunicador',
+                                    'Más auténtico',
+                                    'Es el candidato de Álvaro Uribe',
+                                    'Es el candidato de Peñalosa',
+                                    'Es el candidato de Germán Vargas Lleras',
+                                    'Es el candidato de Rodolfo Hernández'
+                                  ))) |> 
+             mutate(candidato = factor(as.numeric(candidato), levels = 1:9, 
+                                     labels = c('Carlos Fernando Galán',
+                                                'Gustavo Bolívar',
+                                                'Juan Daniel Oviedo',
+                                                'Rodrigo Lara',
+                                                'Diego Molano',
+                                                'Jorge Enrique Robledo',
+                                                'Jorge Luis Vargas',
+                                                'Ninguno',
+                                                'Ns/Nr'))) |> 
+             mutate(GENERO = factor(GENERO, levels = 1:2, labels = c("Hombre", "Mujer")),
+                    REDAD = factor(REDAD, levels = 1:5, labels = c("18 a 24",
+                                                                   "25 a 34",
+                                                                   "35 a 44",
+                                                                   "45 a 54",
+                                                                   "55 o más"))) |> 
+              select(-pregunta)
+```
+
+## Preparación de los datos
+
+Con la estructura de los datos se puede construir la tabla de contingencia para aplicar un análisis de correspondencias simple
+
+```{r}
+#| echo: true
+tabla <- df_reest |> 
+         count(item, candidato) |> 
+         pivot_wider(names_from = candidato, values_from = n) |> 
+         column_to_rownames("item")
+```
+
+## Análisis de los resultados
+
+```{r}
+#| echo: true
+res <- CA(tabla, graph = F)
+fviz_screeplot(res, addlabels = TRUE, ylim = c(0, 50))
+```
+
+## Contribuciones de las columnas (candidatos)
+
+```{r}
+#| echo: true
+corrplot(res$col$contrib, is.corr=FALSE, tl.col = "black")
+```
+
+## Contribuciones de las filas (atributos)
+
+```{r}
+#| echo: true
+corrplot(res$row$contrib, is.corr=FALSE, tl.col = "black")
+```
+
+## Análisis de los cosenos para los candidatos
+
+```{r}
+#| echo: true
+corrplot(res$col$cos2, is.corr=FALSE, tl.col = "black")
+```
+
+## Análisis de los cosenos para los atributos
+
+```{r}
+#| echo: true
+corrplot(res$row$cos2, is.corr=FALSE, tl.col = "black")
+```
+
+## Perfil de los candidatos (Plano 1-2)
+
+```{r}
+#| echo: true
+fviz_ca_col(res, repel = TRUE, col.col = "cos2", axes = c(1,2),
+            gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+            select.col = list(cos2 = 0.5))
+```
+
+## Posicionamiento de los atributos (Plano 1-2)
+
+```{r}
+#| echo: true
+fviz_ca_row(res, repel = TRUE, col.row = "cos2", axes = c(1,2),
+            gradient.cols = c("lightblue", "blue", "darkblue"),
+            select.row = list(cos2 = 0.5))
+```
+
+## Biplot de correspondencias
+
+```{r}
+#| echo: true
+fviz_ca_biplot(res, axes = c(1,2),
+               repel = TRUE, 
+               select.col = list(cos2 = 0.5),
+               select.row = list(cos2 = 0.5))
+```
+
+## Análisis complementarios
+
+1. Haga un análisis que le permita encontrar las diferencias y similaridades entre los candidatos Galán, Oviedo, Molano y Vargas.
+2. ¿Cuáles son los aspectos que diferencian al candidato Lara frente a los candidatos Galán y Oviedo?.
+3. ¿Que modificación debe realizar si su objetivo se centra en encontrar los aspectos que diferencian al candidato Lara frente a los candidatos Molano y Vargas?.
 
 # GRACIAS! {background-color="#ddf3ff"}
 
