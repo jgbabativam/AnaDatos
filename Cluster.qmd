@@ -322,7 +322,7 @@ library(pacman)
 p_load(tidyverse, janitor, haven, readxl,
        FactoMineR, factoextra, cluster)
 
-url <- "https://github.com/jgbabativam/AnaDatos/raw/main/datos/Bogota.sav"
+url <- "https://github.com/jgbabativam/AnaDatos/raw/main/datos/caPolitico.sav"
 
 datos <- read_sav(url)
 ```
@@ -333,7 +333,7 @@ datos <- read_sav(url)
 ```{r}
 #| echo: true
 datos <- datos |> 
-         column_to_rownames(var = "Candidatos") 
+         column_to_rownames(var = "atributo") 
 ```
 
 
@@ -341,7 +341,7 @@ datos <- datos |>
 
 ```{r}
 #| echo: true
-res.ac <- CA(datos, graph = F)
+res.ac <- CA(t(datos), graph = F)
 
 fviz_ca_biplot(res.ac, 
                col.row="blue", 
@@ -368,7 +368,7 @@ res.clus <- HCPC(res.ac)
 
 ```{r}
 #| echo: true
-res.clus <- HCPC(res.ac, nb.clust = 4, graph = FALSE)
+res.clus <- HCPC(res.ac, nb.clust = 5, graph = FALSE)
 ```
 
 ## Paso 5: Visualización del dendrograma
@@ -381,7 +381,7 @@ fviz_dend(res.clus,
           rect_border = "jco", labels_track_height = 0.8,
           main = "Cluster de candidatos"
           )
-#Puede usar el comando `res.clus$desc.var` para analizar la caracterización de cada clúster.
+#Puede usar el comando `res.clus$desc.var` y `res.clus$desc.ind` para analizar la caracterización de cada clúster.
 ```
 
 
