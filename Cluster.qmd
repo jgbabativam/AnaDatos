@@ -306,8 +306,6 @@ fviz_cluster(res.clus,
 # Puede usar el comando `res.clus$desc.var$quanti` para analizar la caracterización de cada clúster.
 ```
 
-
-
 ## Ejemplo Electoral
 
 Considere los datos artificiales `Bogota.sav` que simulan el resultado de la percepción de 350 encuestados. El ejercicio consiste en que a cada encuestado se le da una tarjeta con los nombres de los candidatos, posteriormente se leen algunas frases o se le mencionan algunas cualidades y deberá asociarlo con el candidato que considere que mejor la cumple.
