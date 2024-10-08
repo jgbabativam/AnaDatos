@@ -12,7 +12,7 @@ highlight-style: dracula
 
 ## Sobre Mi
 
-PhD en Estadística, más de 15 años de experiencia en el sector académico, actual director de analítica en CNC y consultor experto de la División de Estadística de la CEPAL. Ex-decano de la Facultad de Estadística USTA, ex-director de operaciones en el ICFES, experto cuantitativo en más de 20 evaluaciones de impacto...
+Soy PhD en Estadística, más de 15 años de experiencia en el sector académico, actual director de analítica en CNC, miembro del comité de expertos en pobreza en el DANE y consultor experto de la División de Estadística de la CEPAL. Ex-decano de la Facultad de Estadística USTA, ex-director de operaciones en el ICFES, más de 40 evaluaciones de impacto o de resultados...
 
 > Puedes encontrarme en:
 
@@ -40,7 +40,7 @@ knitr::include_graphics(here::here("images/Metodos.png"))
 
 ## Modelando datos
 
-Lo primero es identificar el tipo de relación: lineal o no lineal
+Primero explore los datos para identificar el tipo de relación: lineal o no lineal.
 
 
 . . .
@@ -54,19 +54,6 @@ Lo primero es identificar el tipo de relación: lineal o no lineal
 Correlación de Pearson, gráficos de dispersión simples o matricial.
 
 
-## Medidas bidimensionales
-
-
-- **Covarianza**: Mide el grado de asociación lineal entre dos variables. Los valores que toma dependen de las unidades de medida de las variables, no están acotados.
-
-. . .
-
-- **Correlación**: Mide el grado de asociación lineal entre dos variables. Toma valores entre -1 y 1. El signo indica si la relación es positiva o negativa.
-
-. . .
-
-- **Gráfico de dispersión**: Ilustra sobre cómo es la relación entre dos variables (la forma y la fuerza de la relación). Los datos son pares de medidas para cada individuo.
-
 ## Correlación lineal
 
 ![](images/Correlacion1.png){fig-align="center"}
@@ -78,6 +65,66 @@ Una Correlación de **CERO** no debe interpretarse como "No existe asociación",
 
 ![](images/nolineal1.png){fig-align="left"}
 ![](images/nolineal2.png){fig-align="right"}
+
+## Especificación del modelo
+
+<div style="margin-top: 2cm"></div>
+
+
+![](images/EspecificaM.png){fig-align="center"}
+
+## ¿Es un buen modelo?
+
+<div style="margin-top: 2cm"></div>
+
+![](images/EspecificaM2.png){fig-align="center"}
+
+## Análisis de los residuales
+
+<div style="margin-top: 2cm"></div>
+
+![](images/EspecificaM3.png){fig-align="center"}
+
+## Pronósticos
+
+<div style="margin-top: 2cm"></div>
+
+![](images/EspecificaM4.png){fig-align="center"}
+
+## Algoritmos
+
+Algunos modelos son:
+
+- Lineales: `lm()`.
+
+- Generalizados: `glm()`.
+
+- Bayesianos: `stan_glm()`
+
+- Penalizados: `glmnet()`
+
+- ML: `tidymodels`
+
+## Modelo Lineal
+
+<div style="text-align: justify;">
+Sea $\mathcal{D}=\{(y_i, \mathbf{x}_i): i=1,\ldots,n\}$, con $y_i$ la $i$-ésima respuesta medida en una escala continua; $\mathbf{x}_i=(x_{i1},\ldots,x_{ip})^t \in \mathbb{R}^p$ es el vector de variables predictoras; y $n$ $(\gg p)$ es el tamaño de la muestra. El modelo lineal se especifica así:
+</div>
+
+. . .
+
+<br>
+
+$$y_i = \beta_0 + \beta_1 x_{i1} + \cdots + \beta_p x_{ip} + \varepsilon_i \hspace{0.25cm} \text{con  } \varepsilon_i \overset{\text{iid}}{\sim} \mathcal{N}(\mu, \sigma^2)$$
+
+
+## Aprender un lenguaje de analítica
+
+```{r, out.width= '100%', fig.align='center'}
+knitr::include_graphics(here::here("images/iniR.png"))
+```
+[Arte de Allison Horst](https://allisonhorst.com/)
+
 
 ## El entorno `tidyverse`
 
@@ -91,14 +138,14 @@ Una Correlación de **CERO** no debe interpretarse como "No existe asociación",
 
 ## DASS 21
 
-- El instrumento del DASS 21 permite construir una escala de Depresión, Ansiedad y Estrés (DASS-21). Investigue más sobre su contrucción y propiedades psicométricas. Una versión del instrumento puede ser consultada [aquí](https://blogs.konradlorenz.edu.co/files/dass-21.pdf)
+- El instrumento del DASS 21 permite construir una escala de Depresión, Ansiedad y Estrés (DASS-21). Investigue más sobre su construcción y propiedades psicométricas. Una versión del instrumento puede ser consultada [aquí](https://blogs.konradlorenz.edu.co/files/dass-21.pdf)
 
 - Explore el conjunto del datos `DASS21.sav` el cual contiene los resultados para una muestra de 800 personas de Colombia realizada en el año 2022.
 
 ```{r}
 #| echo: true
 library(pacman)
-p_load(tidyverse, broom, modelr, haven, labelled,
+p_load(tidyverse, broom, modelr, haven, labelled, performance,
        skimr, corrplot, psych, gt, gtsummary, pROC)
 
 url <- "https://github.com/jgbabativam/AnaDatos/raw/main/datos/DASS21.sav"
@@ -119,32 +166,31 @@ Puede usar `lapply(dass, function(x) attributes(x)$label)` para ver las etiqueta
 
 ## La gramática de las gráficas 
 
-Requiere de al menos 3 elementos:
- 
- - Datos
- - _aesthetics_: variables.
- - geometría
- 
+
+Requiere de al menos 3 elementos: datos, variables (aes), geometría.
+
 . . .
 
 ```{r}
 #| eval: false
 #| echo: true
 
-ggplot(data = datos, aes(x = _, y = _)) +
+ggplot(data = datos, aes(x = ___, y = ___)) +
   geom_point()
 ```
 
-## Exploración de los datos
+. . .
 
-Puede usar funciones como `glimpse()` para identificar las variables y su tipo, mientras que `skim()` le proporciona un análisis exploratorio rápido para su conjunto de datos.
-
-```{r}
-#| eval: false
-#| echo: true
-glimpse(dass)
-skim(dass)
+```{r, out.width= '50%', dpi=600, fig.align='center'}
+knitr::include_graphics(here::here("images/ggplot.jpeg"))
 ```
+
+## Exploración visual de datos
+
+```{r, out.width= '100%', fig.align='center'}
+knitr::include_graphics(here::here("images/ggplot2_exploration.png"))
+```
+[Arte de Allison Horst](https://allisonhorst.com/)
 
 ## Solución ejercicios 1 y 2
 
@@ -238,109 +284,6 @@ Puede ver la correlación en forma de matriz usando `pairs.panels()` del paquete
 pairs.panels(vars, main="Matriz de correlaciones")
 ```
 
-# ANÁLISIS DE REGRESIÓN LINEAL (RESUMEN) {background-color="#0077b6"}
-
-## Conceptos básicos
-
-- Sea $y$ una variable de resultado, también denominada variable dependiente o variable de respuesta, y
-
-. . .
-
-- una o varias variables $X$ conocidas como variables explicativas/predictoras o variables independientes, también denominadas _covariables_ cuando son cuantitativas o _factores_ cuando son de naturaleza cualitativa   
-
-. . .
-
-
-- En el caso de estudio se tiene la medida cuantitativa de la depresión y el grado de satisfacción con sus amigos. ¿cuál sería la variable $y$ y cuál sería la variable $X$ en este caso?.
-
-
-. . .
-
-- Mencione algunos ejemplos de situaciones donde se quiera definir una relación entre una variable $y$ y una variable $X$.
-
-
-## Objetivos del modelamiento
-
-Denominar a $X$ como explicativa o predictora se debe a que el modeladmiento de datos tiene uno de dos propósitos:
-
-- **Modelamiento para explicar las relaciones**: se usa cuando desea describir y cuantificar explícitamente la relación entre la variable de resultado $y$ y un conjunto de variables explicativas $X$, así como determinar la importancia de cualquier relación.
-
-. . .
-
-
-- **Modelamiento para la predicción**: se usa cuando el propósito es predecir una variable de resultado 
-$y$ basado en la información contenida en un conjunto de variables predictivas $X$. Acá no necesariamente importa que se pueda comprender cómo se relacionan e interactúan todas las variables entre sí, sino sólo si puede hacer buenas predicciones sobre $y$ utilizando la información en $X$. 
-
-## ¿Qué objetivo se persigue?
-
-En cada caso indique si el objetivo del modelo debe ser explicativo o predictivo. Suponga que  tenemos interés en identificar: 
-
-. . .
-
-1. ¿Cuáles son los factores de riesgo (como el hábito de fumar, la edad, etc) que se asocian con el cáncer de pulmón?.
-
-. . .
-
-2. ¿Qué contenido que le gustaría ver con mayor probabilidad a un usuario de una plataforma digital?.
-
-. . .
-
-3. ¿Cuál es el efecto de la edad de la mujer, nivel educativo de la pareja, hábitos de la pareja (fuma, toma, etc), composición del hogar (con hijos/sin hijos) sobre la violencia doméstica?.
-
-## Especificación del modelo
-
-<div style="margin-top: 2cm"></div>
-
-
-![](images/EspecificaM.png){fig-align="center"}
-
-## ¿Es un buen modelo?
-
-<div style="margin-top: 2cm"></div>
-
-![](images/EspecificaM2.png){fig-align="center"}
-
-## Análisis de los residuales
-
-<div style="margin-top: 2cm"></div>
-
-![](images/EspecificaM3.png){fig-align="center"}
-
-## Pronósticos
-
-<div style="margin-top: 2cm"></div>
-
-![](images/EspecificaM4.png){fig-align="center"}
-
-## Algoritmos
-
-Algunos modelos son:
-
-- Lineales: `lm()`.
-
-- Generalizados: `glm()`.
-
-- Bayesianos: `stan_glm()`
-
-- Penalizados: `glmnet()`
-
-- ML: `tidymodels`
-
-# REGRESIÓN LINEAL {background-color="#0077b6"}
-
-## Formulación del modelo
-
-<div style="margin-top: 4cm"></div>
-
-$$y_i = \beta_0 + \beta_1 X_{1i} + \beta_2 X_{2i} + \cdots + \beta_k X_{ki} + \varepsilon_i$$
-
-. . . 
-
-<div style="margin-top: 2cm"></div>
-
-- $\varepsilon \sim N(0, \sigma^2)$
-- No hay presencia de multicolinealidad
-
 ## Punto 3 - Taller: DASS21
 
 Realice los análisis que le permitan concluir sobre la asociación entre la depresión y la satisfacción con la vivienda, trabajo, amigos, vecinos y el barrio.
@@ -419,6 +362,14 @@ Que no se cumplan los supuestos puede afectar varios aspectos: sesgos, problemas
 
 par(mfrow = c(2, 2))
 plot(modelo)
+```
+
+## Análisis de los supuestos
+
+```{r}
+#| echo: true
+
+check_model(modelo)
 ```
 
 # REGRESIÓN NO LINEAL {background-color="#0077b6"}
@@ -599,11 +550,65 @@ La estimación de los parámetros debe hacerse por métodos iterativos debido a 
 
 ::::
 
-## Matriz de confusión
+## Análisis exploratorio
+
+
+```{r}
+set.seed(123)
+n <- 200
+y <- rbinom(n, 1, 0.3) # 1 para violencia doméstica, probabilidad del 30%
+x <- ifelse(y == 1, rpois(n, 6), rpois(n, 3)) # Frecuencia de consumo de alcohol
+
+df <- data.frame(violencia_domestica = as.factor(y),
+                 consumo_alcohol = x)
+
+ggplot(df, aes(x = violencia_domestica, y = consumo_alcohol, 
+               fill = violencia_domestica)) +
+  geom_boxplot(outlier.colour = "red", 
+               outlier.shape = 16, 
+               outlier.size = 2) +
+  scale_fill_manual(values = c("#E69F00", "#56B4E9")) +
+  labs(title = "Relación entre la violencia doméstica y el consumo de alcohol",
+       x = "Violencia Doméstica (1: Sí, 0: No)",
+       y = "Frecuencia de Consumo de Alcohol") +
+  theme_minimal(base_size = 15) +
+  theme(legend.position = "none", 
+        plot.title = element_text(hjust = 0.5, face = "bold"),
+        axis.text.x = element_text(face = "bold", color = "black"),
+        axis.text.y = element_text(face = "bold", color = "black"))
+```
+
+## Prueba Chi-cuadrado
+
+Permite identificar la asociación entre dos variables cualitativas.
+
+- Fumar está asociado con el cáncer de pulmón
+- El género está asociado con la preferencia por tipos de música
+- El nivel educativo está asociado con la afiliación política
+- El tipo de alimentación está asociado con la presencia de enfermedades cardíacas
+- La deserción estudiantil está asociada con el nivel educativo de la madre/padre.
+- Empleabilidad tras un programa de formación: Empleado después de la formación (Sí/No) vs Edad, nivel educativo, género, años de experiencia laboral...
+
+## Prueba Chi-cuadrado
+
+$$H_0:\text{Las variables son independientes}$$
+$$H_1:\text{Las variables están relacionadas.}$$
+
+. . . 
+
+Si A y B son eventos independientes entonces se cumple que:
+
+$$\mathbb{P}(A \cap B) = \mathbb{P}(A) * \mathbb{P}(B)$$
+
+. . . 
+
+Si el valor $p$ es inferior a un nivel $\alpha$ se dice que hay suficiente evidencia estadística para rechazar $H_0$.
+
+## Desempeño del modelo: Matriz de confusión
 
 <div style="margin-top: 1cm"></div>
 
-```{r, out.width= '50%'}
+```{r, out.width= '50%', dpi=600}
 knitr::include_graphics(here::here("images/Logit4.png"))
 ```
 
@@ -612,7 +617,7 @@ knitr::include_graphics(here::here("images/Logit4.png"))
 **Especificidad**: Porcentaje de verdaderos negativos.
 
 
-## Curva ROC
+## Desempeño del modelo: Curva ROC
 
 Evalúa la capacidad predictiva del modelo. Se eligen varios puntos de corte y se representa gráficamente la capacidad del modelo para realizar una correcta clasificación
 
@@ -625,17 +630,21 @@ De acuerdo con la escala DASS, una persona con un puntaje de 8 o más puede ser 
 
 Ajuste un modelo que le permita identificar los factores de riesgo y los factores de protección contra la ansiedad, para ello utilice las variables del sexo, satisfacción y participación que se encuentran dentro del instrumento aplicado.
 
+## Transformación de datos
+
+```{r, out.width= '100%', fig.align='center'}
+knitr::include_graphics(here::here("images/mutate.png"))
+```
+[Arte de Allison Horst](https://allisonhorst.com/)
+
 ## Factores de riesgo asociados a la ansiedad
 
 <div style="margin-top: 2cm"></div>
 
 ```{r}
 #| echo: true
-
-
 prepara <- dass |> 
            mutate(ansi = ifelse(ANSIEDAD >= 8, 1, 0)) |> 
-           select(ansi, sexo, starts_with("P1"), starts_with("P2")) |> 
            mutate(sexo = as_factor(sexo),
                   across(starts_with("P2"), ~relevel(as_factor(.), ref = "NO"))) 
 ```
@@ -643,6 +652,61 @@ prepara <- dass |>
 <div style="margin-top: 1cm"></div>
 
 Explore el conjunto de datos e identifique las diferencias frente a los datos iniciales.
+
+## Análisis exploratorio: Box-plot
+
+```{r}
+#| echo: true
+#| fig.align: "center"
+ggplot(prepara, aes(x = as.factor(ansi), y = P1_3, fill = as.factor(ansi))) +
+  geom_boxplot() +
+  labs(x = "Ansiedad (0 = No, 1 = Sí)", y = label_attribute(prepara$P1_3)) +
+  ylim(1, 8) +
+  theme_minimal() +
+  theme(legend.position = "none") 
+```
+
+
+## Análisis exploratorio: Box-plot
+
+```{r}
+#| echo: true
+#| eval: false
+grafica <- function(variable) {
+  label_y <- attr(prepara[[deparse(substitute(variable))]], "label")
+  ggplot(prepara, aes(x = as.factor(ansi), y = {{variable}}, fill = as.factor(ansi))) +
+    geom_boxplot() +
+    labs(x = "Ansiedad (0 = No, 1 = Sí)", y = label_y) +
+    ylim(1, 8) +
+    theme_minimal() +
+    theme(legend.position = "none") 
+} 
+
+p1 <- grafica(P1_1); p2 <- grafica(P1_2); p3 <- grafica(P1_3); 
+p4 <- grafica(P1_4); p5 <- grafica(P1_5); p6 <- grafica(P1_6);
+
+(p1 | p2 | p3)/(p4 | p5 | p6)
+```
+
+## Análisis exploratorio: Box-plot
+
+```{r}
+#| echo: false
+grafica <- function(variable) {
+  label_y <- attr(prepara[[deparse(substitute(variable))]], "label")
+  ggplot(prepara, aes(x = as.factor(ansi), y = {{variable}}, fill = as.factor(ansi))) +
+    geom_boxplot() +
+    labs(x = "Ansiedad (0 = No, 1 = Sí)", y = label_y) +
+    ylim(1, 8) +
+    theme_minimal() +
+    theme(legend.position = "none") 
+} 
+
+p1 <- grafica(P1_1); p2 <- grafica(P1_2); p3 <- grafica(P1_3); 
+p4 <- grafica(P1_4); p5 <- grafica(P1_5); p6 <- grafica(P1_6);
+
+(p1 | p2 | p3)/(p4 | p5 | p6)
+```
 
 ## Análisis exploratorio: Prueba Chi-Cuadrado.
 
@@ -662,7 +726,7 @@ chisq.test(prepara$ansi, prepara$P2_7)
 
 ```{r}
 #| echo: true
-model_logit <- glm(ansi ~ sexo + 
+modelo_logit <- glm(ansi ~ sexo + 
                           P1_1 + P1_2 + P1_3 + P1_4 + P1_5 + P1_6 +
                           P2_1 + P2_2 + P2_3 + P2_4 + P2_5 + P2_6 + P2_7 + P2_8, 
               data = prepara,
@@ -671,13 +735,13 @@ model_logit <- glm(ansi ~ sexo +
 
 <div style="margin-top: 1cm"></div>
 
-La función `glm()` permite ajustar un modelo lineal generalizado. Se usa `binomial` para modelos de regresión logística binaria donde la función de enlace es la función logit, cuando la variable dependiente son recuentos se usa `poisson`, si la variable dependiente es positiva continua entonces se puede usar `gamma`.
+La función `glm()` permite ajustar un modelo lineal generalizado. Se usa `binomial` para modelos de regresión logística binaria donde la función de enlace es de tipo logit, cuando la variable dependiente son recuentos se usa `poisson` y si la variable dependiente es positiva continua entonces se puede usar `gamma`.
 
 ## Resultados
 
 ```{r}
 #| echo: true
-summary(model_logit)
+summary(modelo_logit)
 ```
 
 Note que hay múltiples variables que no son significativas en el modelo.
@@ -688,7 +752,7 @@ Para llevar a cabo un proceso de eliminación automática de variables que no so
 
 ```{r}
 #| echo: true
-step(model_logit)
+step(modelo_logit)
 ```
 
 ## Modelo final
@@ -735,6 +799,89 @@ predicciones <- predict(modelo_final, prepara, type = "response")
 roc_curve <- roc(prepara$ansi, predicciones,  plot = TRUE, print.auc = TRUE)
 ```
 
+# BONUS: IA y Programación {background-color="#0077b6"}
+
+## La etapa de la frustración
+
+```{r, out.width= '100%', fig.align='center'}
+knitr::include_graphics(here::here("images/errorR.png"))
+```
+[Arte de Allison Horst](https://allisonhorst.com/)
+
+## La IA como herramienta
+
+:::: {.columns}
+
+::: {.column width="60%"}
+<div style="margin-top: 0.5cm"></div>
+
+Estamos en un mundo de constante evolución, ¿la IA nos va a reemplazar?
+
+- Enviar una carta en papel por correo
+- Pedir un domicilio por teléfono
+- Solicitar un taxi por teléfono
+- Orientarse en una ruta con un mapa de papel 
+
+<br><br>
+@tiangolo
+
+:::
+
+::: {.column width="3%"}
+<!-- columna vacía para crear un espacio -->
+:::
+
+::: {.column width="37%"}
+
+<div style="margin-top: 1.0cm"></div>
+
+![Imagen de Caracol Radio](images/OperaTaxis.jpg){fig-align="left" style="font-size: 16px;"}
+
+:::
+
+::::
+
+## GPT y Modelos LLMs
+
+El GPT (Generative Pre-trained Transformer) es un modelo de LLM (Large Language Model). Mientras que GPT-3 usaba 175 MM de parámetros usando modelos soportados en texto, GPT-4 usa 100 BN de parámetros usando modelos soportados en texto e imágenes.
+
+. . . 
+
+```{r,  out.width= '48%', fig.align='center', dpi=300}
+knitr::include_graphics(here::here("images/IA_ChatGPT.jpg"))
+```
+
+## Instrucciones 
+
+No pretenda que todo ocurra en un solo paso, a veces se obtienen mejores resultados precisando un _prompt_ en cada paso.
+
+. . . 
+
+```{r,  out.width= '80%', fig.align='center', dpi=300}
+knitr::include_graphics(here::here("images/ChatGPT.jpeg"))
+```
+
+
+@mdancho84
+
+## Herramientas
+
+- https://rtutor.ai/
+- https://www.codeconvert.ai/r-to-python-converter
+- ChatGPT
+- Copilot
+- Gemini
+- . . .
+
+## Ejercicios
+
+Use un asistente de IA para realizar algunos análisis sobre el conjunto de datos DASS:
+
+- Haga un prompt que solicite crear un gráfico de correlación entre las variables que empiezan con el prefijo "P1_", pida que use el paquete _corrplot_ de R, solicite que se vea elegante y se presente los valores de las correlaciones.
+
+- Solicite asistencia para generar la gráfica de dispersión del punto 1 del taller.
+
+Haga el Debug de los códigos anteriores, es decir, encontrar errores que pueden impedir que los códigos funcionen.
 
 # GRACIAS! {background-color="#ddf3ff"}
 
