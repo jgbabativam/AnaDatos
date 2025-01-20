@@ -1,0 +1,110 @@
+---
+title: "Analítica de datos aplicada a estudios sobre desarrollo"
+subtitle: "Introducción a los métodos cuantitativos"
+author: "[Giovany Babativa, PhD](http://jgbabativam.rbind.io/)"
+format: 
+  gbabativa-revealjs:
+    footer: "Diapositivas disponibles en [GitHub](https://github.com/jgbabativam)."
+incremental: false
+embed-resources: true
+highlight-style: dracula
+---
+
+## Sobre Mi
+
+<div style="text-align: justify;">
+
+PhD en Estadística, MSc en Analytics & Big Data, MSc en Estadística. Con 20 años de experiencia, actual director de analítica en el CNC, miembro del comité de expertos en pobreza en el DANE y consultor de la División de Estadística de la CEPAL. Ex-decano de la Facultad de Estadística USTA, ex-director de operaciones en el ICFES, PM CEV ...
+
+> Puedes encontrarme en:
+
+- {{< ai google-scholar >}} [Google scholar](https://scholar.google.es/citations?user=2NJRNg8AAAAJ&hl=es)
+- {{< fa brands github >}} [GitHub. https://github.com/jgbabativam](https://github.com/jgbabativam)
+- {{< fa brands linkedin >}} [linkedin](https://www.linkedin.com/in/giovany-babativa-marquez/?originalSubdomain=co)
+- {{< fa solid envelope >}} j.babativamarquez@uniandes.edu.co
+
+</div>
+
+## Objetivos de este curso
+
+1. Familiarizar a los estudiantes en el uso de herramientas para el análisis
+cuantitativo de datos aplicada a los estudios de desarrollo.
+
+2. Presentar las cuestiones prácticas y críticas en el uso de métodos de análisis
+cuantitativo de datos.
+
+. . . 
+
+**Resultados de aprendizaje**
+
+Al finalizar el curso, los y las estudiantes estarán en capacidad de:
+
+* Aplicar los principales métodos de análisis cuantitativo (análisis de
+regresión, técnicas de análisis multivariado).
+
+* Combinar distintas herramientas para el análisis cuantitativo.
+
+## Metodología
+
+- Es un curso de _nivel intermedio_ donde se abordan temas de métodos descriptivos, inferenciales, métodos supervisados y no supervisados.
+
+- El enfoque del curso es práctico, a través de ejercicios hechos con los estudiantes. Usaremos el software estadístico _R Studio_. No nos concentraremos en demostraciones y pruebas formales. El curso tiene un énfasis aplicado.
+
+- Sesiones de repaso y aclaración de inquietudes con el **Monitor** alternadas semanalmente con nuestras sesiones.
+
+## Temas que se cubren
+
+<br><br>
+
+1. Visualización de datos
+2. Análisis exploratorio
+3. Análisis de correlación y de regresión (modelos lineales)
+4. Reducción de la dimensionalidad
+5. prácticas en el software R Studio
+
+## Reglas del juego
+
+::: columns
+::: {.column width="60%"}
+
+::: {.incremental}
+
+<br>
+
+- Talleres: 30%
+- Examen 1: 20%.
+- Examen 2: 20%.
+- Presentación final: 30%
+
+:::
+
+:::
+
+::: {.column width="40%"}
+
+<br><br>
+
+![](images/Rules_img.jpg){fig-align="center" width="100%"}
+
+:::
+
+:::
+
+## Conversación
+
+¿Por qué considera que la analítica de los datos es importante dentro del proceso de la toma de decisiones o de orientación de políticas?
+
+```{r}
+library(countdown)
+countdown(minutes = 5, seconds = 00,  right = 0)
+```
+
+# GRACIAS! {background-color="#ddf3ff"}
+
+# Referencias
+
+- Husson, F., Lê, S., & Pagès, J. (2017). Exploratory multivariate analysis by example using R. CRC press.
+
+- Hair, J. F., Black, W. C., Babin, B. J., Anderson, R. E., & Tatham, R. L. (2006). Multivariate data analysis 6th Edition.  https://doi.org/10.1201/9780367409913
+
+-	Aldás Manzano, J., & Uriel Jiménez, E. (2017). Análisis multivariante aplicado con R. Ediciones Paraninfo, SA. 
