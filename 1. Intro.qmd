@@ -96,6 +96,12 @@ regresión, técnicas de análisis multivariado).
 
 ¿Por qué considera que la analítica de los datos es importante dentro del proceso de la toma de decisiones o de orientación de políticas?
 
+. . . 
+
+<span style="color:##81b622; font-size: 32px;">
+**INFORMACIÓN + CONVERSACIÓN + ACCIÓN = TRANSFORMACIÓN**
+</span>
+
 ```{r}
 library(countdown)
 countdown(minutes = 5, seconds = 00,  right = 0)
@@ -236,18 +242,19 @@ Los comandos `head`, `str`, `names` son del paquete base mientras que `glimpse` 
 
 ## Ejercicio
 
-<br><br>
+<br>
 
-<span style="color:#FF8D21"> **Tu turno**:</span> Cargue el conjunto de datos "ENSIN.sav", explore los datos y visualice su estructura.
+<span style="color:#FF8D21"> **Tu turno**:</span> Cree un proyecto y cargue el conjunto de datos "ENSIN.sav", explore los datos y visualice su estructura. Use `as_factor()` para visualizar las etiquetas.
 
 ```{r}
 #| echo: true
 
 library(pacman)
 
-p_load(tidyverse, haven)
+p_load(tidyverse, haven, skimr)
 
-
+url <- "https://github.com/jgbabativam/AnaDatos/raw/main/datos/ENSIN.sav"
+ensin <- read_sav(url)
 ```
 
 
@@ -256,15 +263,342 @@ library(countdown)
 countdown(minutes = 15, seconds = 00,  right = 0)
 ```
 
+## Gramática de la gráficas
 
 
+![](images/ggplot2.png){fig-align="center" width="100%"}
+
+## Ejemplo: Visualización de datos
+
+Cree el proyecto: PIB
+<br>
+
+```{r}
+#| echo: true
+
+library(pacman)
+p_load(tidyverse, gganimate, gapminder, gifski)
+
+datos <- gapminder |> 
+         filter(year >= 1952) |> 
+         mutate(poblacion = pop / 1e6)
+
+paises_interes <- c("Colombia", "United States", "China", "India", "Nigeria")
+
+```
+
+<br>
+
+Explore el conjunto de datos
+
+## Ejemplo: Visualización de datos
+
+```{r}
+#| echo: true
+
+g1 <- ggplot(datos, aes(x = gdpPercap, y = lifeExp, size = poblacion, color = continent)) +
+      geom_point(alpha = 0.7, show.legend = TRUE) +
+      geom_text(data = datos |> filter(country %in% paises_interes), 
+                aes(label = country), size = 4, vjust = -1, hjust = 0.5, color = "black", alpha = 0.8) +
+      scale_x_log10(labels = scales::dollar_format(prefix = "$")) +
+      scale_y_continuous(labels = scales::comma) +
+      labs(title = "Relación entre PIB per cápita y la esperanza de vida",
+           subtitle = "Año: {frame_time}",
+           x = "PIB per cápita (log10)",
+           y = "Esperanza de vida",
+           size = "Población (millones)",
+           color = "Continente") +
+       theme_minimal(base_size = 14) +
+       theme(legend.position = "bottom") +
+       transition_time(year) +
+       ease_aes('linear')
+
+#anim <- animate(plot, fps = 20, duration = 10, width = 800, height = 600, renderer = gifski_renderer())
+#anim_save("gapminder_animation.gif", anim)
+```
+
+## 
+
+![](gapminder_animation.gif){fig-align="center" width="80%"}
+
+
+## La etapa de la frustración
+
+```{r, out.width= '100%', fig.align='center'}
+knitr::include_graphics(here::here("images/errorR.png"))
+```
+[Arte de Allison Horst](https://allisonhorst.com/)
+
+## La IA como herramienta
+
+:::: {.columns}
+
+::: {.column width="60%"}
+<div style="margin-top: 0.5cm"></div>
+
+Estamos en un mundo de constante evolución, ¿la IA nos va a reemplazar?
+
+- Enviar una carta en papel por correo
+- Pedir un domicilio por teléfono
+- Solicitar un taxi por teléfono
+- Orientarse en una ruta con un mapa de papel 
+
+<br><br>
+@tiangolo
+
+:::
+
+::: {.column width="3%"}
+<!-- columna vacía para crear un espacio -->
+:::
+
+::: {.column width="37%"}
+
+<div style="margin-top: 1.0cm"></div>
+
+![Imagen de Caracol Radio](images/OperaTaxis.jpg){fig-align="left" style="font-size: 16px;"}
+
+:::
+
+::::
+
+## GPT y Modelos LLMs
+
+El GPT (Generative Pre-trained Transformer) es un modelo de LLM (Large Language Model). Mientras que GPT-3 usaba 175 MM de parámetros usando modelos soportados en texto, GPT-4 usa 100 BN de parámetros usando modelos soportados en texto e imágenes.
+
+. . . 
+
+```{r,  out.width= '48%', fig.align='center', dpi=300}
+knitr::include_graphics(here::here("images/IA_ChatGPT.jpg"))
+```
+
+## Instrucciones 
+
+No pretenda que todo ocurra en un solo paso, a veces se obtienen mejores resultados precisando un _prompt_ en cada paso.
+
+. . . 
+
+```{r,  out.width= '80%', fig.align='center', dpi=300}
+knitr::include_graphics(here::here("images/ChatGPT.jpeg"))
+```
+
+
+@mdancho84
+
+## Herramientas
+
+- [https://rtutor.ai/](https://rtutor.ai/)
+- [https://www.codeconvert.ai/r-to-python-converter](https://www.codeconvert.ai/r-to-python-converter)
+- ChatGPT
+- Copilot
+- Gemini
+- Claude
+- GitHub Copilot
+- . . .
+
+## Ejemplo
+
+Escriba el siguiente _prompt_ en ChatGPT y transcriba el código a R:
+
+<br><br> 
+
+_"use el paquete osm de R para crear un mapa y la base de datos de droguerias en bogotá, luego use mapview para visualizar las droguerias"_
+
+
+## Ejercicio
+
+<br>
+
+<span style="color:#FF8D21"> **Tu turno**:</span> Sobre el conjunto de datos "ENSIN.sav", apoyese en la IA para obtener un gráfico de barras, usando `ggplot2`, con la cantidad de registros que se tienen de cada región. Ajustelo a su gusto.
+
+
+```{r}
+#| echo: true
+g2 <- ensin |> 
+      count(region) |> 
+      mutate(region = as_factor(region)) |>
+      ggplot(aes(x = fct_reorder(region, n), y = n, fill = region)) +
+      geom_col() +
+      labs(x = "Región", y = "Frecuencia") +
+      coord_flip() +
+      theme_minimal() +
+      theme(legend.position = "none")
+```
+
+## Ejercicio
+
+<br>
+
+<span style="color:#FF8D21"> **Tu turno**:</span> Sobre el conjunto de datos "ENSIN.sav", apoyese en la IA para obtener un gráfico elegante entre las variables Peso y Estatura, use `ggplot2`. Ajustelo a su gusto.
+
+## Ejercicio
+
+<br>
+
+<span style="color:#FF8D21"> **Tu turno**:</span> Sobre el conjunto de datos "ENSIN.sav", apoyese en la IA para obtener un diagrama de cajas elegante que permita comparar la variable IMC entre las diferentes regiones, use `ggplot2`. Ajustelo a su gusto.
+
+# ANÁLISIS EXPLORATORIO {background-color="#0077b6"}
+
+## Análisis exploratorio
+
+::: {.columns}
+:::: {.column width="40%"}
+
+<br><br>
+
+1. Tipos de variables.
+2. Visualizar los datos
+3. Identificar relaciones
+4. Datos atípicos
+5. Datos faltantes
+
+::::
+
+:::: {.column width="60%"}
+![](images/EDA.jpeg)
+:::: 
+:::
+
+## Análisis Exploratorio con `DataExplorer`
+
+Puede realizar una exploración de datos rápido y eficiente, generando resúmenes visuales y estadísticos con muy poco código.
+
+. . .
+
+<br>
+
+Usemos un conjunto de datos estándar del paquete `modelr`
+
+```{r}
+#| echo: true
+library(pacman)
+p_load(tidyverse, broom, modelr, 
+       patchwork, performance, haven,
+       DataExplorer, skimr, corrplot, psych, gt, gtsummary)
+
+datos <- heights
+```
+
+Explore los comandos `create_report()`, `glimpse()` y `skim()`.
+
+. . .
+
+```{r}
+#| eval: false
+#| echo: true
+create_report(datos)
+glimpse(datos)
+skim(datos)
+```
+
+## Reportes reproducibles usando Quarto-R
+
+<br>
+
+::: r-stack
+![Arte de "Hello, Quarto" por Julia Lowndes y Mine Çetinkaya-Rundel, presentado en RStudio::Conf(2022). Ilustración por Allison Horst.](images/horst-quarto-schematic.png){.fragment .fade-out fragment-index="1" fig-alt="A schematic representing the multi-language input (e.g. Python, R, Observable, Julia) and multi-format output (e.g. PDF, html, Word documents, and more) versatility of Quarto." fig-align="center" style="margin-top:-1em;margin-bottom:-1em"}
+
+![](images/horst-qmd-render-schema.png){.fragment fragment-index="1" fig-alt="A schematic representing rendering of Quarto documents from .qmd, to knitr or jupyter, to plain text markdown, then converted by pandoc into any number of output types including html, PDF, or Word document." fig-align="center" style="margin-top:-1em;margin-bottom:-1em"}
+:::
+
+## Tipos de salidas
+
+::: {.nonincremental}
+
+-   [Articulos & reportes](https://quarto.org/docs/output-formats/all-formats.html)
+-   [Manuscritos](https://quarto.org/docs/manuscripts/)
+-   [Presentaciones](https://quarto.org/docs/presentations/)
+-   [Dashboards](https://quarto.org/docs/dashboards/)
+-   [Sitios Web](https://quarto.org/docs/websites/)
+-   [Libros](https://quarto.org/docs/books/)
+-   [Documentos interactivos](https://quarto.org/docs/interactive/)
+
+Sitios para obtener inspiración [Quarto.org gallery](https://quarto.org/docs/gallery/){preview-link="true"} y el [Qmd Club website & blog showcase](https://qmdclub.com/){preview-link="true"}
+
+:::
+
+# Estructura de un documento `.qmd` {.section}
+
+1. YAML header (metadatos y opciones del documento)
+
+2. Narrativa (markdown)
+
+3. Códigos chunks (importar, depurar, transformar, visualizar)
+
+# 1. YAML 
+
+``` {.yaml}
+---                                                # <1>  
+title: Título del documento                        # <2>
+author: Giovany Babativa-Márquez                   # <2>
+date: "r toupper(format(Sys.time(), '%B %Y'))"     # <2>
+bibliography: docreferences.bib                    # <2>
+link-citations: true                               # <2>
+toc-title: Tabla de Contenido                      # <2>
+lang: es                                           # <2>
+output:                                            # <2>
+  bookdown::word_document2:                        # <3>
+   reference_docx: docPlantilla.docx               # <3>
+   number_sections: true                           # <3>
+   fig_caption: yes                                # <3>
+fontsize: 12pt                                     # <2>
+---                                                # <1>
+```
+
+
+Consulte las opciones disponibles en las **guías de referencia**: [HTML](https://quarto.org/docs/reference/formats/html.html), [PDF](https://quarto.org/docs/reference/formats/pdf.html), [MS Word](https://quarto.org/docs/reference/formats/docx.html), [Revealjs](https://quarto.org/docs/reference/formats/presentations/revealjs.html), [MS Powerpoint](https://quarto.org/docs/reference/formats/presentations/pptx.html).
+
+
+## 2. Narrativa
+
+Sintaxis de Markdown para:
+
+-   Texto con formato: `**negrita**` &rarr; **negrita**
+
+-   Título de secciones: `# Header 1`, `# Header 2`
+
+-   Hipervínculos: `[google.com](https://google.com)` &rarr; [google.com](https://google.com)
+
+-   Imágenes: `![](image.png)`
+
+-   Código en línea: ``` `{{r}} Sys.Date()` ``` &rarr; ```r Sys.Date()```
+
+-   Ecuaciones: ``` `$E = mc^{2}$` ``` &rarr; $E = mc^{2}$
+
+\
+
+. . .
+
+[**Guía de sintaxis markdown**](https://quarto.org/docs/authoring/markdown-basics.html){preview-link="true"}
+
+## 3. Códigos chunks
+
+**Tres manera para insertar chunks:**
+
+1.    Atajos `Cmd`/`Ctrl` + `Option`/`Alt` + `I`.
+
+2.    ![](images/rstudio-insert-chunk.png){fig-alt="Insert Chunk button in RStudio" style="vertical-align:middle;" width="49"} **Insert Chunk** botón en las herramientas del editor.
+
+3.    Escribir los delimitadores de fragmento ```` ```{r} ```` y ```` ``` ````.
+
+. . .
+
+**Dos formas de ejecutar los códigos de los chunks:**
+
+1.    Use los botones **Run Current Chunk** o **Run All Chunks Above**.
+
+      ![](images/rstudio-code-chunk.png){fig-alt="Code chunk in RStudio with the Run All Chunks Above and Run Current Chunk buttons highlighted and labelled."}
+
+2.    Ejecutar el código actual del chunk con `Cmd`/`Ctrl` + `Shift` + `Enter`.
 
 # GRACIAS! {background-color="#ddf3ff"}
 
 # Referencias
 
-- Husson, F., Lê, S., & Pagès, J. (2017). Exploratory multivariate analysis by example using R. CRC press.
+- R for data science. Section 3. Data visualization. Disponible [aquí](https://r4ds.had.co.nz/)
 
-- Hair, J. F., Black, W. C., Babin, B. J., Anderson, R. E., & Tatham, R. L. (2006). Multivariate data analysis 6th Edition.  https://doi.org/10.1201/9780367409913
+- Dougherty, J. and Ilyankou, I. (2022) Hands-On Data Visualization. Interactive Storytelling from Spreadsheets to Code. Section 6. Chart Design Principles. Disponible [aquí](https://handsondataviz.org/)
 
--	Aldás Manzano, J., & Uriel Jiménez, E. (2017). Análisis multivariante aplicado con R. Ediciones Paraninfo, SA. 
+-	Williams, G. (2022) Data Science Desktop Survival Guide. Togaware. Disponible [aquí](https://onepager.togaware.com/introducing-rstudio.html) Chapter 2 introducing R 
+
+- Jadey Ryan. Reproducible reports and presentations with Quarto. Disponible [aquí](https://jadeyryan.quarto.pub/slc-rug-quarto/#/title-slide)
