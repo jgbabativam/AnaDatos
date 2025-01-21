@@ -3,7 +3,7 @@
 Materiales del curso de analítica de datos aplicada a estudios sobre desarrollo
 
 Visualización de datos y análisis exploratorio
-https://jgbabativam.github.io/AnaDatos/1. Intro.html
+https://jgbabativam.github.io/AnaDatos/Intro.html
 
 Regresión Lineal:
 https://jgbabativam.github.io/AnaDatos/Regression2024.html
