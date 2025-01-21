@@ -215,7 +215,6 @@ knitr::include_graphics(here::here("images/Ciclo.png"))
 <br><br>
 
 * Instalar R y R-Studio: [Ver video](https://youtu.be/TKplIIwwdEk) 
-* Instalar Power BI de escritorio: [Ver video](https://youtu.be/Cfp9-0ivd54)
 
 ## Reglas de los datos
 
