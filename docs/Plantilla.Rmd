@@ -1,0 +1,64 @@
+---
+title: "Titulo principal"
+subtitle: "Subtitulo" 
+author: 
+  - "Autor 1"
+  - "Autor 2"
+bibliography: references.bib
+link-citations: true
+toc-title: "Tabla de contenido"
+lang: es
+output:
+  bookdown::word_document2:
+    extra_dependencies: ["booktabs", "table","xcdraw"]
+    md_extensions: +footnotes
+    reference_docx: Plantilla.docx
+    toc: true
+    number_sections: true
+    fig_caption: yes
+fontsize: 12pt
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+---
+
+```{r setup, include=FALSE}
+Sys.setenv(LANGUAGE="es")
+
+options(scipen=999, warn=-1)
+
+knitr::opts_chunk$set(warning=FALSE, message=FALSE, echo = FALSE)
+```
+
+
+```{r paquetes, include=FALSE}
+library(pacman)
+
+p_load(here, tidyverse, readxl, kableExtra, janitor,
+      flextable, officer, officedown)
+```
+
+
+```{r funtab, include=FALSE}
+custom_tab <- function(df){
+  mytab <- df |>  
+    flextable() |> 
+    bg(bg = "#5786C0", part = "header") |> 
+    color(color = "white", part = "header") |> 
+    set_table_properties(layout = "autofit", width = 0.8) |> 
+    colformat_num(big.mark = ".", decimal.mark = ",") |> 
+    autofit()
+  return(mytab)
+}
+
+```
+
+
+# Intro
+
+
+
+# Referencias {.unlist .unnumbered}
+
+
+
+
+
