@@ -493,14 +493,13 @@ skim(datos)
 
 # ESTUDIO DE CASO {background-color="#0077b6"}
 
-## Violencia contra las muejeres
+## Violencia contra las mujeres
 
+<span style="color:##81b622; font-size: 25px;">
 
-- El estudio de `Oxfam` y `La Casa de la Mujer` publicado (aquí)[https://www.oxfamcolombia.org/encuesta-de-prevalencia-de-violencia-sexual-en-contra-de-las-mujeres-en-el-contexto-del-conflicto-armado-colombiano/]. La investigación se realizó en el marco de la Campaña “Violaciones y otras Violencias: Saquen mi cuerpo de la guerra”.
+El estudio de `Oxfam` y `La Casa de la Mujer` publicado [aquí](https://www.oxfamcolombia.org/encuesta-de-prevalencia-de-violencia-sexual-en-contra-de-las-mujeres-en-el-contexto-del-conflicto-armado-colombiano/). La investigación se realizó en el marco de la Campaña “Violaciones y otras Violencias: Saquen mi cuerpo de la guerra”. El estudio se enfocó en zonas donde se tenían alertas tempranas de la Defensoría del Pueblo y tuvo como periodo de referencia los años 2010 a 2014.
 
-- El estudio se enfocó en zonas donde se tenían alertas tempranas de la Defensoría del Pueblo y tuvo como periodo de referencia los años 2010 a 2016.
-
-- Explore el conjunto del datos `VolenciaMujer.sav` el cual contiene los resultados para una muestra de la encuesta.
+</span>
 
 ```{r}
 #| echo: true
@@ -509,10 +508,16 @@ library(pacman)
 p_load(tidyverse, haven, skimr, DataExplorer)
 
 url <- "https://github.com/jgbabativam/AnaDatos/raw/main/datos/VolenciaMujer.sav"
-mujeres <- read_sav(url)
+mujeres <- read_sav(url) |> as_factor()
 ```
 
-Puede usar `lapply(dass, function(x) attributes(x)$label)` para ver las etiquetas de las preguntas.
+<span style="color:##81b622; font-size: 25px;">
+
+ - Use `lapply(mujeres, function(x) attributes(x)$label)` para ver las etiquetas de las preguntas.
+ - Use `create_report` para hacer un análisis exploratorio de los datos.
+
+</span> 
+
 ## Reportes reproducibles usando Quarto-R
 
 <br>
