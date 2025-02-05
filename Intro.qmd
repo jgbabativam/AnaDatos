@@ -618,6 +618,18 @@ Sintaxis de Markdown para:
 
 2.    Ejecutar el código actual del chunk con `Cmd`/`Ctrl` + `Shift` + `Enter`.
 
+## Ejemplo
+
+Use el conjunto de datos de violencia contra las mujeres para construir un informe de muestra, incluya:
+
+- Secciones y subsecciones
+- Texto con formato (**Negrita**)
+- Hipervínculo
+- Referencias
+- Gráficos
+- Tablas
+- Ecuaciones
+
 # GRACIAS! {background-color="#ddf3ff"}
 
 # Referencias
