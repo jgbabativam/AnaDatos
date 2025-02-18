@@ -1,0 +1,707 @@
+---
+title: "Analítica de datos aplicada a estudios sobre desarrollo"
+subtitle: "Introducción a los métodos cuantitativos"
+author: "[Giovany Babativa, PhD](http://jgbabativam.rbind.io/)"
+format: 
+  gbabativa-revealjs:
+    footer: "Diapositivas disponibles en [GitHub](https://github.com/jgbabativam)."
+incremental: false
+embed-resources: true
+highlight-style: dracula
+---
+
+## Sobre Mi
+
+<div style="text-align: justify;">
+
+PhD en Estadística, MSc en Analytics & Big Data, MSc en Estadística. Con 20 años de experiencia, actual director de analítica en el CNC, miembro del comité de expertos en pobreza en el DANE y consultor de la División de Estadística de la CEPAL. Ex-decano de la Facultad de Estadística USTA, ex-director de operaciones en el ICFES, PM CEV ...
+
+> Puedes encontrarme en:
+
+- {{< ai google-scholar >}} [Google scholar](https://scholar.google.es/citations?user=2NJRNg8AAAAJ&hl=es)
+- {{< fa brands github >}} [GitHub. https://github.com/jgbabativam](https://github.com/jgbabativam)
+- {{< fa brands linkedin >}} [linkedin](https://www.linkedin.com/in/giovany-babativa-marquez/?originalSubdomain=co)
+- {{< fa solid envelope >}} j.babativamarquez@uniandes.edu.co
+
+</div>
+
+## Objetivos de este curso
+
+1. Familiarizar a los estudiantes en el uso de herramientas para el análisis
+cuantitativo de datos aplicada a los estudios de desarrollo.
+
+2. Presentar las cuestiones prácticas y críticas en el uso de métodos de análisis
+cuantitativo de datos.
+
+. . . 
+
+**Resultados de aprendizaje**
+
+Al finalizar el curso, los y las estudiantes estarán en capacidad de:
+
+* Aplicar los principales métodos de análisis cuantitativo (análisis de
+regresión, técnicas de análisis multivariado).
+
+* Combinar distintas herramientas para el análisis cuantitativo.
+
+## Metodología
+
+- Es un curso de _nivel intermedio_ donde se abordan temas de métodos descriptivos, inferenciales, métodos supervisados y no supervisados.
+
+- El enfoque del curso es práctico, a través de ejercicios hechos con los estudiantes. Usaremos el software estadístico _R Studio_. No nos concentraremos en demostraciones y pruebas formales. El curso tiene un énfasis aplicado.
+
+- Sesiones de repaso y aclaración de inquietudes con el **Monitor** alternadas semanalmente con nuestras sesiones.
+
+## Temas que se cubren
+
+<br><br>
+
+1. Visualización de datos
+2. Análisis exploratorio
+3. Análisis de correlación y de regresión (modelos lineales)
+4. Reducción de la dimensionalidad
+5. prácticas en el software R Studio
+
+## Reglas del juego
+
+::: columns
+::: {.column width="60%"}
+
+::: {.incremental}
+
+<br>
+
+- Talleres: 30%
+- Examen 1: 20%.
+- Examen 2: 20%.
+- Presentación final: 30%
+
+:::
+
+:::
+
+::: {.column width="40%"}
+
+<br><br>
+
+![](images/Rules_img.jpg){fig-align="center" width="100%"}
+
+:::
+
+:::
+
+## Conversación
+
+<br><br>
+
+¿Por qué considera que la analítica de los datos es importante dentro del proceso de la toma de decisiones o de orientación de políticas?
+
+. . . 
+
+<span style="color:##81b622; font-size: 32px;">
+**INFORMACIÓN + CONVERSACIÓN + ACCIÓN = TRANSFORMACIÓN**
+</span>
+
+```{r}
+library(countdown)
+countdown(minutes = 5, seconds = 00,  right = 0)
+```
+
+# VISUALIZACIÓN DE DATOS {background-color="#0077b6"}
+
+## Elementos clave
+
+* **Tipografía**: Seleccione fuentes apropiadas, limitándose a 2-3 y siendo consistente en su uso.
+* **Contraste**: Utilizar contraste (claro/oscuro, grande/pequeño, grueso/delgado) para resaltar y enfatizar.
+* **Color**: Usar el color para enfatizar o reforzar valores, evitando el uso excesivo de colores que pueda distraer.
+* **Balance**: Asegurar que el diseño sea visualmente equilibrado para que sea agradable y destaque la información importante.
+* **Jerarquía**: Proporcione pistas visuales sobre la parte más importante del mensaje.
+
+## Elementos clave
+
+* **Despejar el gráfico**: Elimine líneas, bordes y marcas de verificación innecesarias para evitar distracciones.
+* **Títulos y etiquetas con propósito**: Ser claro y conciso en los títulos y usar etiquetas de datos con moderación.
+* **Usar el eje completo comenzando en cero** para evitar malinterpretaciones de los datos.
+* **Evite gráficos de pastel** especialmente para comparaciones, ya que son difíciles de interpretar visualmente.
+
+**<span style="color:#FFA652">Lectura recomendada</span>**: [Data Visualization Principles](https://github.com/jgbabativam/AnaDatos/blob/main/materiales/1.%20historias%20con%20datos.pdf)
+
+
+## Tipos de gráficos
+
+![](images/graficos.png){fig-align="center" width="100%"}
+
+<div style="text-align: justify; font-size: 14px;">
+Galerias de gráficos en R: [https://r-graph-gallery.com/](https://r-graph-gallery.com/)
+</div>
+
+## Inspiración
+
+<br>
+
+- [Conceptos gráficos](https://datavizcatalogue.com/ES/)
+- [Dataviz Inspiration](https://www.dataviz-inspiration.com/)
+- [Galerías ggplot2](https://r-graph-gallery.com/ggplot2-package.html)
+- [Galerías R](https://r-graph-gallery.com/)
+
+
+# SOFTWARE R {background-color="#0077b6"}
+
+## Proceso de analítica
+
+
+```{r, out.width= '100%'}
+knitr::include_graphics(here::here("images/Ciclo.png"))
+```
+[Wickham, H. y otros (2023)](https://r4ds.hadley.nz/)
+
+
+## Paquete R
+
+::: columns
+::: {.column width="50%"}
+
+::: {.incremental}
+
+* Paquete de uso libre
+
+* Tiene todos los métodos que necesitamos
+
+* Incluye paquetes específicos para la visualización como `ggplot2`, `Plotly`, `esquisse`, `tidyplots`,  etc
+
+:::
+
+:::
+
+::: {.column width="50%"}
+
+![](images/R_logo.png){fig-align="center" fig-alt="R logo" width="80%"}
+
+:::
+
+:::
+
+## Etapas del proceso
+
+![](images/Homerostats.jpeg){fig-align="center"}
+
+## Paquete estadístico
+
+![](images/inicioR.png){fig-align="center" width="50%"}
+
+[Arte de Allison Horst](https://allisonhorst.com/)
+
+## R y R-Studio
+
+![](images/rstudio.jpg){fig-align="center" width="70%"}
+
+[Arte de Allison Horst](https://allisonhorst.com/)
+
+
+## Trabajando en R
+
+![](images/trabR.png){fig-align="center"}
+
+## El entorno `tidyverse`
+
+![](images/tidyverse.png){fig-align="center"}
+
+## Flujo de trabajo
+
+![](images/tidyverse2.png){fig-align="center"}
+
+## instalación
+
+<br><br>
+
+* Instalar R y R-Studio: [Ver video](https://youtu.be/TKplIIwwdEk) 
+
+## Reglas de los datos
+
+<br><br>
+
+![](images/reglas.png){fig-align="center"}
+
+## Tipos de variables
+
+![](images/tipovars.png){fig-align="center" width="100%"}
+
+## Tipos de variables
+
+![](images/tipovars2.png){fig-align="center" width="100%"}
+
+## Comandos iniciales: estructura
+
+Existen varias formas de observar la estructura de los datos
+
+![](images/str.png){fig-align="center" width="10%"}
+
+Los comandos `head`, `str`, `names` son del paquete base mientras que `glimpse` es del entorno tidyverse.
+
+
+## Gramática de la gráficas
+
+
+![](images/ggplot2.png){fig-align="center" width="100%"}
+
+## Ejemplo: Visualización de datos
+
+Cree el proyecto: PIB
+<br>
+
+```{r}
+#| echo: true
+
+library(pacman)
+p_load(tidyverse, gganimate, gapminder, gifski)
+
+datos <- gapminder |> 
+         filter(year >= 1952) |> 
+         mutate(poblacion = pop / 1e6)
+
+paises_interes <- c("Colombia", "United States", "China", "India", "Nigeria")
+
+```
+
+<br>
+
+Explore el conjunto de datos
+
+## Ejemplo: Visualización de datos
+
+```{r}
+#| echo: true
+
+g1 <- ggplot(datos, aes(x = gdpPercap, y = lifeExp, size = poblacion, color = continent)) +
+      geom_point(alpha = 0.7, show.legend = TRUE) +
+      geom_text(data = datos |> filter(country %in% paises_interes), 
+                aes(label = country), size = 4, vjust = -1, hjust = 0.5, color = "black", alpha = 0.8) +
+      scale_x_log10(labels = scales::dollar_format(prefix = "$")) +
+      scale_y_continuous(labels = scales::comma) +
+      labs(title = "Relación entre PIB per cápita y la esperanza de vida",
+           subtitle = "Año: {frame_time}",
+           x = "PIB per cápita (log10)",
+           y = "Esperanza de vida",
+           size = "Población (millones)",
+           color = "Continente") +
+       theme_minimal(base_size = 14) +
+       theme(legend.position = "bottom") +
+       transition_time(year) +
+       ease_aes('linear')
+
+#anim <- animate(plot, fps = 20, duration = 10, width = 800, height = 600, renderer = gifski_renderer())
+#anim_save("gapminder_animation.gif", anim)
+```
+
+## 
+
+![](gapminder_animation.gif){fig-align="center" width="80%"}
+
+## Ejercicio
+
+<br>
+
+<span style="color:#FF8D21"> **Tu turno**:</span> Cree un proyecto y cargue el conjunto de datos "ENSIN.sav", explore los datos y visualice su estructura. Use `as_factor()` para visualizar las etiquetas.
+
+```{r}
+#| echo: true
+
+library(pacman)
+
+p_load(tidyverse, haven, skimr)
+
+url <- "https://github.com/jgbabativam/AnaDatos/raw/main/datos/ENSIN.sav"
+ensin <- read_sav(url)
+```
+
+
+```{r}
+library(countdown)
+countdown(minutes = 15, seconds = 00,  right = 0)
+```
+
+## La etapa de la frustración
+
+```{r, out.width= '100%', fig.align='center'}
+knitr::include_graphics(here::here("images/errorR.png"))
+```
+[Arte de Allison Horst](https://allisonhorst.com/)
+
+## La IA como herramienta
+
+:::: {.columns}
+
+::: {.column width="60%"}
+<div style="margin-top: 0.5cm"></div>
+
+Estamos en un mundo de constante evolución, ¿la IA nos va a reemplazar?
+
+- Enviar una carta en papel por correo
+- Pedir un domicilio por teléfono
+- Solicitar un taxi por teléfono
+- Orientarse en una ruta con un mapa de papel 
+
+<br><br>
+@tiangolo
+
+:::
+
+::: {.column width="3%"}
+<!-- columna vacía para crear un espacio -->
+:::
+
+::: {.column width="37%"}
+
+<div style="margin-top: 1.0cm"></div>
+
+![Imagen de Caracol Radio](images/OperaTaxis.jpg){fig-align="left" style="font-size: 16px;"}
+
+:::
+
+::::
+
+## GPT y Modelos LLMs
+
+El GPT (Generative Pre-trained Transformer) es un modelo de LLM (Large Language Model). Mientras que GPT-3 usaba 175 MM de parámetros usando modelos soportados en texto, GPT-4 usa 100 BN de parámetros usando modelos soportados en texto e imágenes.
+
+. . . 
+
+```{r,  out.width= '48%', fig.align='center', dpi=300}
+knitr::include_graphics(here::here("images/IA_ChatGPT.jpg"))
+```
+
+## Instrucciones 
+
+No pretenda que todo ocurra en un solo paso, a veces se obtienen mejores resultados precisando un _prompt_ en cada paso.
+
+. . . 
+
+```{r,  out.width= '80%', fig.align='center', dpi=300}
+knitr::include_graphics(here::here("images/ChatGPT.jpeg"))
+```
+
+
+@mdancho84
+
+## Herramientas
+
+- [https://rtutor.ai/](https://rtutor.ai/)
+- [https://www.codeconvert.ai/r-to-python-converter](https://www.codeconvert.ai/r-to-python-converter)
+- ChatGPT
+- Copilot
+- Gemini
+- Claude
+- GitHub Copilot
+- . . .
+
+## Ejemplo
+
+Escriba el siguiente _prompt_ en ChatGPT y transcriba el código a R:
+
+<br><br> 
+
+_"use el paquete osm de R para crear un mapa y la base de datos de droguerias en bogotá, luego use mapview para visualizar las droguerias"_
+
+
+## Ejercicio
+
+<br>
+
+<span style="color:#FF8D21"> **Tu turno**:</span> Sobre el conjunto de datos "ENSIN.sav", apoyese en la IA para obtener un gráfico de barras, usando `ggplot2`, con la cantidad de registros que se tienen de cada región. Ajustelo a su gusto.
+
+
+```{r}
+#| echo: true
+g2 <- ensin |> 
+      count(region) |> 
+      mutate(region = as_factor(region)) |>
+      ggplot(aes(x = fct_reorder(region, n), y = n, fill = region)) +
+      geom_col() +
+      labs(x = "Región", y = "Frecuencia") +
+      coord_flip() +
+      theme_minimal() +
+      theme(legend.position = "none")
+```
+
+## Ejercicio
+
+<br>
+
+<span style="color:#FF8D21"> **Tu turno**:</span> Sobre el conjunto de datos "ENSIN.sav", apoyese en la IA para obtener un gráfico elegante entre las variables Peso y Estatura, use `ggplot2`. Ajustelo a su gusto.
+
+## Ejercicio
+
+<br>
+
+<span style="color:#FF8D21"> **Tu turno**:</span> Sobre el conjunto de datos "ENSIN.sav", apoyese en la IA para obtener un diagrama de cajas elegante que permita comparar la variable IMC entre las diferentes regiones, use `ggplot2`. Ajustelo a su gusto.
+
+# ANÁLISIS EXPLORATORIO {background-color="#0077b6"}
+
+## Análisis exploratorio
+
+::: {.columns}
+:::: {.column width="40%"}
+
+<br><br>
+
+1. Tipos de variables.
+2. Visualizar los datos
+3. Identificar relaciones
+4. Datos atípicos
+5. Datos faltantes
+
+::::
+
+:::: {.column width="60%"}
+![](images/EDA.jpeg)
+:::: 
+:::
+
+## Análisis exploratorio
+
+Usemos un conjunto de datos de la `ENSIN`
+
+```{r}
+#| echo: true
+library(pacman)
+p_load(tidyverse, broom, modelr, 
+       patchwork, performance, haven,
+       DataExplorer, skimr, corrplot, psych, gt, gtsummary)
+
+url <- "https://github.com/jgbabativam/AnaDatos/raw/main/datos/ENSIN.sav"
+ensin <- read_sav(url)
+```
+
+Analice los descriptivos del peso y de la estatura: media, mediana, percentiles, sd y correlación. Use `tapply(var, class, fun)` para identificar la región con menor IMC. Explore los comandos `create_report()`, `glimpse()` y `skim()`.
+
+
+. . .
+
+```{r}
+#| eval: false
+#| echo: true
+create_report(ensin)
+glimpse(ensin)
+skim(ensin)
+```
+
+# ESTUDIO DE CASO {background-color="#0077b6"}
+
+## Violencia contra las mujeres
+
+<span style="color:##81b622; font-size: 25px;">
+
+El estudio de `Oxfam` y `La Casa de la Mujer` publicado [aquí](https://www.oxfamcolombia.org/encuesta-de-prevalencia-de-violencia-sexual-en-contra-de-las-mujeres-en-el-contexto-del-conflicto-armado-colombiano/). La investigación se realizó en el marco de la Campaña “Violaciones y otras Violencias: Saquen mi cuerpo de la guerra”. El estudio se enfocó en zonas donde se tenían alertas tempranas de la Defensoría del Pueblo y tuvo como periodo de referencia los años 2010 a 2014.
+
+</span>
+
+```{r}
+#| echo: true
+library(pacman)
+
+p_load(tidyverse, haven, skimr, DataExplorer, janitor)
+
+url <- "https://github.com/jgbabativam/AnaDatos/raw/main/datos/VolenciaMujer.sav"
+mujeres <- read_sav(url) |> as_factor()
+```
+
+<span style="color:##81b622; font-size: 25px;">
+
+ - Use `lapply(mujeres, function(x) attributes(x)$label)` para ver las etiquetas de las preguntas.
+ - Use `create_report` para hacer un análisis exploratorio de los datos.
+
+</span> 
+
+## Reportes reproducibles usando Quarto-R
+
+<br>
+
+::: r-stack
+![Arte de "Hello, Quarto" por Julia Lowndes y Mine Çetinkaya-Rundel, presentado en RStudio::Conf(2022). Ilustración por Allison Horst.](images/horst-quarto-schematic.png){.fragment .fade-out fragment-index="1" fig-alt="A schematic representing the multi-language input (e.g. Python, R, Observable, Julia) and multi-format output (e.g. PDF, html, Word documents, and more) versatility of Quarto." fig-align="center" style="margin-top:-1em;margin-bottom:-1em"}
+
+![](images/horst-qmd-render-schema.png){.fragment fragment-index="1" fig-alt="A schematic representing rendering of Quarto documents from .qmd, to knitr or jupyter, to plain text markdown, then converted by pandoc into any number of output types including html, PDF, or Word document." fig-align="center" style="margin-top:-1em;margin-bottom:-1em"}
+:::
+
+## Tipos de salidas
+
+::: {.nonincremental}
+
+-   [Articulos & reportes](https://quarto.org/docs/output-formats/all-formats.html)
+-   [Manuscritos](https://quarto.org/docs/manuscripts/)
+-   [Presentaciones](https://quarto.org/docs/presentations/)
+-   [Dashboards](https://quarto.org/docs/dashboards/)
+-   [Sitios Web](https://quarto.org/docs/websites/)
+-   [Libros](https://quarto.org/docs/books/)
+-   [Documentos interactivos](https://quarto.org/docs/interactive/)
+
+Sitios para obtener inspiración [Quarto.org gallery](https://quarto.org/docs/gallery/){preview-link="true"} y el [Qmd Club website & blog showcase](https://qmdclub.com/){preview-link="true"}
+
+:::
+
+# Estructura de un documento `.qmd` {.section}
+
+1. YAML header (metadatos y opciones del documento)
+
+2. Narrativa (markdown)
+
+3. Códigos chunks (importar, depurar, transformar, visualizar)
+
+# 1. YAML 
+
+``` {.yaml}
+---                                                # <1>  
+title: Título del documento                        # <2>
+author: Giovany Babativa-Márquez                   # <2>
+date: "r toupper(format(Sys.time(), '%B %Y'))"     # <2>
+bibliography: docreferences.bib                    # <2>
+link-citations: true                               # <2>
+toc-title: Tabla de Contenido                      # <2>
+lang: es                                           # <2>
+output:                                            # <2>
+  bookdown::word_document2:                        # <3>
+   reference_docx: docPlantilla.docx               # <3>
+   number_sections: true                           # <3>
+   fig_caption: yes                                # <3>
+fontsize: 12pt                                     # <2>
+---                                                # <1>
+```
+
+
+Consulte las opciones disponibles en las **guías de referencia**: [HTML](https://quarto.org/docs/reference/formats/html.html), [PDF](https://quarto.org/docs/reference/formats/pdf.html), [MS Word](https://quarto.org/docs/reference/formats/docx.html), [Revealjs](https://quarto.org/docs/reference/formats/presentations/revealjs.html), [MS Powerpoint](https://quarto.org/docs/reference/formats/presentations/pptx.html).
+
+
+## 2. Narrativa
+
+Sintaxis de Markdown para:
+
+-   Texto con formato: `**negrita**` &rarr; **negrita**
+
+-   Título de secciones: `# Header 1`, `# Header 2`
+
+-   Hipervínculos: `[google.com](https://google.com)` &rarr; [google.com](https://google.com)
+
+-   Imágenes: `![](image.png)`
+
+-   Código en línea: ``` `{{r}} Sys.Date()` ``` &rarr; ```r Sys.Date()```
+
+-   Ecuaciones: ``` `$E = mc^{2}$` ``` &rarr; $E = mc^{2}$
+
+\
+
+. . .
+
+[**Guía de sintaxis markdown**](https://quarto.org/docs/authoring/markdown-basics.html){preview-link="true"}
+
+## 3. Códigos chunks
+
+**Tres manera para insertar chunks:**
+
+1.    Atajos `Cmd`/`Ctrl` + `Option`/`Alt` + `I`.
+
+2.    ![](images/rstudio-insert-chunk.png){fig-alt="Insert Chunk button in RStudio" style="vertical-align:middle;" width="49"} **Insert Chunk** botón en las herramientas del editor.
+
+3.    Escribir los delimitadores de fragmento ```` ```{r} ```` y ```` ``` ````.
+
+. . .
+
+**Dos formas de ejecutar los códigos de los chunks:**
+
+1.    Use los botones **Run Current Chunk** o **Run All Chunks Above**.
+
+      ![](images/rstudio-code-chunk.png){fig-alt="Code chunk in RStudio with the Run All Chunks Above and Run Current Chunk buttons highlighted and labelled."}
+
+2.    Ejecutar el código actual del chunk con `Cmd`/`Ctrl` + `Shift` + `Enter`.
+
+## Ejemplo
+
+Use el conjunto de datos de violencia contra las mujeres para construir un informe de muestra, incluya:
+
+- Secciones y subsecciones
+- Texto con formato (**Negrita**)
+- Hipervínculo
+- Referencias
+- Gráficos
+- Tablas
+- Ecuaciones
+
+# ESTUDIO DE CASO {background-color="#0077b6"}
+
+## Informe de violencia contra las mujeres
+
+**Pasos previos**
+
+1. Descargue la plantilla  [aquí](https://github.com/jgbabativam/AnaDatos/blob/main/docs/template.zip)
+
+2. Cree un proyecto en una ruta de su computadora: data, src
+
+3. Descomprima el archivo template.zip en src.
+
+4. Abra el archivo .Rprj y el archivo .qmd o Rmd.
+
+
+## Informe de violencia contra las mujeres
+
+**Introducción**
+
+1. Ajuste el título, autores y guarde con otro nombre.
+
+2. Cargue el conjunto de datos. Use `Ctrl + Alt + I` 
+
+```{r}
+#| eval: false
+#| echo: true
+url <- "https://github.com/jgbabativam/AnaDatos/raw/main/datos/VolenciaMujer.sav"
+mujeres <- read_sav(url) |> as_factor()
+```
+
+3. Escriba el siguiente texto en la introducción y agregue una referencia.
+
+<div style="text-align: justify; font-size: 14px;">
+
+La violencia sexual es una grave violación de los derechos humanos que afecta a personas de todas las edades, géneros y contextos socioeconómicos. Este fenómeno abarca una amplia gama de conductas que van desde el abuso verbal hasta agresiones físicas, y tiene profundas consecuencias físicas, emocionales y psicológicas para las víctimas.
+
+Abordar la violencia sexual requiere un enfoque integral que considere tanto la prevención como la atención a las víctimas (REFERENCIA). Las políticas públicas, la educación sobre el consentimiento y el acceso a servicios de salud mental y justicia son pilares fundamentales para mitigar sus efectos y reducir su prevalencia. 
+
+Esta investigación se basa en ```` `{r nrow(mujeres)}` ````  encuestas y permite cuantificar la prevalencia de la violencia sexual en zonas de conflicto armado, medida a partir de 8 formas de violencia.
+
+**quitar las llaves**
+
+</div>
+
+## Informe de violencia contra las mujeres
+
+**Análisis descriptivo y exploratorio**
+
+3. Haga una sección corta con un análisis exploratorio, incluya:
+
+3.1 Una tabla con el número de encuestas por departamento, agregue un título y cite en el documento usando     `\@ref(tab:tab1)`.
+
+
+```{r}
+#| eval: false
+#| echo: true
+tab1 <- mujeres |> 
+  count(DPTO, name = "Encuestas") |> 
+  arrange(-Encuestas) |> 
+  adorn_totals() |> 
+  rename(Departamento = DPTO)
+
+custom_tab(tab1)
+```
+
+3.2 Agregue una gráfica y use `\@ref(fig:f1)` para citarla. Apóyese en la IA.
+
+4. Complemente el análisis descriptivo y exploratorio en casa.
+
+
+# GRACIAS! {background-color="#ddf3ff"}
+
+# Referencias
+
+- R for data science. Section 3. Data visualization. Disponible [aquí](https://r4ds.had.co.nz/)
+
+- Dougherty, J. and Ilyankou, I. (2022) Hands-On Data Visualization. Interactive Storytelling from Spreadsheets to Code. Section 6. Chart Design Principles. Disponible [aquí](https://handsondataviz.org/)
+
+-	Williams, G. (2022) Data Science Desktop Survival Guide. Togaware. Disponible [aquí](https://onepager.togaware.com/introducing-rstudio.html) Chapter 2 introducing R 
+
+- Jadey Ryan. Reproducible reports and presentations with Quarto. Disponible [aquí](https://jadeyryan.quarto.pub/slc-rug-quarto/#/title-slide)
