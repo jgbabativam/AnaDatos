@@ -239,30 +239,6 @@ Existen varias formas de observar la estructura de los datos
 Los comandos `head`, `str`, `names` son del paquete base mientras que `glimpse` es del entorno tidyverse.
 
 
-## Ejercicio
-
-<br>
-
-<span style="color:#FF8D21"> **Tu turno**:</span> Cree un proyecto y cargue el conjunto de datos "ENSIN.sav", explore los datos y visualice su estructura. Use `as_factor()` para visualizar las etiquetas.
-
-```{r}
-#| echo: true
-
-library(pacman)
-
-p_load(tidyverse, haven, skimr)
-
-url <- "https://github.com/jgbabativam/AnaDatos/raw/main/datos/ENSIN.sav"
-ensin <- read_sav(url)
-```
-
-
-```{r}
-library(countdown)
-countdown(minutes = 15, seconds = 00,  right = 0)
-```
-
-
 ## Gramática de la gráficas
 
 
@@ -321,6 +297,28 @@ g1 <- ggplot(datos, aes(x = gdpPercap, y = lifeExp, size = poblacion, color = co
 
 ![](gapminder_animation.gif){fig-align="center" width="80%"}
 
+## Ejercicio
+
+<br>
+
+<span style="color:#FF8D21"> **Tu turno**:</span> Cree un proyecto y cargue el conjunto de datos "ENSIN.sav", explore los datos y visualice su estructura. Use `as_factor()` para visualizar las etiquetas.
+
+```{r}
+#| echo: true
+
+library(pacman)
+
+p_load(tidyverse, haven, skimr)
+
+url <- "https://github.com/jgbabativam/AnaDatos/raw/main/datos/ENSIN.sav"
+ensin <- read_sav(url)
+```
+
+
+```{r}
+library(countdown)
+countdown(minutes = 15, seconds = 00,  right = 0)
+```
 
 ## La etapa de la frustración
 
@@ -467,7 +465,7 @@ Puede realizar una exploración de datos rápido y eficiente, generando resúmen
 
 <br>
 
-Usemos un conjunto de datos estándar del paquete `modelr`
+Usemos un conjunto de datos de la `ENSIN`
 
 ```{r}
 #| echo: true
@@ -475,8 +473,6 @@ library(pacman)
 p_load(tidyverse, broom, modelr, 
        patchwork, performance, haven,
        DataExplorer, skimr, corrplot, psych, gt, gtsummary)
-
-datos <- heights
 ```
 
 Explore los comandos `create_report()`, `glimpse()` y `skim()`.
@@ -486,9 +482,9 @@ Explore los comandos `create_report()`, `glimpse()` y `skim()`.
 ```{r}
 #| eval: false
 #| echo: true
-create_report(datos)
-glimpse(datos)
-skim(datos)
+create_report(ensin)
+glimpse(ensin)
+skim(ensin)
 ```
 
 # ESTUDIO DE CASO {background-color="#0077b6"}
@@ -629,6 +625,12 @@ Use el conjunto de datos de violencia contra las mujeres para construir un infor
 - Gráficos
 - Tablas
 - Ecuaciones
+
+# ESTUDIO DE CASO {background-color="#0077b6"}
+
+## Violencia contra las mujeres
+
+1. Descargue la plantilla de [acá]()
 
 # GRACIAS! {background-color="#ddf3ff"}
 
