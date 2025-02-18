@@ -693,7 +693,6 @@ custom_tab(tab1)
 
 4. Complemente el análisis descriptivo y exploratorio en casa.
 
-
 # GRACIAS! {background-color="#ddf3ff"}
 
 # Referencias

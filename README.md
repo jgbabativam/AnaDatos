@@ -6,7 +6,7 @@ Visualización de datos y análisis exploratorio
 https://jgbabativam.github.io/AnaDatos/1. DescExpl.html
 
 Regresión Lineal:
-https://jgbabativam.github.io/AnaDatos/Regression2024.html
+https://jgbabativam.github.io/AnaDatos/2Regression.html
 
 Regresión logística:
 https://jgbabativam.github.io/AnaDatos/Logit.html
