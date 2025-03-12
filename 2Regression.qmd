@@ -101,7 +101,8 @@ pairs.panels(vars, main="Matriz de correlaciones")
 #| echo: true
 library(haven)
 
-dass <- read_sav("datos/DASS21.sav")
+url <- "https://github.com/jgbabativam/AnaDatos/raw/main/datos/DASS21.sav"
+dass <- read_sav(url)
 ```
 
 Puede usar `lapply(dass, function(x) attributes(x)$label)` para ver las etiquetas de las preguntas.

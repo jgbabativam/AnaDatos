@@ -9,7 +9,7 @@ Regresión Lineal:
 https://jgbabativam.github.io/AnaDatos/2Regression.html
 
 Regresión logística:
-https://jgbabativam.github.io/AnaDatos/Logit.html
+https://jgbabativam.github.io/AnaDatos/3LogitRegression.html
 
 Introducción a las técnicas multivariantes:
 https://jgbabativam.github.io/AnaDatos/PCA.html 

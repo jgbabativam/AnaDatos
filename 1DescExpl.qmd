@@ -244,6 +244,40 @@ Los comandos `head`, `str`, `names` son del paquete base mientras que `glimpse` 
 
 ![](images/ggplot2.png){fig-align="center" width="100%"}
 
+## La gramática de las gráficas 
+
+Requiere de al menos 3 elementos: datos, variables (aes), geometría.
+
+. . .
+
+```{r}
+#| eval: false
+#| echo: true
+
+ggplot(data = datos, aes(x = ___, y = ___)) +
+  geom_point()
+```
+
+. . .
+
+```{r, out.width= '50%', dpi=600, fig.align='center'}
+knitr::include_graphics(here::here("images/ggplot.jpeg"))
+```
+
+## Exploración visual de datos
+
+```{r, out.width= '100%', fig.align='center'}
+knitr::include_graphics(here::here("images/ggplot2_exploration.png"))
+```
+[Arte de Allison Horst](https://allisonhorst.com/)
+
+## Transformación de datos
+
+```{r, out.width= '100%', fig.align='center'}
+knitr::include_graphics(here::here("images/mutate.png"))
+```
+[Arte de Allison Horst](https://allisonhorst.com/)
+
 ## Ejemplo: Visualización de datos
 
 Cree el proyecto: PIB
