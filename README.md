@@ -15,4 +15,4 @@ Introducción a las técnicas multivariantes:
 https://jgbabativam.github.io/AnaDatos/4PCA.html 
 
 Análisis clúster:
-https://jgbabativam.github.io/AnaDatos/Cluster.html
+https://jgbabativam.github.io/AnaDatos/5Cluster.html
