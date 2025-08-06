@@ -244,7 +244,7 @@ Durante el curso se usarán conjuntos de datos reales, descargados de portales d
 
 ## Ejercicio
 
-<br>
+<span style="font-size: 80%;">
 
 Considere los datos de violencia intrafamiliar, descargados de los datos abiertos de la FGN. Realice:
 
@@ -256,6 +256,7 @@ Considere los datos de violencia intrafamiliar, descargados de los datos abierto
 6. ¿Cuántas víctimas se han registrado por año?, compare por sexo y por edad.
 7. Haga un análisis con enfoques diferenciales según las variables de LGBTI, NNA, indígena y Afrodescendiente
 
+</span>
 
 ## Ejercicio
 

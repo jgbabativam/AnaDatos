@@ -6,7 +6,7 @@ Materiales del curso de analítica de datos aplicada a estudios sobre desarrollo
 
 Introducción (aprendizaje autónomo - nivelación)
 
-https://jgbabativam.github.io/AnaDatos/00Intro.html
+https://jgbabativam.github.io/AnaDatos/0Intro.html
 
 Visualización de datos y análisis exploratorio
 https://jgbabativam.github.io/AnaDatos/1DescExpl.html
