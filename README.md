@@ -1,25 +1,26 @@
-# Analítica de Datos
+\# Analítica de Datos
+
+
 
 Materiales del curso de analítica de datos aplicada a estudios sobre desarrollo
 
 
 
-Introducción (aprendizaje autónomo - nivelación)
+| Tema | Materiales de apoyo | Material de clase |
 
-https://jgbabativam.github.io/AnaDatos/0Intro.html
+|------|---------------------|-------------------|
 
-Visualización de datos y análisis exploratorio
-https://jgbabativam.github.io/AnaDatos/1DescExpl.html
+| Introducción (aprendizaje autónomo - nivelación) | \[Video de bienvenida](https://youtu.be/ySKIVbcQrhk) <br> \[Instalación de R](https://youtu.be/TKplIIwwdEk) | \[Ver material](https://jgbabativam.github.io/AnaDatos/0Intro.html) |
 
-Regresión Lineal:
-https://jgbabativam.github.io/AnaDatos/2Regression.html
+| Visualización de datos y análisis exploratorio | - | \[Ver material](https://jgbabativam.github.io/AnaDatos/1DescExpl.html) |
 
-Regresión logística:
-https://jgbabativam.github.io/AnaDatos/3LogitRegression.html
+| Regresión Lineal | - | \[Ver material](https://jgbabativam.github.io/AnaDatos/2Regression.html) |
 
-Introducción a las técnicas multivariantes:
-https://jgbabativam.github.io/AnaDatos/4PCA.html
+| Regresión logística | - | \[Ver material](https://jgbabativam.github.io/AnaDatos/3LogitRegression.html) |
 
-Análisis clúster:
-https://jgbabativam.github.io/AnaDatos/5Cluster.html
+| Introducción a las técnicas multivariantes | - | \[Ver material](https://jgbabativam.github.io/AnaDatos/4PCA.html) |
+
+| Análisis clúster | - | \[Ver material](https://jgbabativam.github.io/AnaDatos/5Cluster.html) |
+
+
 
