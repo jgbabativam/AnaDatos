@@ -1,0 +1,181 @@
+---
+title: "Analítica de datos aplicada a estudios sobre desarrollo"
+subtitle: "Introducción a al paquete R"
+author: "[Giovany Babativa, PhD](http://jgbabativam.rbind.io/)"
+format: 
+  gbabativa-revealjs:
+    footer: "Diapositivas disponibles en [GitHub](https://github.com/jgbabativam)."
+incremental: false
+embed-resources: true
+highlight-style: dracula
+---
+
+## Sobre Mi
+
+<div style="text-align: justify;">
+
+PhD en Estadística, MSc en Analytics & Big Data, MSc en Estadística. Con 20 años de experiencia, actual director de analítica en el CNC, miembro del comité de expertos en pobreza en el DANE y consultor de la División de Estadística de la CEPAL. Ex-decano de la Facultad de Estadística USTA, ex-director de operaciones en el ICFES, PM CEV ...
+
+> Puedes encontrarme en:
+
+- {{< ai google-scholar >}} [Google scholar](https://scholar.google.es/citations?user=2NJRNg8AAAAJ&hl=es)
+- {{< fa brands github >}} [GitHub. https://github.com/jgbabativam](https://github.com/jgbabativam)
+- {{< fa brands linkedin >}} [linkedin](https://www.linkedin.com/in/giovany-babativa-marquez/?originalSubdomain=co)
+- {{< fa solid envelope >}} j.babativamarquez@uniandes.edu.co
+
+</div>
+
+# INTRODUCCIÓN AL PAQUETE R {background-color="#0077b6"}
+
+## Proceso de analítica
+
+
+```{r, out.width= '100%'}
+knitr::include_graphics(here::here("images/Ciclo.png"))
+```
+[Wickham, H. y otros (2023)](https://r4ds.hadley.nz/)
+
+## Trabajando con R
+
+![](images/trabR.png){fig-align="center"}
+
+## El entorno `tidyverse`
+
+![](images/tidyverse.png){fig-align="center"}
+
+## Flujo de trabajo
+
+![](images/tidyverse2.png){fig-align="center"}
+
+## Flujo de trabajo
+
+```{r, out.width= '100%', fig.align='center'}
+knitr::include_graphics(here::here("images/workflowschematic.jpeg"))
+```
+
+[Arkie Owen](https://communicate-data-with-r.netlify.app/docs/baser/workingprojects/)
+
+## Organización y proyectos en R
+
+* Facilita entornos colaborativos - reproducible y replicable
+* Evite la asignación de rutas de trabajo `setwd(mi/ruta/)`
+* Cree un R-project y solo revise `getwd()`
+* Organice su espacio de trabajo:
+
+```{r, out.width = '25%', fig.align='center'}
+knitr::include_graphics(here::here("images/FlujoGB.png"))
+```
+
+## Entorno de R Studio
+
+```{r, out.width= '100%', fig.align='center'}
+knitr::include_graphics(here::here("images/entorno.png"))
+```
+
+[Hadley Wickham](https://r4ds.hadley.nz/workflow-scripts.html/)
+
+## Reglas de los datos
+
+<br><br>
+
+![](images/reglas.png){fig-align="center"}
+
+## Formas básicas
+
+* Asignación: `objeto <- valor`
+
+```{r}
+#| eval: false
+#| echo: true
+
+x <- 3*4             # Numérico
+y <- "Hola a tod@s"  # Cadena
+```
+
+. . .
+
+* Funciones: `Nombre_Funcion(arg1 = val1, arg2 = val2,...)`
+
+```{r}
+#| eval: false
+#| echo: true
+
+z <- seq(1, 10)      # Vector
+hoy <- date()        # Fecha
+```
+
+. . . 
+
+* Ayuda: `help(Nombre_Funcion)` o `?Nombre_Funcion`
+
+```{r}
+#| eval: false
+#| echo: true
+
+?seq
+?read.csv
+```
+
+## Importar
+
+Hay diferentes paquetes que permiten leer y escribir diversos formatos de datos
+
+* `haven`: Stata, SPSS, SAS
+* `readxl` y `writexl`
+* `arrow`, `data.table`, ...
+
+## Comandos iniciales: estructura
+
+<br>
+
+Existen varias formas de observar la estructura de los datos
+
+<br>
+
+```{r}
+#| eval: false
+#| echo: true
+
+head(tus_datos)
+str(tus_datos)
+length(tus_datos)
+glimpse(tus_datos)
+names(tus_datos)
+```
+
+<br>
+
+Los comandos `head`, `str`, `names` son del paquete base mientras que `glimpse` es del entorno tidyverse.
+
+
+## Ejercicio
+
+<span style="color:#FF8D21"> **Tu turno**:</span> 
+
+1. Cree el espacio de trabajo para `Mi primer proyecto`
+2. Descargue los siguientes conjuntos de datos desde el repositorio de [GitHub](https://github.com/jgbabativam/AnaDatos/tree/main/datos) y ubiquelos en la carpeta `input/`: 
+  - **SPSS**: _ENSIN.sav_, 
+  - **Stata**: _COL_2021_LAPOP.dta_, 
+  - **Apache Parquet**: _violencia_intrafamiliar.parquet_, 
+  - **Excel**: _datos_est_ventas.xlsx_
+3. Importe los conjuntos de datos a R y revise su estructura.
+
+# GRACIAS! {background-color="#ddf3ff"}
+
+# Referencias
+
+- R for data science. Section 3. Data visualization. Disponible [aquí](https://r4ds.had.co.nz/)
+
+- Dougherty, J. and Ilyankou, I. (2022) Hands-On Data Visualization. Interactive Storytelling from Spreadsheets to Code. Section 6. Chart Design Principles. Disponible [aquí](https://handsondataviz.org/)
+
+-	Williams, G. (2022) Data Science Desktop Survival Guide. Togaware. Disponible [aquí](https://onepager.togaware.com/introducing-rstudio.html) Chapter 2 introducing R 
+
+- Jadey Ryan. Reproducible reports and presentations with Quarto. Disponible [aquí](https://jadeyryan.quarto.pub/slc-rug-quarto/#/title-slide)
+
+# Citación y derechos de autor
+
+Este material ha sido creado por [Giovany Babativa-Márquez](https://github.com/jgbabativam) y es de libre distribución bajo la licencia [Creative Commons Attribution-ShareAlike 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
+
+Si se copia parcial o totalmente, debe citar la fuente como:
+
+> Babativa-Márquez, J.G. *Materiales del curso de Analítica de Datos*. URL: https://github.com/jgbabativam/AnaDatos.
