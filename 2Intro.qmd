@@ -74,8 +74,8 @@ Una de las maneras más sencillas de transformar, organizar y resumir los datos 
 * Pipeline: `|>` o `%>%`
 * Seleccionar filas: `filter(condición)`
 * Seleccionar columnas: `select(var1, var2, ...)`
-* Ordenar conjunto de datos: `arrange(var)` o `arrange(-var)`
-* Crear nuevas comunas: `mutate(operación)`
+* Ordenar conjunto de datos: `arrange(var)` o `arrange(desc(var))`
+* Crear nuevas columnas: `mutate(operación)`
 * Agrupar o resumir: `summarise()`
 
 :::
@@ -197,10 +197,128 @@ El verbo `select(var1, var2, ...)` permite conservar solo las variables de inter
 
 df_filt <- ensin |> 
            filter(departamento == 11 & Estrato <= 3) |> 
-           select(llavehog, llaveper, region, departamento, Estrato, edad, sexo)
+           select(llavehog, llaveper, departamento, Estrato, edad, sexo, Peso, Estatura)
 
 head(df_filt)
 ```
+
+## Ordenar el conjunto de datos con `arrange()`
+
+Con `arrage(var1, var2, ...)` puede ordenar su conjunto de datos por las variables que desee.
+
+<br>
+
+```{r}
+#| echo: true
+
+df_filt <- ensin |> 
+           filter(departamento == 11 & Estrato <= 3) |> 
+           select(llavehog, llaveper, departamento, Estrato, edad, sexo, Peso, Estatura) |> 
+           arrange(desc(edad))
+
+head(df_filt)
+```
+
+## Crear nuevas columnas `mutate()`
+
+```{r, out.width= '100%', fig.align='center'}
+knitr::include_graphics(here::here("images/mutate.png"))
+```
+[Arte de Allison Horst](https://allisonhorst.com/)
+
+## Crear nuevas columnas `mutate()`
+
+Para crear una variable con el IMC
+
+```{r}
+#| echo: true
+
+(df_filt <- df_filt |> 
+           mutate(imc = Peso/(Estatura/100)^2))
+
+```
+
+## Columnas basado en condiciones `case_when()`
+
+```{r, out.width= '100%', fig.align='center'}
+knitr::include_graphics(here::here("images/case_when.png"))
+```
+
+Para sentencias binarias puede usar `ifelse()` 
+
+## Ejercicio
+
+Arme los grupos etarios según la OMS: infancia (0-11 años), adolescencia (12-18 años), juventud (19-29 años), adultez (30-59 años) y vejez (60 años en adelante). 
+
+```{r}
+#| echo: true
+
+df_edad <- df_filt |> 
+           mutate(grupo_etario = case_when(
+                between(edad,  0, 11) ~ "Infancia (0-11)",
+                between(edad, 12, 18) ~ "Adolescencia (12-18)",
+                between(edad, 19, 29) ~ "Juventud (19-29)",
+                between(edad, 30, 59) ~ "Adultez (30-59)",
+                TRUE ~ "Vejez (60 o más)"
+           ))
+
+head(df_edad |> select(-llavehog, -llaveper))
+```
+
+
+
+## Agrupar y resumir `summarise()`
+
+El objetivo es crear un nuevo conjunto de datos con un resumen de estadísticos
+
+```{r, out.width= '70%', fig.align='center'}
+knitr::include_graphics(here::here("images/group_by2.png"))
+```
+
+Algunos ejemplos ilustrativos se encuentran [aquí](https://www.andrewheiss.com/blog/2024/04/04/group_by-summarize-ungroup-animations/#summarizing-with-summarize)
+
+
+## Agrupar y resumir `summarise()`
+
+<br><br>
+
+```{r, out.width= '100%', fig.align='center'}
+knitr::include_graphics(here::here("images/group_by.png"))
+```
+
+## Agrupar y resumir `summarise()`
+
+<br>
+
+```{r, out.width= '100%', fig.align='center'}
+knitr::include_graphics(here::here("images/Summarise1.jpg"))
+```
+
+## Ejemplo
+
+![](images/grp-summarize-01.gif)
+
+
+<span style="font-size:70%;">
+[Andrew Heiss](https://www.andrewheiss.com/blog/2024/04/04/group_by-summarize-ungroup-animations/#summarizing-with-summarize)</span>
+
+## Ejemplo
+
+Calcular el promedio del Peso, Estatura e IMC por grupo etario
+
+```{r}
+#| echo: true
+
+res <- df_edad |> 
+       group_by(grupo_etario) |> 
+       summarise(media_peso = mean(Peso, na.rm=T),
+                 media_estatura = mean(Estatura, na.rm=T),
+                 media_imc = mean(imc, na.rm=T)) |> 
+       arrange(media_peso)
+
+res
+```
+
 
 # GRACIAS! {background-color="#ddf3ff"}
 

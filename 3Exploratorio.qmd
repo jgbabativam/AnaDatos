@@ -185,12 +185,6 @@ knitr::include_graphics(here::here("images/ggplot2_exploration.png"))
 ```
 [Arte de Allison Horst](https://allisonhorst.com/)
 
-## Transformación de datos
-
-```{r, out.width= '100%', fig.align='center'}
-knitr::include_graphics(here::here("images/mutate.png"))
-```
-[Arte de Allison Horst](https://allisonhorst.com/)
 
 ## Ejemplo: Visualización de datos
 

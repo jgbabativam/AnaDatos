@@ -57,6 +57,13 @@ knitr::include_graphics(here::here("images/workflowschematic.jpeg"))
 
 ## Organización y proyectos en R
 
+Objetivo: proyectos reproducibles y replicables en entornos colaborativos.
+
+![](images/projects.png){fig-align="center"}
+<span style="font-size:70%;">[Allison Horst](https://allisonhorst.com/r-packages-functions/)</span>
+
+## Organización y proyectos en R
+
 * Facilita entornos colaborativos - reproducible y replicable
 * Evite la asignación de rutas de trabajo `setwd(mi/ruta/)`
 * Cree un R-project y solo revise `getwd()`
@@ -72,7 +79,18 @@ knitr::include_graphics(here::here("images/FlujoGB.png"))
 knitr::include_graphics(here::here("images/entorno.png"))
 ```
 
-[Hadley Wickham](https://r4ds.hadley.nz/workflow-scripts.html/)
+[Hadley Wickham](https://r4ds.hadley.nz/workflow-scripts.html)
+
+## Flujo de trabajo
+
+Organice sus scripts por tareas de manera ordenada hasta obtener los resultados.
+
+```{r, out.width= '100%', fig.align='center'}
+knitr::include_graphics(here::here("images/workflow.jpg"))
+```
+
+<span style="font-size:70%;">[Allison Horst](https://allisonhorst.com/other-r-fun/)</span>
+
 
 ## Reglas de los datos
 
