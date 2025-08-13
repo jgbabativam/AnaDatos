@@ -150,7 +150,7 @@ Hay diferentes paquetes que permiten leer y escribir diversos formatos de datos
 #| echo: true
 
 require(haven)
-leer_datos_STATA <- read_stata("ruta/tu_archivo_en_stata.dta")
+nombre_en_R <- read_stata("ruta/tu_archivo_en_stata.dta")
 ```
 
 
@@ -160,7 +160,7 @@ leer_datos_STATA <- read_stata("ruta/tu_archivo_en_stata.dta")
 #| echo: true
 
 require(haven)
-leer_datos_SPSS <- read_sav("ruta/tu_archivo_en_spss.sav")
+nombre_en_R <- read_sav("ruta/tu_archivo_en_spss.sav")
 ```
 
 * `haven -> SAS` : 
@@ -169,7 +169,7 @@ leer_datos_SPSS <- read_sav("ruta/tu_archivo_en_spss.sav")
 #| echo: true
 
 require(haven)
-leer_datos_SAS <- read_sas("ruta/tu_archivo_en_stata.sas7bdat")
+nombre_en_R <- read_sas("ruta/tu_archivo_en_stata.sas7bdat")
 ```
 
 ## Importar
@@ -180,7 +180,7 @@ leer_datos_SAS <- read_sas("ruta/tu_archivo_en_stata.sas7bdat")
 #| echo: true
 
 require(readxl)
-leer_datos_EXCEL <- read_excel("ruta/tu_archivo_en_excel.xlsx")
+nombre_en_R <- read_excel("ruta/tu_archivo_en_excel.xlsx")
 ```
 
 * `arrow -> Parquet` : 
@@ -189,7 +189,7 @@ leer_datos_EXCEL <- read_excel("ruta/tu_archivo_en_excel.xlsx")
 #| echo: true
 
 require(arrow)
-leer_datos_PARQUET <- read_parquet("ruta/tu_archivo_en_parquet.parquet")
+nombre_en_R <- read_parquet("ruta/tu_archivo_en_parquet.parquet")
 ```
 
 * `readr -> CSV` : 
@@ -198,7 +198,7 @@ leer_datos_PARQUET <- read_parquet("ruta/tu_archivo_en_parquet.parquet")
 #| echo: true
 
 require(readr)
-leer_datos_CSV <- read_csv("ruta/tu_archivo_en_CSV.csv")
+nombre_en_R <- read_csv("ruta/tu_archivo_en_CSV.csv")
 ```
 
 
