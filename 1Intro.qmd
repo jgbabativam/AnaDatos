@@ -142,6 +142,66 @@ Hay diferentes paquetes que permiten leer y escribir diversos formatos de datos
 * `readxl` y `writexl`
 * `arrow`, `data.table`, ...
 
+## Importar
+
+* `haven -> Stata` : 
+```{r}
+#| eval: false
+#| echo: true
+
+require(haven)
+leer_datos_STATA <- read_stata("ruta/tu_archivo_en_stata.dta")
+```
+
+
+* `haven -> SPSS` : 
+```{r}
+#| eval: false
+#| echo: true
+
+require(haven)
+leer_datos_SPSS <- read_sav("ruta/tu_archivo_en_spss.sav")
+```
+
+* `haven -> SAS` : 
+```{r}
+#| eval: false
+#| echo: true
+
+require(haven)
+leer_datos_SAS <- read_sas("ruta/tu_archivo_en_stata.sas7bdat")
+```
+
+## Importar
+
+* `readxl -> Excel` : 
+```{r}
+#| eval: false
+#| echo: true
+
+require(readxl)
+leer_datos_EXCEL <- read_excel("ruta/tu_archivo_en_excel.xlsx")
+```
+
+* `arrow -> Parquet` : 
+```{r}
+#| eval: false
+#| echo: true
+
+require(arrow)
+leer_datos_PARQUET <- read_parquet("ruta/tu_archivo_en_parquet.parquet")
+```
+
+* `readr -> CSV` : 
+```{r}
+#| eval: false
+#| echo: true
+
+require(readr)
+leer_datos_CSV <- read_csv("ruta/tu_archivo_en_CSV.csv")
+```
+
+
 ## Comandos iniciales: estructura
 
 <br>
@@ -154,11 +214,12 @@ Existen varias formas de observar la estructura de los datos
 #| eval: false
 #| echo: true
 
-head(tus_datos)
-str(tus_datos)
-length(tus_datos)
-glimpse(tus_datos)
-names(tus_datos)
+head(tus_datos)        # Muestra las primeras 6 filas del data frame
+str(tus_datos)         # Muestra la estructura: tipo de dato de cada columna, dimensiones, etc.
+length(tus_datos)      # Devuelve la cantidad de columnas si es un data frame, o de elementos si es un vector/lista
+glimpse(tus_datos)     # (dplyr) Muestra estructura en un formato más legible
+names(tus_datos)       # Devuelve un vector con los nombres de las columnas
+
 ```
 
 <br>
@@ -182,11 +243,11 @@ Los comandos `head`, `str`, `names` son del paquete base mientras que `glimpse` 
 
 # Referencias
 
-- R for data science. Section 3. Data visualization. Disponible [aquí](https://r4ds.had.co.nz/)
+- Lennert, F. (2022). An(other) introduction to R. [aquí](hhttps://bookdown.org/f_lennert/introduction-to-r/)
 
-- Dougherty, J. and Ilyankou, I. (2022) Hands-On Data Visualization. Interactive Storytelling from Spreadsheets to Code. Section 6. Chart Design Principles. Disponible [aquí](https://handsondataviz.org/)
+- Watt, H. (2024) Data Wrangling Recipes in R. Disponible [aquí](https://bookdown.org/hcwatt99/Data_Wrangling_Recipes_in_R/)
 
--	Williams, G. (2022) Data Science Desktop Survival Guide. Togaware. Disponible [aquí](https://onepager.togaware.com/introducing-rstudio.html) Chapter 2 introducing R 
+- Wickham, H. (2023) R for data science (2e). Whole game. Disponible [aquí](https://r4ds.had.co.nz/)
 
 - Jadey Ryan. Reproducible reports and presentations with Quarto. Disponible [aquí](https://jadeyryan.quarto.pub/slc-rug-quarto/#/title-slide)
 
