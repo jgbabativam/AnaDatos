@@ -116,7 +116,11 @@ countdown(minutes = 5, seconds = 00,  right = 0)
 * Instalar R y R-Studio: [Ver video](https://youtu.be/TKplIIwwdEk) 
 * Introducción a R: [Ver video](https://youtu.be/TlOKN0UzbB0)
 * Importar datos: [Ver video](https://youtu.be/FkpIpLgI7es)
-* organización y transformación de datos: [Ver video]
+* Organización y transformación de datos. Videos:
+  - [Operador pipeline](https://youtu.be/8V1IzCRsSd8)
+  - [Seleccionar filas o columnas](https://youtu.be/FduWB2BRcBo)
+  - [Crear nuevas columnas](https://youtu.be/5hoBTWEpDbo)
+  - [Estadísticos de resumen](https://youtu.be/NTrjYX0rf9Q)
 
 # VISUALIZACIÓN DE DATOS {background-color="#0077b6"}
 
@@ -266,37 +270,186 @@ Durante el curso se usarán conjuntos de datos reales, descargados de portales d
 
 Considere los datos de violencia intrafamiliar, descargados de los datos abiertos de la FGN. Realice:
 
-1. Importe los datos
-2. Explore las variables y cantidad de registros
-3. ¿Cuántos casos están con estado de activo?
-4. ¿Cuál es el departamento con el mayor número de víctimas?
-5. ¿Es correcto comparar los departamentos según el número de víctimas?
-6. ¿Cuántas víctimas se han registrado por año?, compare por sexo y por edad.
-7. Haga un análisis con enfoques diferenciales según las variables de LGBTI, NNA, indígena y Afrodescendiente
+1. Importe los datos, explore las variables y cantidad de registros
+2. ¿Cuántos casos están con estado de activo?
+3. ¿Cuál es el departamento con el mayor número de víctimas en los últimos 5 años?
+4. ¿Es correcto comparar los departamentos según el número de víctimas?
+5. ¿Cuántas víctimas se han registrado por año?, compare por sexo y por edad.
+6. Haga un análisis con enfoques diferenciales según las variables de LGBTI, NNA, indígena y Afrodescendiente.
 
+## Resultados
 
-## Ejercicio
-
-<br>
-
-<span style="color:#FF8D21"> **Tu turno**:</span> Cree un proyecto y cargue el conjunto de datos "ENSIN.sav", explore los datos y visualice su estructura. Use `as_factor()` para visualizar las etiquetas.
+1. Cree el proyecto de trabajo
+2. Descargue los datos de [acá](https://github.com/jgbabativam/AnaDatos/blob/main/datos/violencia_intrafamiliar.parquet)
 
 ```{r}
 #| echo: true
 
+rm(list = ls())
 library(pacman)
 
-p_load(tidyverse, haven, skimr)
+p_load(tidyverse, arrow, scales)
 
-url <- "https://github.com/jgbabativam/AnaDatos/raw/main/datos/ENSIN.sav"
-ensin <- read_sav(url)
+url <- "https://raw.githubusercontent.com/jgbabativam/AnaDatos/main/datos/violencia_intrafamiliar.parquet"
+fgn <- read_parquet(url)
+
 ```
+
+## Resultados: Número de casos
+
+::: {.panel-tabset}
+
+### Básico
+
+```{r, fig.width=5, fig.height=3, fig.align='center'}
+#| echo: true
+## Casos activos
+
+res <- fgn |> 
+       group_by(ESTADO) |> 
+       summarise(cantidad = n())
+
+ggplot(res, aes(x = ESTADO, y = cantidad)) +
+  geom_col(fill = "#FFD700")
+```
+
+### Elaborado
+
+```{r, fig.width=5, fig.height=4, fig.align='center'}
+#| echo: true
+ 
+ggplot(res, aes(x = ESTADO, y = cantidad)) +
+  geom_col(fill = "#FFD700") +
+  geom_text(aes(label = comma(cantidad)), vjust = -0.3) +
+  theme_bw() +
+  labs(y = "Cantidad")
+```
+
+:::
+
+## Resultados: Departamento con más víctimas
+
+::: {.panel-tabset}
+
+### Tabla
+
+```{r}
+#| echo: true
+
+res <- fgn |> 
+       filter(AÑO_HECHOS >= 2020) |> 
+       mutate(DEPARTAMENTO_HECHO = case_when(
+         grepl("San Andr", DEPARTAMENTO_HECHO) ~ "San Andrés y Providencia", 
+         grepl("BOGOTÁ, D. C.", DEPARTAMENTO_HECHO) ~ "Bogotá D.C.",
+         grepl("Boyaca", DEPARTAMENTO_HECHO) ~ "Boyacá",
+         TRUE ~ DEPARTAMENTO_HECHO)) |> 
+       group_by(DEPARTAMENTO_HECHO) |> 
+       summarise(victimas = sum(TOTAL_VÍCTIMAS)) |> 
+       arrange(desc(victimas))
+```
+
+### Gráfico
+
+```{r, fig.width=5, fig.height=4, fig.align='center'}
+#| echo: true
+#| eval: false
+ 
+ggplot(res, aes(x = reorder(as.factor(DEPARTAMENTO_HECHO), victimas),
+                y = victimas)) +
+  geom_col(fill = "#FF8B55") +
+  geom_text(aes(label = comma(victimas)), hjust = -0.1, size = 3) +
+  theme_minimal() +
+  coord_flip() +
+  labs(y = "Número de víctimas",
+       x = "") +
+  scale_y_continuous(limits = c(0, 300000),
+                      breaks = seq(0, 300000, by = 50000),
+                     labels = comma)
+```
+
+:::
+
+
+## Resultados
+
+¿Es correcto comparar los departamentos según el número de víctimas?
+
+```{r}
+library(countdown)
+countdown(minutes = 6, seconds = 00,  right = 0)
+```
+
+## Resultados
+
+5. ¿Cuántas víctimas se han registrado por año?, compare por sexo y por edad.
+6. Haga un análisis con enfoques diferenciales según las variables de LGBTI, NNA, indígena y Afrodescendiente.
 
 
 ```{r}
 library(countdown)
-countdown(minutes = 15, seconds = 00,  right = 0)
+countdown(minutes = 10, seconds = 00,  right = 0)
 ```
+
+## Bonus
+
+::: {.panel-tabset}
+
+### Mapa
+
+```{r, fig.width=6, fig.height=5, fig.align='center'}
+#| echo: false
+#| eval: true
+
+p_load(geodata, sf)
+       
+# shapefile de departamentos de Colombia
+dep <- geodata::gadm(country = "COL", level = 1, path = tempdir()) |> 
+       st_as_sf()
+
+map_data <- dep |>
+            left_join(res, by = c("NAME_1" = "DEPARTAMENTO_HECHO"))
+
+ggplot(map_data) +
+  geom_sf(aes(fill = victimas), color = NA) +
+  scale_fill_gradient(
+    low  = "#FFE5E5",
+    high = "#8B0000",
+    na.value = "grey90",
+    name = "Víctimas"
+  ) +
+  theme_void() +
+  labs(title = "Víctimas de violencia de género en Colombia (últimos 5 años)")
+```
+
+
+### Código
+
+```{r}
+#| echo: true
+#| eval: false
+
+p_load(geodata, sf)
+       
+# shapefile de departamentos de Colombia
+dep <- geodata::gadm(country = "COL", level = 1, path = tempdir()) |> 
+       st_as_sf()
+
+map_data <- dep |>
+            left_join(res, by = c("NAME_1" = "DEPARTAMENTO_HECHO"))
+
+ggplot(map_data) +
+  geom_sf(aes(fill = victimas), color = NA) +
+  scale_fill_gradient(
+    low  = "#FFE5E5",
+    high = "#8B0000",
+    na.value = "grey90",
+    name = "Víctimas"
+  ) +
+  theme_void() +
+  labs(title = "Víctimas de violencia de género en Colombia (últimos 5 años)")
+```
+
+:::
 
 ## La etapa de la frustración
 
@@ -385,33 +538,14 @@ _"use el paquete osm de R para crear un mapa y la base de datos de droguerias en
 
 <br>
 
-<span style="color:#FF8D21"> **Tu turno**:</span> Sobre el conjunto de datos "ENSIN.sav", apoyese en la IA para obtener un gráfico de barras, usando `ggplot2`, con la cantidad de registros que se tienen de cada región. Ajustelo a su gusto.
+<span style="color:#FF8D21"> **Tu turno**:</span> Sobre el conjunto de datos de la Fiscalía, apoyese en la IA para obtener un gráfico de líneas, usando `ggplot2`, con la cantidad de víctimas por año. Ajustelo a su gusto.
 
-
-```{r}
-#| echo: true
-g2 <- ensin |> 
-      count(region) |> 
-      mutate(region = as_factor(region)) |>
-      ggplot(aes(x = fct_reorder(region, n), y = n, fill = region)) +
-      geom_col() +
-      labs(x = "Región", y = "Frecuencia") +
-      coord_flip() +
-      theme_minimal() +
-      theme(legend.position = "none")
-```
 
 ## Ejercicio
 
 <br>
 
-<span style="color:#FF8D21"> **Tu turno**:</span> Sobre el conjunto de datos "ENSIN.sav", apoyese en la IA para obtener un gráfico elegante entre las variables Peso y Estatura, use `ggplot2`. Ajustelo a su gusto.
-
-## Ejercicio
-
-<br>
-
-<span style="color:#FF8D21"> **Tu turno**:</span> Sobre el conjunto de datos "ENSIN.sav", apoyese en la IA para obtener un diagrama de cajas elegante que permita comparar la variable IMC entre las diferentes regiones, use `ggplot2`. Ajustelo a su gusto.
+<span style="color:#FF8D21"> **Tu turno**:</span> Sobre el conjunto de datos Fiscalía, apoyese en la IA para obtener un diagrama de cajas elegante que permita comparar los departamentos por la variable del total de víctimas en los últimos 5 años, use `ggplot2`. Ajustelo a su gusto.
 
 # ANÁLISIS EXPLORATORIO {background-color="#0077b6"}
 
