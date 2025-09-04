@@ -1,0 +1,542 @@
+---
+title: "Analítica de datos aplicada a estudios sobre desarrollo"
+subtitle: "Introducción a las técnicas multivariantes no supervisadas"
+author: "[Giovany Babativa, PhD](http://jgbabativam.rbind.io/)"
+format: 
+  gbabativa-revealjs:
+    footer: "Diapositivas disponibles en [GitHub](https://github.com/jgbabativam)."
+incremental: false
+embed-resources: true
+highlight-style: dracula
+---
+
+## Proceso de analítica
+
+
+```{r, out.width= '100%'}
+knitr::include_graphics(here::here("images/Ciclo.png"))
+```
+[Wickham, H. y otros (2023)](https://r4ds.hadley.nz/)
+
+# MÉTODOS MULTIVARIANTES {background-color="#0077b6"}
+
+## Modelos de analítica
+
+```{r,  out.width= '110%'}
+knitr::include_graphics(here::here("images/Metodos.png"))
+```
+
+# ANÁLISIS DE COMPONENTES PRINCIPALES {background-color="#0077b6"}
+
+## Objetivo general
+
+Método para reducir la dimensionalidad de los datos conservando la mayor cantidad de información. El método se debe usar cuando las variables son cuantitativas y existe presencia de correlación
+
+. . .
+
+![](images/PCA1.png){fig-align="center" style="font-size: 16px;"}
+
+## Objetivos específicos
+
+- **Visualizar patrones**: Sirve para visualizar la estructura de los datos y detectar patrones emergentes. 
+
+- **Construir de índices sintéticos**: Las variables originales se resumen en un conjunto menor de componentes principales que contienen información de todas las variables.
+
+- **Identificar factores clave**: Identifica los factores principales que explican los cambios relacionados con el tema de interés.
+
+- **Identificar grupos**: Ayuda a identificar grupos de individuos que comparten características similares. 
+
+
+## ¿Cómo funciona la técnica?
+
+
+![](images/PCA2.png){fig-align="center"}
+
+## Componentes principales
+
+Reproducir la matriz original usando menos dimensiones
+
+. . .
+
+<p align="center">
+<img src="images/PCA3.png" width="60%">
+</p>
+
+## Problema de optimización
+
+Enfoque de Hotelling (1933) vs Pearson (1901)
+
+<br>
+
+![](images/PCA7.png){fig-align="center"}
+
+## Teorema de la factorización - SDV
+
+Reproducir la matriz original con menos dimensiones.
+
+<br>
+
+![](images/PCA4.png){fig-align="center"}
+
+## Esquema de las componentes
+
+<br>
+
+<p align="center">
+<img src="images/PCA8.png" width="150%">
+</p>
+
+## Resumen
+
+<p align="center">
+<img src="images/PCA6.png" width="100%">
+</p>
+
+## Interpretación en el espacio de las componentes
+
+![](images/IPCA1.png){fig-align="center"}
+
+
+## Interpretación en el espacio de las componentes
+
+![](images/IPCA2.png){fig-align="center"}
+
+## Ejemplo
+
+El conjunto de datos `RESUMEN.sav` contiene un preprocesamiento obtenido de la GEIH del DANE a nivel departamental para algunas variables de interés.
+
+<br> 
+
+```{r}
+#| echo: true
+library(pacman)
+p_load(tidyverse, janitor,
+       FactoMineR, factoextra, Factoshiny, 
+       skimr, corrplot, psych, gt, gtsummary, haven)
+
+url <- "https://github.com/jgbabativam/AnaDatos/raw/main/datos/RESUMEN.sav"
+datos <- read_sav(url) |> as_factor()
+```
+
+<br> 
+
+Use el comando `glimpse()` y `skim()` para explorar el conjunto de datos.
+
+## Preparación del conjunto de datos
+
+<br> 
+
+```{r}
+#| echo: true
+datos <- datos |> 
+         column_to_rownames(var = "DPTO")
+```
+
+<br> 
+
+Observe que el conjunto de los datos está conformado únicamente por variables cuantitativas.
+
+## Analice los resultados
+
+```{r}
+#| echo: true
+res <- PCA(datos, scale.unit = T, graph = F)
+fviz_screeplot(res, addlabels = TRUE, ylim = c(0, 60))
+```
+
+## Primer plano factorial para las variables
+
+```{r, fig.align='center'}
+#| echo: true
+fviz_pca_var(res, 
+             col.var="contrib",
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             repel = TRUE)
+```
+
+## Primer plano factorial para los individuos
+
+```{r, fig.align='center'}
+#| echo: true
+fviz_pca_ind(res, col.ind = "cos2",
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             repel = TRUE)
+```
+
+## Biplot
+
+```{r, fig.align='center'}
+#| echo: true
+fviz_pca_biplot(res, repel = TRUE, col.ind = "blue", col.var = "red")
+```
+
+## Construcción de índices sintéticos
+
+<br> 
+
+Tenga en cuenta que: 
+
+$$\mathbf{Y} =  \mathbf{XV}$$
+
+<br> 
+
+De manera que la matriz $\mathbf{V}$ son los ponderadores de las variables en la matriz $\mathbf{X}$, con lo cual $\mathbf{Y}$ es un índice que resume la información contenida en las variables originales.
+
+## Complementos
+
+- Explore el peso de las variables mediante la función `PCA(datos)` del paquete `FactoMineR`. 
+
+- Construya un índice a partir de la primera componente principal
+
+- Use la función `Factoshiny(datos)` y ajuste los parámetros del modelo.
+
+## Examen 2
+
+<br><br>
+
+Vea las condiciones del examen 2 en Bloque Neón y en GitHub
+
+* [Examen 2](https://github.com/jgbabativam/AnaDatos/tree/main/Talleres)
+
+Lea atentamente las instrucciones del mismo, tenga en cuenta que los ejercicios propuestos no son para entregar en un formato tipo taller, sino que le deben servir como recurso para generar el documento solicitado.
+
+## Exposición final
+
+<br><br><br>
+Lea atentamente las siguientes instrucciones y observe el siguiente vídeo (asegúrese de dar clic en la ventana externa):
+
+<br>
+
+* [Rúbrica de evaluación](https://github.com/jgbabativam/AnaDatos/tree/main/Talleres)
+* [Video tutorial](https://youtu.be/W0TdujuLJSo)
+
+# ANÁLISIS DE CORRESPONDENCIAS {background-color="#0077b6"}
+
+## Análisis de correspondencias
+
+<br> 
+
+El *PCA* se usa para tratar variables cuantitativas que tienen algún grado de asociación lineal. De otra parte, el *análisis de correspondencias* es un método que surge de las tablas de contingencia y permite estudiar las relaciones entre variables cualitativas. Este análisis permite:
+
+- Identificar patrones de asociación entre variables categóricas.
+- Hacer una reducción de la dimensionalidad.
+- Observar la proximidad entre individuos y entre variables.
+- Hacer un pre-procesamiento para el análisis de clúster.
+
+## Estructura del conjunto de datos
+
+<br> 
+
+<p align="center">
+<img src="images/ACM1.png" width="33%">
+</p>
+
+## Funcionamiento del análisis de correspondencias
+
+<br> 
+
+<p align="center">
+<img src="images/ACM2.png" width="90%">
+</p>
+
+## Generación de tablas de contingencia
+
+Al realizar la operación $\mathbf{X}^T\mathbf{X}$ se llega a la matriz que concatena todas las tablas de contingencia entre pares de variables, denominada matriz de *Burt*
+
+. . . 
+
+<p align="center">
+<img src="images/ACM3.png" width="50%">
+</p>
+
+## Proyección sobre el espacio factorial
+
+<p align="center">
+<img src="images/ACM4.png" width="45%">
+</p>
+
+## Ejemplo
+
+El conjunto de datos `corresp.sav` contiene 50 respuestas de una encuesta.
+
+<br> 
+
+```{r}
+#| echo: true
+library(pacman)
+p_load(tidyverse, janitor, patchwork,
+       FactoMineR, factoextra, Factoshiny, 
+       skimr, corrplot, psych, gt, gtsummary, haven)
+
+url <- "https://github.com/jgbabativam/AnaDatos/raw/main/datos/corresp.sav"
+datos <- read_sav(url) |> as_factor()
+```
+
+. . .
+
+Use `glimpse()` y `skim()` para explorar el conjunto de datos.
+
+
+## Preparación de los datos
+
+
+<br> 
+
+```{r}
+#| echo: true
+datos <- datos |> 
+         column_to_rownames(var = "encuesta")
+```
+
+<br> 
+
+- Analice la asociación entre las variables cualitativas.
+
+- Explore la contribución y el coseno al cuadrado usando `MCA(datos)` del paquete `FactoMineR`. 
+
+## Analice los resultados
+
+```{r}
+#| echo: true
+res <- MCA(datos, graph = F)
+fviz_screeplot(res, addlabels = TRUE, ylim = c(0, 40))
+```
+
+## Análisis de las contribuciones
+
+```{r}
+#| echo: true
+corrplot(res$var$contrib, is.corr=FALSE, tl.col = "black")
+```
+
+## Análisis de los cosenos
+
+```{r}
+#| echo: true
+corrplot(res$var$cos2, is.corr=FALSE, tl.col = "black")
+```
+
+## Primer plano factorial
+
+```{r}
+#| echo: true
+fviz_mca_var(res, repel = TRUE, col.var = "blue")
+```
+
+# ESTUDIO DE CASO {background-color="#0077b6"}
+
+## Ambiente político
+
+El ambiente político en el momento electoral es decisivo, identificar patrones y asociaciones en las opiniones resulta clave en las estrategias que se deben seguir durante la campaña. Considere el siguiente conjunto de datos obtenido de una muestra aleatoria de 300 personas y construya el perfil de los candidatos a partir de un análisis de correspondencias.
+
+```{r}
+#| echo: true
+library(pacman)
+p_load(tidyverse, janitor,
+       FactoMineR, factoextra, Factoshiny, 
+       skimr, corrplot, psych, gt, gtsummary, haven)
+
+url <- "https://github.com/jgbabativam/AnaDatos/raw/main/datos/df_clase.sav"
+clase <- read_sav(url) 
+```
+
+Explore el conjunto de datos con `glimpse(as_factor(clase))` y compare con el cuestionario
+
+## Ordenar y transformar
+
+```{r, out.width= '100%', fig.align = 'center'}
+knitr::include_graphics(here::here("images/tidyr-pivoting.gif"))
+```
+[Fuente: tidyexplain](https://www.garrickadenbuie.com/project/tidyexplain/)
+
+## Ordenar y transformar
+
+Una forma de trabajar el conjunto de los datos es transformarlo a un formato largo:
+
+```{r}
+#| echo: true
+df <- clase |> 
+      pivot_longer(cols = starts_with("P21"), names_to = "P21", values_to = "respuesta")
+```
+
+Observe que hay respuestas múltiples en algunos atributos.
+
+. . . 
+
+```{r}
+#| echo: true
+head(df |> filter(as.numeric(respuesta)>10))
+```
+
+## Ordenar y transformar
+
+Separamos las respuestas en diferentes variables para poder tratarlas
+
+```{r}
+#| echo: true
+longitud_maxima <- max(nchar(df$respuesta))
+nombres_columnas <- paste0("respuesta_", 0:longitud_maxima)
+
+df1 <- df |> 
+       separate(respuesta, into = nombres_columnas, sep = "", fill = "right") |> 
+       select(-respuesta_0)
+```
+
+. . .
+
+Volvemos a reestructurar los datos para que cada persona quede solo con las respuestas que asignó en cada atributo
+
+```{r}
+#| echo: true
+df_reest <- df1 |> 
+            pivot_longer(cols = starts_with("respuesta_"),
+                         names_to = "var", values_to = "candidato", values_drop_na = TRUE) |> 
+            select(-var) 
+```
+
+## Asignación de atributos
+
+```{r}
+#| echo: true
+df_reest <- df_reest |> 
+             separate(P21, c("pregunta", "item"), sep = "_") |> 
+             mutate(item = factor(item, levels = 1:26,
+                                  labels = c(
+                                    'Representa la continuidad de Claudia',
+                                    'Tendencia política de izquierda',
+                                    'Garantiza mano dura en seguridad',
+                                    'Tendencia política de derecha',
+                                    'Representa a Petro en Bogotá',
+                                    'Tiene las mejores propuestas',
+                                    'Representa un peligro para Bogotá',
+                                    'Es el candidato más respetuoso',
+                                    'Es el más conciliador',
+                                    'Garantiza políticas para proteger a las mujeres',
+                                    'Garantiza que Bogotá va a avanzar',
+                                    'Respeta y garantiza la diversidad en la ciudad',
+                                    'Puede diseñar e implementar una verdadera política de seguridad',
+                                    'Es el que más apoyo tiene de los empresarios',
+                                    'Es el de mayor sensibilidad social',
+                                    'Mejor persona',
+                                    'Clientelista',
+                                    'Tibio/sin posiciones',
+                                    'Delfín',
+                                    'Se ha destacado en los cargos que ha ocupado',
+                                    'Mejor comunicador',
+                                    'Más auténtico',
+                                    'Es el candidato de Álvaro Uribe',
+                                    'Es el candidato de Peñalosa',
+                                    'Es el candidato de Germán Vargas Lleras',
+                                    'Es el candidato de Rodolfo Hernández'
+                                  ))) |> 
+             mutate(candidato = factor(as.numeric(candidato), levels = 1:9, 
+                                     labels = c('Carlos Fernando Galán',
+                                                'Gustavo Bolívar',
+                                                'Juan Daniel Oviedo',
+                                                'Rodrigo Lara',
+                                                'Diego Molano',
+                                                'Jorge Enrique Robledo',
+                                                'Jorge Luis Vargas',
+                                                'Ninguno',
+                                                'Ns/Nr'))) |> 
+             mutate(GENERO = factor(GENERO, levels = 1:2, labels = c("Hombre", "Mujer")),
+                    REDAD = factor(REDAD, levels = 1:5, labels = c("18 a 24",
+                                                                   "25 a 34",
+                                                                   "35 a 44",
+                                                                   "45 a 54",
+                                                                   "55 o más"))) |> 
+              select(-pregunta)
+```
+
+## Preparación de los datos
+
+Con la estructura de los datos se puede construir la tabla de contingencia para aplicar un análisis de correspondencias simple
+
+```{r}
+#| echo: true
+tabla <- df_reest |> 
+         count(item, candidato) |> 
+         pivot_wider(names_from = candidato, values_from = n) |> 
+         column_to_rownames("item")
+```
+
+## Análisis de los resultados
+
+```{r}
+#| echo: true
+res <- CA(tabla, graph = F)
+fviz_screeplot(res, addlabels = TRUE, ylim = c(0, 50))
+```
+
+## Contribuciones de las columnas (candidatos)
+
+```{r}
+#| echo: true
+corrplot(res$col$contrib, is.corr=FALSE, tl.col = "black")
+```
+
+## Contribuciones de las filas (atributos)
+
+```{r}
+#| echo: true
+corrplot(res$row$contrib, is.corr=FALSE, tl.col = "black")
+```
+
+## Análisis de los cosenos para los candidatos
+
+```{r}
+#| echo: true
+corrplot(res$col$cos2, is.corr=FALSE, tl.col = "black")
+```
+
+## Análisis de los cosenos para los atributos
+
+```{r}
+#| echo: true
+corrplot(res$row$cos2, is.corr=FALSE, tl.col = "black")
+```
+
+## Perfil de los candidatos (Plano 1-2)
+
+```{r}
+#| echo: true
+fviz_ca_col(res, repel = TRUE, col.col = "cos2", axes = c(1,2),
+            gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+            select.col = list(cos2 = 0.5))
+```
+
+## Posicionamiento de los atributos (Plano 1-2)
+
+```{r}
+#| echo: true
+fviz_ca_row(res, repel = TRUE, col.row = "cos2", axes = c(1,2),
+            gradient.cols = c("lightblue", "blue", "darkblue"),
+            select.row = list(cos2 = 0.5))
+```
+
+## Biplot de correspondencias
+
+```{r}
+#| echo: true
+fviz_ca_biplot(res, axes = c(1,2),
+               repel = TRUE, 
+               select.col = list(cos2 = 0.5),
+               select.row = list(cos2 = 0.5))
+```
+
+## Análisis complementarios
+
+1. Haga un análisis que le permita encontrar las diferencias y similaridades entre los candidatos Galán, Oviedo, Molano y Vargas.
+2. ¿Cuáles son los aspectos que diferencian al candidato Lara frente a los candidatos Galán y Oviedo?.
+3. ¿Que modificación debe realizar si su objetivo se centra en encontrar los aspectos que diferencian al candidato Lara frente a los candidatos Molano y Vargas?.
+
+# GRACIAS! {background-color="#ddf3ff"}
+
+# Referencias
+
+- Husson, F., Lê, S., & Pagès, J. (2017). Exploratory multivariate analysis by example using R. CRC press.
+
+- Hair, J. F., Black, W. C., Babin, B. J., Anderson, R. E., & Tatham, R. L. (2006). Multivariate data analysis 6th Edition.  https://doi.org/10.1201/9780367409913
+
+-	Aldás Manzano, J., & Uriel Jiménez, E. (2017). Análisis multivariante aplicado con R. Ediciones Paraninfo, SA. 
+

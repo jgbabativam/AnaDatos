@@ -584,17 +584,13 @@ url <- "https://github.com/jgbabativam/AnaDatos/raw/main/datos/ENSIN.sav"
 ensin <- read_sav(url)
 ```
 
-Analice los descriptivos del peso y de la estatura: media, mediana, percentiles, sd y correlación. Use `tapply(var, class, fun)` para identificar la región con menor IMC. Explore los comandos `create_report()`, `glimpse()` y `skim()`.
+Construya un plan de análisis y apóyese en la IA para llevarlo a cabo. Revise datos faltantes, distribuciones, outliers, asociación, etc.
 
-
-. . .
+</span>
 
 ```{r}
-#| eval: false
-#| echo: true
-create_report(ensin)
-glimpse(ensin)
-skim(ensin)
+library(countdown)
+countdown(minutes = 10, seconds = 00,  right = 0)
 ```
 
 # ESTUDIO DE CASO {background-color="#0077b6"}
@@ -623,6 +619,8 @@ mujeres <- read_sav(url) |> as_factor()
  - Use `create_report` para hacer un análisis exploratorio de los datos.
 
 </span> 
+
+# REPRODUCIBLES (Ver Video) {background-color="#0077b6"}
 
 ## Reportes reproducibles usando Quarto-R
 
@@ -742,11 +740,11 @@ Use el conjunto de datos de violencia contra las mujeres para construir un infor
 
 **Pasos previos**
 
-1. Descargue la plantilla  [aquí](https://github.com/jgbabativam/AnaDatos/blob/main/docs/template.zip)
+1. Descargue la plantilla  [aquí](https://github.com/jgbabativam/AnaDatos/blob/main/docs/Template.zip)
 
 2. Cree un proyecto en una ruta de su computadora: data, src
 
-3. Descomprima el archivo template.zip en src.
+3. Descomprima el archivo Template.zip en src.
 
 4. Abra el archivo .Rprj y el archivo .qmd o Rmd.
 

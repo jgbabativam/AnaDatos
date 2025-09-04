@@ -1,0 +1,415 @@
+---
+title: "Analítica de datos aplicada a estudios sobre desarrollo"
+subtitle: "Introducción a las técnicas multivariantes no supervisadas"
+author: "[Giovany Babativa, PhD](http://jgbabativam.rbind.io/)"
+format: 
+  gbabativa-revealjs:
+    footer: "Diapositivas disponibles en [GitHub](https://github.com/jgbabativam)."
+incremental: false
+embed-resources: true
+highlight-style: dracula
+---
+
+## Proceso de analítica
+
+
+```{r, out.width= '100%'}
+knitr::include_graphics(here::here("images/Ciclo.png"))
+```
+[Wickham, H. y otros (2023)](https://r4ds.hadley.nz/)
+
+# MÉTODOS MULTIVARIANTES {background-color="#0077b6"}
+
+## Modelos de analítica
+
+```{r,  out.width= '110%'}
+knitr::include_graphics(here::here("images/Metodos.png"))
+```
+
+# ANÁLISIS DE CONGLOMERADOS {background-color="#0077b6"}
+
+## Análisis clúster
+
+Métodos para realizar la agrupación de individuos con base en la similaridad que tienen en un vector de variables $\mathbf{x}'=(x_1, \ldots, x_p)$.
+
+. . .
+
+![](images/Cluster1.png){fig-align="center"}
+
+## Qué es el análisis de clúster
+
+
+Es una técnica para combinar observaciones en grupos o clúster de forma que: 
+
+1. Cada grupo o clúster sea lo más homogéneo con respecto a las características de análisis. 
+Es decir las observaciones dentro de cada grupo deben ser similares. 
+
+2. Cada grupo debe diferenciarse de los otros grupos respecto a las características que se midieron.
+
+
+## Tipos de Análisis de clúster
+
+1. Jerárquicos: Consisten en agrupar los individuos o grupos más similares a partir de algún criterio de aglomeración.
+
+2. No jerárquicos: Consiste en dividir el conjunto de objetos o individuos en un número de grupos prefijado y aplicar un algoritmo para obtener las agrupaciones.
+
+# Métodos no jerárquicos {background-color="#0077b6"}
+
+## Algoritmo de las $K$-medias 
+
+Forgy (1965)
+
+![](images/Cluster2/Forgy1.png){fig-align="center"}
+
+## Algoritmo de las $K$-medias
+Forgy (1965)
+
+
+![](images/Cluster2/Forgy2.png){fig-align="center"}
+
+
+## Algoritmo de las $K$-medias
+Forgy (1965)
+
+
+![](images/Cluster2/Forgy3.png){fig-align="center"}
+
+## Algoritmo de las $K$-medias
+Forgy (1965)
+
+
+![](images/Cluster2/Forgy4.png){fig-align="center"}
+
+## Algoritmo de las $K$-medias
+Forgy (1965)
+
+
+![](images/Cluster2/Forgy5.png){fig-align="center"}
+
+## Algoritmo de las $K$-medias
+Forgy (1965)
+
+
+![](images/Cluster2/Forgy6.png){fig-align="center"}
+
+## Algoritmo de las $K$-medias
+Forgy (1965)
+
+
+![](images/Cluster2/Forgy7.png){fig-align="center"}
+
+
+## Algoritmo de las $K$-medias
+Forgy (1965)
+
+
+![](images/Cluster2/Forgy8.png){fig-align="center"}
+
+
+## Algoritmo de las $K$-medias
+Forgy (1965)
+
+
+![](images/Cluster2/Forgy9.png){fig-align="center"}
+
+
+## Comparación de algoritmos
+
+<p align="center">
+<img src="images/Cluster3.png" width="90%">
+</p>
+
+
+## Simulación
+
+Ingrese a la siguiente página [Naftali](https://www.naftaliharris.com/blog/visualizing-k-means-clustering/
+)
+
+<br><br>
+
+* Seleccione los centros aleatoriamente y use una distribución uniforme, normal y alguna otra. Haga $k=3$ y realice la simulación del clúster.
+
+* Seleccione los centros manualmente y use una distribución uniforme, normal y alguna otra. Haga $k=3$ y realice la simulación del clúster.
+
+## Algoritmos alternativos
+
+<p align="center">
+<img src="images/Cluster4.png" width="90%">
+</p>
+
+## Simulación DBSCAN
+
+
+Ingrese a la siguiente página [Naftali](https://www.naftaliharris.com/blog/visualizing-dbscan-clustering/)
+
+* Simule un proceso de DBSCAN
+
+
+# Métodos jerárquicos {background-color="#0077b6"}
+
+##  Algoritmo para los métodos de aglomeración
+
+1. Comenzar con tantas clases como elementos o individuos se tenga. Las distancias entre clases son las distancias entre elementos originales.
+
+2. Seleccionar los dos elementos más próximos en la matriz de distancias y formar con ellos un grupo.
+
+3. Sustituir los dos elementos utilizados en (2) para definir el grupo en (2), por un nuevo elemento que la represente. 
+
+4. Volver a (2) y repetir (2) y (3) hasta que tengamos todos los elementos queden agrupados en un solo grupo.
+
+
+# EJEMPLOS {background-color="#0077b6"}
+
+## Consumo de proteinas
+
+Considere el conjunto de datos del taller sobre el consumo de proteínas en algunos países de Europa. Realice un análisis clúster a partir de:
+
+1. Un algoritmo de $K$-medias para agrupar a los países en 3 grupos.
+2. Un algoritmo de aglomeración jerárquica. Defina el número de grupos apropiado.
+
+## Paso 1: Importar el conjunto de datos
+
+```{r}
+#| echo: true
+
+options(scipen = 999)
+library(pacman)
+
+p_load(tidyverse, janitor, haven,
+       FactoMineR, factoextra, cluster)
+
+url <- "https://github.com/jgbabativam/AnaDatos/raw/main/datos/PaisesProteinas.sav"
+
+datos <- read_sav(url)
+```
+
+## Paso 2: Preparar los datos
+
+En el algoritmo de las $K$-medias es indispensable que las variables de análisis sea de tipo cuantitativo. Además, las variables son estandarizadas para evitar el efecto de la escala, de manera que:
+
+$$z_{i} =\frac{x_i - \bar{x}_i}{s_i}, i=1,\ldots, p $$
+
+. . .  
+
+
+```{r}
+#| echo: true
+datos <- datos |> 
+         column_to_rownames(var = "Pais") |> 
+         scale()
+```
+
+# Algoritmo de $K$-medias {background-color="#0077b6"}
+
+## Paso 3: Aplicar el algoritmo
+
+```{r}
+#| echo: true
+set.seed(26052013)
+
+res <- kmeans(datos, centers = 3)
+
+datos.clus <- data.frame(datos, cluster = res$cluster)
+```
+
+## Paso 4: Visualización
+
+```{r}
+#| echo: true
+fviz_cluster(res, data = datos,
+             palette = c("#2E9FDF", "#00AFBB", "#E7B800"), 
+             geom = "point",
+             ellipse.type = "convex", 
+             main = "Cluster de países",
+             ggtheme = theme_bw()
+             )
+```
+
+
+## Paso 5: Validación 
+
+El gráfico de silueta es una herramienta útil para evaluar la calidad de las agrupaciones  resultantes del algoritmo k-medias. Se debe revisar:
+
+1. Barra alta: Si un punto de datos tiene una barra alta en el gráfico de silueta, significa que está bien asignado al grupo y está lejos de los puntos de otros grupos, esto indica una buena calidad del agrupamiento.
+
+2. Valor medio de silueta: El valor medio de la silueta es la medida agregada de la calidad del método de clúster, en general se espera que esté en el rango de -1 a 1.
+
+## Paso 5: Validación 
+
+```{r}
+#| echo: true
+g1 <- silhouette(res$cluster, dist(datos))
+fviz_silhouette(g1)
+```
+
+## Paso 6: Interpretación
+
+```{r}
+#| echo: true
+datos.clus |> 
+  group_by(cluster) |> 
+  summarise(across(where(is.numeric), ~mean(., na.rm=T)))
+```
+
+# Algoritmo de jerárquico de Ward {background-color="#0077b6"}
+
+## Paso 3: Aplicar PCA
+
+```{r}
+#| echo: true
+res.pca <- PCA(datos, graph = F)
+fviz_pca_var(res.pca,
+             col.var="contrib",
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             repel = TRUE)
+```
+
+
+## Paso 3: Aplicar PCA
+
+```{r}
+#| echo: true
+fviz_pca_ind(res.pca, col.ind = "cos2",
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             repel = TRUE)
+```
+
+## Paso 4: Aplicar clúster jerárquico
+
+Defina primero el número de clúster que se debería usar basado en el criterio de los índices de nivel o inercia iterclases.
+
+<br> 
+
+```{r, eval=FALSE}
+#| echo: true
+res.clus <- HCPC(res.pca)
+```
+
+. . .
+
+<br> 
+
+
+```{r}
+#| echo: true
+res.clus <- HCPC(res.pca, nb.clust = 5, graph = FALSE)
+```
+
+## Paso 5: Visualización del dendrograma
+
+```{r}
+#| echo: true
+fviz_dend(res.clus, 
+          cex = 0.7,                     
+          palette = "jco",               
+          rect = TRUE, rect_fill = TRUE, 
+          horiz = TRUE,
+          rect_border = "jco",           
+          labels_track_height = 0.8,
+          main = "Cluster de paises"
+          )
+```
+
+## Paso 5: Visualización del plano de países
+
+```{r}
+#| echo: true
+fviz_cluster(res.clus,
+             repel = TRUE,
+             show.clust.cent = TRUE, 
+             palette = "jco",         
+             ggtheme = theme_minimal(),
+             main = "Clúster de países"
+             )
+# Puede usar el comando `res.clus$desc.var$quanti` para analizar la caracterización de cada clúster.
+```
+
+## Ejemplo Electoral
+
+Considere los datos artificiales `Bogota.sav` que simulan el resultado de la percepción de 350 encuestados. El ejercicio consiste en que a cada encuestado se le da una tarjeta con los nombres de los candidatos, posteriormente se leen algunas frases o se le mencionan algunas cualidades y deberá asociarlo con el candidato que considere que mejor la cumple.
+
+Realice un análisis de correspondencias y posteriormente un análisis clúster para concluir sobre el perfil de los candidatos.
+
+## Paso 1: Importar el conjunto de datos
+
+```{r}
+#| echo: true
+
+library(pacman)
+
+p_load(tidyverse, janitor, haven, readxl,
+       FactoMineR, factoextra, cluster)
+
+url <- "https://github.com/jgbabativam/AnaDatos/raw/main/datos/caPolitico.sav"
+
+datos <- read_sav(url)
+```
+
+
+## Paso 2: Preparar los datos
+
+```{r}
+#| echo: true
+datos <- datos |> 
+         column_to_rownames(var = "atributo") 
+```
+
+
+## Paso 3: Análisis de correspondencias
+
+```{r}
+#| echo: true
+res.ac <- CA(t(datos), graph = F)
+
+fviz_ca_biplot(res.ac, 
+               col.row="blue", 
+               col.col = "red",
+               repel = TRUE) +
+       theme_minimal()
+```
+
+## Paso 4: Clasificación de candidatos
+
+Defina primero el número de clúster que se debería usar basado en el criterio de los índices de nivel o inercia iterclases.
+
+<br> 
+
+```{r, eval=FALSE}
+#| echo: true
+res.clus <- HCPC(res.ac)
+```
+
+. . .
+
+<br> 
+
+
+```{r}
+#| echo: true
+res.clus <- HCPC(res.ac, nb.clust = 5, graph = FALSE)
+```
+
+## Paso 5: Visualización del dendrograma
+
+```{r}
+#| echo: true
+fviz_dend(res.clus, 
+          cex = 0.7,  palette = "jco",               
+          rect = TRUE, rect_fill = TRUE, horiz = TRUE,
+          rect_border = "jco", labels_track_height = 0.8,
+          main = "Cluster de candidatos"
+          )
+#Puede usar el comando `res.clus$desc.var` y `res.clus$desc.ind` para analizar la caracterización de cada clúster.
+```
+
+
+
+# GRACIAS! {background-color="#ddf3ff"}
+
+# Referencias
+
+- Husson, F., Lê, S., & Pagès, J. (2017). Exploratory multivariate analysis by example using R. CRC press.
+
+- Hair, J. F., Black, W. C., Babin, B. J., Anderson, R. E., & Tatham, R. L. (2006). Multivariate data analysis 6th Edition.  https://doi.org/10.1201/9780367409913
+
+-	Aldás Manzano, J., & Uriel Jiménez, E. (2017). Análisis multivariante aplicado con R. Ediciones Paraninfo, SA. 
