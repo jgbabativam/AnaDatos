@@ -42,7 +42,7 @@ knitr::include_graphics(here::here("images/Correlacion.png"))
 
 ## Diagramas de dispersión
 
-El conjunto de datos `precios_viviendas.rds`^[Tomado de (openintro)[https://openintro-ims.netlify.app/]] contiene las siguentes variables
+Descripción del conjunto de datos `precios_viviendas.rds`^[Tomado de [openintro](https://openintro-ims.netlify.app/)]
 
 | Variable            | Descripción                                                                 |
 |---------------------|------------------------------------------------------------------------------|
@@ -51,59 +51,96 @@ El conjunto de datos `precios_viviendas.rds`^[Tomado de (openintro)[https://open
 | **banos**           | Número de baños                                                             |
 | **área**            | Área de la casa en metros cuadrados                                          |
 | **anio_construccion** | Año en que se construyó la casa                                             |
-| **lote**            | Área de toda la propiedad en metros cuadrados                                   |
+| **lote**            | Área de toda la propiedad                                   |
 
 ## Diagramas de dispersión
 
 
-## Diagramas de dispersión
+::: {.panel-tabset}
 
-```{r, fig.height=4}
+### Mapa
+
+```{r, fig.width=8, fig.height=5, fig.align='center'}
+#| echo: false
 #| eval: true
-#| echo: true
 
+# Cargar librerías necesarias
 library(pacman)
-p_load(tidyverse, haven, skimr, corrplot, psych)
+p_load(tidyverse, psych, corrplot)
 
-url <- "https://github.com/jgbabativam/AnaDatos/raw/main/datos/ENSIN.sav"
-ensin <- read_sav(url)
+# Cargar datos desde GitHub
+datos <- "https://github.com/jgbabativam/AnaDatos/raw/main/datos/precios_viviendas.rds"
+load(url(datos))
 
-ggplot(data = ensin, aes(x = Estatura, y = Peso)) +
-  geom_point() 
+precios_viviendas |> 
+  pivot_longer(cols = -precio, names_to = "variable", values_to = "valores") |> 
+  ggplot(aes(y = precio, x = valores)) +
+  geom_point(color = "steelblue") +
+  facet_wrap(~variable, scales = "free") +
+  theme_bw()
 ```
 
-## Correlación
 
+### Código
 
 ```{r}
-#| eval: true
 #| echo: true
-vars <- ensin |> select(Peso, Estatura)
+#| eval: false
 
-cor(vars, use = "complete")
-```
+# Cargar librerías necesarias
+library(pacman)
+p_load(tidyverse, psych)
 
-## Gráfico
+# Cargar datos desde GitHub
+datos <- "https://github.com/jgbabativam/AnaDatos/raw/main/datos/precios_viviendas.rds"
+load(url(datos))
 
-```{r, fig.height=4}
-#| eval: true
-#| echo: true
-r <- cor(vars, use = "complete")
-corrplot(r)
-# vignette("corrplot-intro")
+precios_viviendas |> 
+  pivot_longer(cols = -precio, names_to = "variable", values_to = "valores") |> 
+  ggplot(aes(y = precio, x = valores)) +
+  geom_point(color = "steelblue") +
+  facet_wrap(~variable, scales = "free") +
+  theme_bw()
 ```
 
 :::
 
-## Matriz de correlación
+## Diagramas de dispersión
 
-Puede ver una correlación en forma de matriz usando `pairs.panels()` del paquete `psych`
 ```{r}
-#| eval: true
 #| echo: true
-pairs.panels(vars, main="Matriz de correlaciones")
+#| eval: true
+
+pairs.panels(precios_viviendas)
+
 ```
 
+## Matriz de correlación
+
+::: {.panel-tabset}
+
+### Matriz
+
+```{r}
+#| echo: true
+#| eval: true
+
+(r <- cor(precios_viviendas, use="complete.obs"))
+
+```
+### Gráfica
+
+```{r}
+#| echo: true
+#| eval: true
+
+r <- cor(precios_viviendas, use="complete.obs")
+corrplot(r, method = "color", type = "upper", addCoef.col = "black", tl.col = "black", tl.srt = 45,
+         col = colorRampPalette(c("darkred", "white", "steelblue"))(200))
+
+```
+
+:::
 
 # ESTUDIO DE CASO {background-color="#0077b6"}
 
