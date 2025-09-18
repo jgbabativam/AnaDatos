@@ -1,0 +1,91 @@
+---
+title: "Análisis de la violencia sexual"
+subtitle: "Trabajo de Maestría" 
+author: 
+  - "Giovany Babativa"
+  - "Autor 2"
+bibliography: references.bib
+link-citations: true
+toc-title: "Tabla de contenido"
+lang: es
+output:
+  bookdown::word_document2:
+    extra_dependencies: ["booktabs", "table","xcdraw"]
+    md_extensions: +footnotes
+    reference_docx: PlantillaUN.docx
+    toc: true
+    number_sections: true
+    fig_caption: yes
+fontsize: 12pt
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+---
+
+```{r setup, include=FALSE}
+Sys.setenv(LANGUAGE="es")
+
+options(scipen=999, warn=-1)
+
+knitr::opts_chunk$set(warning=FALSE, message=FALSE, echo = FALSE)
+```
+
+
+```{r paquetes, include=FALSE}
+library(pacman)
+
+p_load(here, tidyverse, readxl, kableExtra, janitor,
+      flextable, officer, officedown, haven)
+```
+
+
+```{r funtab, include=FALSE}
+custom_tab <- function(df){
+  mytab <- df |>  
+    flextable() |> 
+    bg(bg = "#5786C0", part = "header") |> 
+    color(color = "white", part = "header") |> 
+    set_table_properties(layout = "autofit", width = 0.8) |> 
+    colformat_num(big.mark = ".", decimal.mark = ",") |> 
+    autofit()
+  return(mytab)
+}
+
+```
+
+```{r}
+url <- "https://github.com/jgbabativam/AnaDatos/raw/main/datos/VolenciaMujer.sav"
+mujeres <- read_sav(url) |> as_factor()
+```
+
+\newpage
+
+# Introducción
+
+La violencia sexual es una grave violación de los derechos humanos que afecta a personas de todas las edades, géneros y contextos socioeconómicos. Este fenómeno abarca una amplia gama de conductas que van desde el abuso verbal hasta agresiones físicas, y tiene profundas consecuencias físicas, emocionales y psicológicas para las víctimas [@tavara2006sexual].
+
+Abordar la violencia sexual requiere un enfoque integral que considere tanto la prevención como la atención a las víctimas  [@fisco2005atroces]. Las políticas públicas, la educación sobre el consentimiento y el acceso a servicios de salud mental y justicia son pilares fundamentales para mitigar sus efectos y reducir su prevalencia.
+
+Esta investigación se basa en `r nrow(mujeres)` encuestas y permite cuantificar la prevalencia de la violencia sexual en zonas de conflicto armado, medida a partir de 8 formas de violencia.
+
+# Análisis descriptivo y exploratorio
+
+En la Tabla \@ref(tab:tab1) se presenta el número de encuestas por departamento.
+
+```{r tab1, tab.cap="Número de encuestas por departamento"}
+tab1 <- mujeres |> 
+  count(DPTO, name = "Encuestas") |> 
+  arrange(-Encuestas) |> 
+  adorn_totals() |> 
+  rename(Departamento = DPTO)
+
+custom_tab(tab1)
+```
+
+
+\newpage
+
+# Referencias {.unlist .unnumbered}
+
+
+
+
+

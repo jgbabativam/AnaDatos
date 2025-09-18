@@ -42,6 +42,22 @@ knitr::include_graphics(here::here("images/Correlacion.png"))
 
 ## Diagramas de dispersión
 
+El conjunto de datos `precios_viviendas.rds`^[Tomado de (openintro)[https://openintro-ims.netlify.app/]] contiene las siguentes variables
+
+| Variable            | Descripción                                                                 |
+|---------------------|------------------------------------------------------------------------------|
+| **precio**          | Precio de venta, en USD                                                     |
+| **habitaciones**    | Número de habitaciones                                                       |
+| **banos**           | Número de baños                                                             |
+| **área**            | Área de la casa en metros cuadrados                                          |
+| **anio_construccion** | Año en que se construyó la casa                                             |
+| **lote**            | Área de toda la propiedad en metros cuadrados                                   |
+
+## Diagramas de dispersión
+
+
+## Diagramas de dispersión
+
 ```{r, fig.height=4}
 #| eval: true
 #| echo: true
