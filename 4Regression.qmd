@@ -46,12 +46,13 @@ Descripción del conjunto de datos `precios_viviendas.rds`^[Tomado de [openintro
 
 | Variable            | Descripción                                                                 |
 |---------------------|------------------------------------------------------------------------------|
-| **precio**          | Precio de venta, en USD                                                     |
+| **precio**          | Precio de venta, en millones de COP                                          |
 | **habitaciones**    | Número de habitaciones                                                       |
 | **banos**           | Número de baños                                                             |
 | **área**            | Área de la casa en metros cuadrados                                          |
 | **anio_construccion** | Año en que se construyó la casa                                             |
 | **lote**            | Área de toda la propiedad                                   |
+| **zona**            | Ubicación de la vivienda                                   |
 
 ## Diagramas de dispersión
 
@@ -73,6 +74,7 @@ datos <- "https://github.com/jgbabativam/AnaDatos/raw/main/datos/precios_viviend
 load(url(datos))
 
 precios_viviendas |> 
+  select(-zona) |> 
   pivot_longer(cols = -precio, names_to = "variable", values_to = "valores") |> 
   ggplot(aes(y = precio, x = valores)) +
   geom_point(color = "steelblue") +
@@ -96,6 +98,7 @@ datos <- "https://github.com/jgbabativam/AnaDatos/raw/main/datos/precios_viviend
 load(url(datos))
 
 precios_viviendas |> 
+  select(-zona) |> 
   pivot_longer(cols = -precio, names_to = "variable", values_to = "valores") |> 
   ggplot(aes(y = precio, x = valores)) +
   geom_point(color = "steelblue") +
@@ -111,7 +114,7 @@ precios_viviendas |>
 #| echo: true
 #| eval: true
 
-pairs.panels(precios_viviendas)
+pairs.panels(precios_viviendas |> select(-zona))
 
 ```
 
@@ -125,7 +128,7 @@ pairs.panels(precios_viviendas)
 #| echo: true
 #| eval: true
 
-(r <- cor(precios_viviendas, use="complete.obs"))
+(r <- cor(precios_viviendas |> select(-zona), use="complete.obs"))
 
 ```
 ### Gráfica
@@ -134,7 +137,7 @@ pairs.panels(precios_viviendas)
 #| echo: true
 #| eval: true
 
-r <- cor(precios_viviendas, use="complete.obs")
+r <- cor(precios_viviendas |> select(-zona), use="complete.obs")
 corrplot(r, method = "color", type = "upper", addCoef.col = "black", tl.col = "black", tl.srt = 45,
          col = colorRampPalette(c("darkred", "white", "steelblue"))(200))
 
@@ -288,22 +291,21 @@ El procedimiento se conoce como Mínimos Cuadrados Ordinarios (MCO).
 
 ## Variable explicativa cuantitativa
 
-Considere los datos del paquete `modelr`
+Considere los datos sobre los `precios_vivienda`
 
 ```{r}
 #| echo: true
 
 library(pacman)
-p_load(tidyverse, modelr, broom)
+p_load(tidyverse, psych, corrplot, broom, performance)
 
-datos <- heights
-modelo1 <- lm(income ~ education, data = datos)
+datos <- "https://github.com/jgbabativam/AnaDatos/raw/main/datos/precios_viviendas.rds"
+load(url(datos))
+
+modelo1 <- lm(precio ~ area_m2, data = precios_viviendas)
 ```
 
 . . .
-
-
-Teniendo en cuenta que el ingreso está medido en dolares al año:
 
 - Escriba la ecuación del modelo
 - ¿Cuál debe ser la interpretación de los coeficientes de regresión?
@@ -322,10 +324,10 @@ tbl_regression(modelo1, intercept = TRUE)
 ```{r, fig.height=4}
 #| echo: true
 
-ggplot(datos, aes(x = education, y = income)) +
+ggplot(precios_viviendas, aes(x = area_m2, y = precio)) +
   geom_point() +
-  labs(x = "Años de educación", y = "Ingreso anual",
-       title = "Relación entre el ingreso y los años de educación") +  
+  labs(x = "Área en m2", y = "Precio (en millones)",
+       title = "Relación entre el precio y el área") +  
   geom_smooth(method = "lm", formula = 'y ~ x') + 
   theme_classic()
 ```
@@ -382,26 +384,43 @@ tbl_regression(modelo1, intercept = TRUE) |>
 
 ## Variable explicativa categórica
 
-Podemos preguntarnos si el ingreso depende del sexo de la persona. Para ello es clave que la variable categórica sea de clase `factor`.
+Podemos preguntarnos si el precio depende de la zona donde se ubica la vivenda. Para ello es clave que la variable categórica sea de clase `factor`.
 
 . . .
 
-Revisión de la clase de la variable del sexo
+Revisión de la clase de la variable zona
+
 ```{r}
 #| echo: true
-class(datos$sex)
-levels(datos$sex)
-
-datos$sex <-relevel(datos$sex, ref = "male") 
+class(precios_viviendas$zona)
+precios_viviendas$zona <- as.factor(precios_viviendas$zona)
 ```
 
-. . .
 
+## Análisis exploratorio de la asociación
+
+```{r}
+precios_viviendas |> 
+  ggplot(aes(x = zona, y = precio, fill = zona)) +
+  geom_boxplot()+
+  theme_bw()
+```
+
+
+## Modelo de regresión
+
+</br>
 El ajuste del modelo no cambia:
+
+</br>
 
 ```{r}
 #| echo: true
-modelo2 <- lm(income ~ sex, data = datos)
+
+levels(precios_viviendas$zona)
+precios_viviendas$zona <-relevel(precios_viviendas$zona, ref = "rural") 
+
+modelo2 <- lm(precio ~ zona, data = precios_viviendas)
 ```
 
 ## Resultados
@@ -413,8 +432,8 @@ tbl_regression(modelo2, intercept = TRUE) |>
   add_glance_table(include = c(r.squared, p.value))
 ```
 
- - ¿Por qué no hay coeficiente para los hombres?. Escriba la ecuación del modelo.
- - ¿Cómo se interpreta el coeficiente de las mujeres y su valor p?
+ - ¿Por qué no hay coeficiente para la zona rural?. Escriba la ecuación del modelo.
+ - ¿Cómo se interpreta el coeficiente de la zona urbana y su valor p?
  - ¿Qué se puede decir acerca de la bondad del ajuste?
 
 
@@ -440,11 +459,13 @@ Ajuste un modelo de regresión simple que le permita identificar si el puntaje d
 
 ## Variables explicativas mixtas
 
-Ajuste un modelo para el ingreso en función de las variables de años de educación, sexo y estado civil.
+Ajuste un modelo para el ingreso en función de las variables de área m2, zona, número de habitaciones, cantidad de baños y año de construcción.
 
 . . . 
 
-$$Ingreso_i = f(Educa, Sexo, Est. Civil) + \varepsilon_i$$
+
+
+$$Precio_i = \beta_0 + \beta_1 \cdot area_i + \beta_2 \cdot zona_{urb} + \beta_3 \cdot habitaciones_i \\ +  \beta_4 \cdot baños_i + \beta_5 \cdot añoc_i + \varepsilon_i$$
 
 . . . 
 
@@ -452,7 +473,8 @@ Observe que las variables explicativas son cuantitativas y cualitativas. Verifiq
 
 ```{r}
 #| echo: true
-modelo3 <-lm(income ~ education + sex + marital, data = datos)
+modelo3 <-lm(precio ~ area_m2 + zona + habitaciones + banos + anio_construccion, 
+             data = precios_viviendas)
 ```
 
 . . .
