@@ -400,6 +400,7 @@ precios_viviendas$zona <- as.factor(precios_viviendas$zona)
 ## Análisis exploratorio de la asociación
 
 ```{r}
+#| echo: true
 precios_viviendas |> 
   ggplot(aes(x = zona, y = precio, fill = zona)) +
   geom_boxplot()+
