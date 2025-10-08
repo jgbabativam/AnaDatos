@@ -26,6 +26,10 @@ knitr::include_graphics(here::here("images/Ciclo.png"))
 knitr::include_graphics(here::here("images/Metodos.png"))
 ```
 
+## Tipos de análisis
+
+![](images/tipos.png){fig-align="center" width="90%"}
+
 # ANÁLISIS DE COMPONENTES PRINCIPALES {background-color="#0077b6"}
 
 ## Objetivo general
@@ -189,26 +193,6 @@ De manera que la matriz $\mathbf{V}$ son los ponderadores de las variables en la
 - Construya un índice a partir de la primera componente principal
 
 - Use la función `Factoshiny(datos)` y ajuste los parámetros del modelo.
-
-## Examen 2
-
-<br><br>
-
-Vea las condiciones del examen 2 en Bloque Neón y en GitHub
-
-* [Examen 2](https://github.com/jgbabativam/AnaDatos/tree/main/Talleres)
-
-Lea atentamente las instrucciones del mismo, tenga en cuenta que los ejercicios propuestos no son para entregar en un formato tipo taller, sino que le deben servir como recurso para generar el documento solicitado.
-
-## Exposición final
-
-<br><br><br>
-Lea atentamente las siguientes instrucciones y observe el siguiente vídeo (asegúrese de dar clic en la ventana externa):
-
-<br>
-
-* [Rúbrica de evaluación](https://github.com/jgbabativam/AnaDatos/tree/main/Talleres)
-* [Video tutorial](https://youtu.be/W0TdujuLJSo)
 
 # ANÁLISIS DE CORRESPONDENCIAS {background-color="#0077b6"}
 
@@ -529,6 +513,27 @@ fviz_ca_biplot(res, axes = c(1,2),
 1. Haga un análisis que le permita encontrar las diferencias y similaridades entre los candidatos Galán, Oviedo, Molano y Vargas.
 2. ¿Cuáles son los aspectos que diferencian al candidato Lara frente a los candidatos Galán y Oviedo?.
 3. ¿Que modificación debe realizar si su objetivo se centra en encontrar los aspectos que diferencian al candidato Lara frente a los candidatos Molano y Vargas?.
+
+
+## Examen 2
+
+<br><br>
+
+Vea las condiciones del examen 2 en Bloque Neón y en GitHub
+
+* [Examen 2](https://github.com/jgbabativam/AnaDatos/tree/main/Talleres)
+
+Lea atentamente las instrucciones del mismo, tenga en cuenta que los ejercicios propuestos no son para entregar en un formato tipo taller, sino que le deben servir como recurso para generar el documento solicitado.
+
+## Exposición final
+
+<br><br><br>
+Lea atentamente las siguientes instrucciones y observe el siguiente vídeo (asegúrese de dar clic en la ventana externa):
+
+<br>
+
+* [Rúbrica de evaluación](https://github.com/jgbabativam/AnaDatos/tree/main/Talleres)
+* [Video tutorial](https://youtu.be/W0TdujuLJSo)
 
 # GRACIAS! {background-color="#ddf3ff"}
 
