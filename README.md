@@ -10,7 +10,7 @@ Materiales del curso de analítica de datos aplicada a estudios sobre desarrollo
 | Visualización de datos y análisis exploratorio |[Video 14 de Agosto](https://youtu.be/hF9GphkRH74) <br/>[Video 21 de Agosto](https://youtu.be/_3k10rWXqkc)  | [Ver material](https://jgbabativam.github.io/AnaDatos/3Exploratorio.html) |
 | Regresión Lineal | [Video 18 de Septiembre](https://youtu.be/GkFBjb-PGBs) | [Ver material](https://jgbabativam.github.io/AnaDatos/4Regression.html) |
 | Regresión logística | [Video 25 de Septiembre](https://youtu.be/-X_cCi0gEO4) | [Ver material](https://jgbabativam.github.io/AnaDatos/5LogitRegression.html) |
-| Introducción a las técnicas multivariantes | - | [Ver material](https://jgbabativam.github.io/AnaDatos/6PCA.html) |
+| Introducción a las técnicas multivariantes | [Video 09 de Octubre](https://youtu.be/fL8YIyAy0W4)| [Ver material](https://jgbabativam.github.io/AnaDatos/6PCA.html) |
 | Análisis clúster | - | [Ver material](https://jgbabativam.github.io/AnaDatos/7Cluster.html) |
 
 
