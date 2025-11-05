@@ -157,6 +157,100 @@ Ingrese a la siguiente página [Naftali](https://www.naftaliharris.com/blog/visu
 
 4. Volver a (2) y repetir (2) y (3) hasta que tengamos todos los elementos queden agrupados en un solo grupo.
 
+## Geometría del Análisis Clúster
+
+Considere los siguientes datos artificiales:
+
+```{r}
+#| echo: true
+datos <- data.frame(
+  Individuo = c("A", "B", "C", "D", "E", "F"),
+  gastos = c(5, 6, 15, 16, 25, 30),
+  educa = c(5, 6, 14, 15, 20, 19)
+)
+print(datos)
+```
+
+## Geometría del Análisis Clúster
+
+Considere los siguientes datos artificiales:
+
+```{r}
+#| echo: true
+library(tidyverse)
+
+ggplot(datos, aes(x = gastos, y = educa, label = Individuo)) +
+  geom_point(size = 3, color = "steelblue") +
+  geom_text(vjust = -1) +
+  labs(x = "Gastos", y = "Años de Educación") +
+  theme_bw()
+```
+## Pasos para el análisis
+
+1. Definir claramente los objetivos
+2. Seleccionar las variables
+3. Estandarizar las variables
+4. Medidas de distancia
+5. Algoritmo
+6. Agrupación
+7. Validación
+
+## Estandarizar 
+
+$$z_{ij} = \frac{x_{ij} - \bar{x}_j}{s_j}$$
+
+```{r}
+#| echo: true
+
+(datos_z <- datos |> 
+            mutate(gastoz = (gastos - mean(gastos))/sd(gastos),
+                   educaz = (educa - mean(educa))/sd(educa)))
+
+```
+
+## Distancias
+
+Distancia Euclídea: $$d_{ij}=\sqrt{\sum_{k=1}^p(x_{ik}-x_{jk})^2}$$ 
+
+```{r}
+#| echo: true
+
+(distancias <- dist(datos_z[, c("gastoz", "educaz")]))
+```
+
+## Algoritmo de aglomeración jerárquico
+
+```{r}
+#| echo: true
+hc_single <- hclust(distancias, method = "single")
+
+plot(hc_single, labels = datos$Individuo, main = "Clúster jerárquico (Vecino más cercano)",
+     sub = "", xlab = "", ylab = "Distancia")
+rect.hclust(hc_single, k = 2, border = "red")
+```
+
+## Algoritmo de k-medias
+
+```{r}
+#| echo: true
+#| eval: false
+
+set.seed(123)  
+km <- kmeans(datos_z[, c("gastoz", "educaz")], centers = 2)
+
+datos_z$cluster <- as.factor(km$cluster)
+
+centros <- as.data.frame(km$centers)
+colnames(centros) <- c("gastoz", "educaz")
+ggplot(datos_z, aes(x = gastoz, y = educaz, color = cluster, label = Individuo)) +
+  geom_point(size = 4) +
+  geom_text(vjust = -1) +
+  geom_point(data = centros, aes(x = gastoz, y = educaz),
+             color = "black", size = 5, shape = 8,
+             inherit.aes = FALSE) +
+  theme_bw()
+
+```
 
 # EJEMPLOS {background-color="#0077b6"}
 
@@ -402,7 +496,11 @@ fviz_dend(res.clus,
 #Puede usar el comando `res.clus$desc.var` y `res.clus$desc.ind` para analizar la caracterización de cada clúster.
 ```
 
+# Ejercicios
 
+1. Use los datos electorales para realizar una caracterización usando otras variables categóricas.
+
+2. Use los datos del estudio DASS para realizar una caracterización de los docentes. 
 
 # GRACIAS! {background-color="#ddf3ff"}
 
