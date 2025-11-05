@@ -498,9 +498,11 @@ fviz_dend(res.clus,
 
 # Ejercicios
 
-1. Use los datos electorales para realizar una caracterización usando otras variables categóricas.
+1. Con los datos de Violencia Sexual, realice una caracterización de las mujeres y las formas de violencia.
 
-2. Use los datos del estudio DASS para realizar una caracterización de los docentes. 
+2. Use los datos electorales para realizar una caracterización usando otras variables categóricas.
+
+3. Use los datos del estudio DASS para realizar una caracterización de los docentes. 
 
 # GRACIAS! {background-color="#ddf3ff"}
 
