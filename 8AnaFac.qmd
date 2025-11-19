@@ -166,10 +166,147 @@ KMO(df)
 
 
 Valores cercanos a 1 indican que el análisis factorial es apropiado; valores bajos (por debajo de 0.5)
+
+## Prueba de esfericidad - Bartlett
+
+Consiste en suponer que todas las variables tienen la misma varianza y no están correlacionadas.
+
+$$ H_0: \mathbf{V} = \sigma^2 \mathbf{I}$$
+$$ H_1: \mathbf{V} \neq \sigma^2 \mathbf{I}$$
+
+. . . 
+
+La medida de adecuación muestral se hace sobre $\mathbf{R}$, Box (1949) y Bartlett (1954):
+
+$$\chi^2 = - \left[n-1-\frac{1}{6}(2p+5)\right]\ln|\mathbf{R}|$$
+
+
+## Prueba de esfericidad - Bartlett
+
+En el paquete `psych` se calcula con la función `cortest.bartlett()`
+
+
+```{r}
+#| echo: true
+cortest.bartlett(df)
+```
+
+Dado que el $p$-valor es menor que un nivel $\alpha$ entonces se concluye que hay presencia suficiente de asociación, así que los datos son adecuados para un análisis factorial.
+
+## Extracción y rotación
+
+Los factores se extraen con métodos de mínimos cuadrados o máxima verosimilitud. La idea es minimizar la suma de cuadrados de las diferencias entre la matriz de correlación y la matriz reproducida al ignorar la diagonal.
+
+![](images/rotacion.jpg){fig-align="center" width="80%"}
+
+La rotación (ortogonal/oblicua) busca dar un panorama más claro de la información contenida en los factores.
+
+
+## Elección del número de factores
+
+La cantidad de factores a retener depende del objetivo del análisis:
+
+<br> 
+
+* **Validez de constructos**: se define a partir del modelo teórico a validar.
+
+* **Exploratorio**: se usan tantos como valores propios mayores que 1, criterios de codo o regla del 75% de varianza explicada.
+
+## Ejemplo
+
+El instrumento del DASS tiene tres (3) constructos: Depresión, Ansiedad y Estrés.
+
+<br> 
+
+
+```{r}
+#| echo: true
+ev <- eigen(cor(df)) 
+ev$values
+```
+
+<br> 
+
+El modelo factorial también encuentra 3 factores con valor propio mayor que 1.
+
+## Modelo teórico
+
+De acuerdo con el DASS 21, los ítems por dimensión son:
+
+* Depresión: 3, 5, 10, 13, 16, 17 y 21.
+* Ansiedad: 2, 4, 7, 9, 15, 19 y 20.
+* Estrés: 1, 6, 8, 11, 12, 14 y 18.
+
+## Extracción
+
+```{r}
+#| echo: true
+res <- factanal(df, factors = 3, rotation="varimax")
+print(res, digits=2, cutoff=0.4, sort=FALSE)
+```
+
+## Visualización
+
+La matriz de cargas puede diagramarse en rutas, así:
+
+```{r}
+#| echo: true
+cargas <- res$loadings
+fa.diagram(cargas)
+```
+
+## Análisis de la fiabilidad
+
+La **consistencia interna** se mide usando el coeficiente de alpha de Cronbach propuesto en 1951:
+
+$$\alpha =\frac{K \bar\rho}{1+(K-1)\bar\rho} $$
+
+En donde $K$ es la cantidad de ítems y $\bar\rho$ es la correlación promedio entre los ítems.
+
+## Análisis de la fiabilidad: Depresión
+
+```{r}
+#| echo: true
+items <- c(3, 5, 10, 13, 16, 17, 21)
+depresion <- df |> 
+             select(any_of(paste0("Item", items)))
+
+alpha(depresion)  
+```
+
+## Análisis de la fiabilidad: Ansiedad
+
+```{r}
+#| echo: true
+
+items <- c(2, 4, 7, 9, 15, 19, 20)
+ansiedad <- df |> 
+            select(any_of(paste0("Item", items)))
+
+alpha(ansiedad)  
+```
+
+## Análisis de la fiabilidad: Estrés
+
+```{r}
+#| echo: true
+items <- c(1, 6, 8, 11, 12, 14, 48)
+estres <- df |> 
+          select(any_of(paste0("Item", items)))
+
+alpha(estres)             
+ 
+```
+
+
+# GRACIAS! {background-color="#ddf3ff"}
+
 # Referencias
 
-- Husson, F., Lê, S., & Pagès, J. (2017). Exploratory multivariate analysis by example using R. CRC press.
+- Cronbach, L. J. (1951). Coefficient alpha and the internal structure of tests. Psychometrika, 16(3), 297–334.
 
 - Hair, J. F., Black, W. C., Babin, B. J., Anderson, R. E., & Tatham, R. L. (2006). Multivariate data analysis 6th Edition.  https://doi.org/10.1201/9780367409913
+
+- Fabrigar, L. R., & Wegener, D. T. (2012). Exploratory Factor Analysis. Oxford University Press.
 
 -	Aldás Manzano, J., & Uriel Jiménez, E. (2017). Análisis multivariante aplicado con R. Ediciones Paraninfo, SA. 
