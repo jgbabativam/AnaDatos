@@ -1,0 +1,175 @@
+---
+title: "Analítica de datos aplicada a estudios sobre desarrollo"
+subtitle: "Análisis Factorial"
+author: "[Giovany Babativa, PhD](http://jgbabativam.rbind.io/)"
+format: 
+  gbabativa-revealjs:
+    footer: "Diapositivas disponibles en [GitHub](https://github.com/jgbabativam)."
+incremental: false
+embed-resources: true
+highlight-style: dracula
+---
+
+## Proceso de analítica
+
+
+```{r, out.width= '100%'}
+knitr::include_graphics(here::here("images/Ciclo.png"))
+```
+[Wickham, H. y otros (2023)](https://r4ds.hadley.nz/)
+
+# MÉTODOS MULTIVARIANTES {background-color="#0077b6"}
+
+## Modelos de analítica
+
+```{r,  out.width= '110%'}
+knitr::include_graphics(here::here("images/Metodos.png"))
+```
+
+# ANÁLISIS DE FACTORES COMUNES {background-color="#0077b6"}
+
+## Análisis Factorial
+
+<br> 
+
+A veces no es posible medir de forma directa a las variables de interés. Por ejemplo, ideación suicida, inteligencia, depresión, calidad de vida, etc.
+
+En estos casos se recoge información sobre variables indirectas que se encuentran relacionadas con los conceptos o constructos de interés, los cuales reciben el nombre de **Factores Latentes** y el método se conoce como **análisis factorial**. 
+
+## Qué es el análisis factorial
+
+Es una técnica para identificar factores comunes. Por ejemplo: 
+
+1. Las competencias que pueden ser medidas en las diferentes asignaturas se dividen en razonamiento cuantitativo, lectura crítica, comunicación escrita, competencias ciudadanas e idiomas (ICFES).
+
+2. Algunos síntomas clínicos de los enfermos mentales se clasifican en síntomas de tipo neurótico y síntomas de tipo psicótico.
+
+3. Los ítems del instrumento o test de BURNOUT conforman tres dimensiones latentes: autoestima, agotamiento y despersonalización. 
+
+## Inicios
+
+Spearman creía que existe un factor subyacente, denominado **factor G**, que influye en la capacidad de una persona para realizar diversas tareas.
+
+::: columns
+::: {.column width="40%"}
+
+<br> 
+
+![](images/Spearman.jpg){fig-align="center" width="80%"}
+
+:::
+
+::: {.column width="60%"}
+
+Si alguien es bueno resolviendo acertijos, también podría ser bueno comprendiendo ideas complejas o aprendiendo nuevas habilidades. Este factor de inteligencia general, o factor G, es la habilidad innata que nos ayuda a desempeñarnos bien ante diversos desafíos mentales.
+
+:::
+
+:::
+
+## La teoría de los dos factores de la inteligencia
+
+La teoría de los dos factores de Spearman postula que la inteligencia se compone de dos tipos de factores: un factor general (G) y una habilidad específica (S).
+
+* **Factor G**: representa una inteligencia general que influye en el desempeño en una amplia variedad de tareas cognitivas, abarcando habilidades como el razonamiento, la resolución de problemas, el aprendizaje y la comprensión de ideas complejas. 
+
+* **Factor S**: son propios de actividades cognitivas particulares, representan habilidades especializadas que no se generalizan a diferentes tareas. 
+
+##  Estructura factorial
+
+::: columns
+::: {.column width="50%"}
+
+
+![](images/estrFact.jpg){fig-align="center" width="100%"}
+
+:::
+
+::: {.column width="50%"}
+
+![](images/matriz.jpg){fig-align="center" width="60%"}
+
+:::
+
+:::
+
+Donde $F_1, \ldots, F_q$ son los factores comunes con $q<p$; mientras que $U_1, \ldots, U_p$ son los factores únicos. De esta manera los $q+p$ factores son variables incorrelacionadas.
+
+## Estructura factorial
+
+![](images/comunalidad.jpg){fig-align="center" width="120%"}
+<br><br>  
+
+$h_i^2= a_{i1}^2+\ldots+a_{iq}^2$ y representa la proporción de información de la variable $i$ que es explicada por los factores comunes del modelo - **COMUNALIDAD**. Mientras que $d_i^2$ es la contribución a la **UNICIDAD**.
+
+## Comunalidad
+
+
+Factores comunes entre variables. $X_1$, $X_3$ y $X_4$ comparten el factor 1, $X_6$ y $X_2$ comparten el factor 2 y $X_5$ coincide con el factor 3
+
+
+![](images/diagrama.png){fig-align="center" width="50%"}
+
+* Región sombreada: Comunalidad
+* Región sin sombra: unicidad
+
+# EJEMPLO {background-color="#0077b6"}
+
+## DASS 21
+
+- El instrumento del DASS 21 permite construir una escala de Depresión, Ansiedad y Estrés (DASS-21). Investigue más sobre su contrucción y propiedades psicométricas. Una versión del instrumento puede ser consultada [aquí](https://blogs.konradlorenz.edu.co/files/dass-21.pdf)
+
+- Explore el conjunto del datos `DASS21.sav` el cual contiene los resultados para una muestra de 800 personas de Colombia realizada en el año 2022.
+
+```{r}
+#| echo: true
+library(pacman)
+p_load(tidyverse, haven, psych)
+
+url <- "https://github.com/jgbabativam/AnaDatos/raw/main/datos/DASS21.sav"
+dass <- read_sav(url)
+```
+
+Puede usar `lapply(dass, function(x) attributes(x)$label)` para ver las etiquetas de las preguntas.
+
+
+## Adecuación Muestral
+
+**MODELO FACTORIAL**:  
+
+$$\mathbf{X} = \mathbf{AF} + \mathbf{DU}$$
+
+. . . 
+
+La matriz de correlación de las variables observadas es:
+
+$$\mathbf{R} = \mathbf{AA'}+\mathbf{D}^2$$
+La matriz de correlación en el espacio de dimensión reducida es:
+
+. . . 
+
+$$\mathbf{R^*} = \mathbf{AA'}$$
+
+La diagonal contiene las comunalidades. La matriz A es la matriz de saturaciones o cargas a ser estimadas
+
+## Medida de KMO
+
+La medida de KMO (Kaiser-Meyer-Olkin) evalúa si los datos son adecuados para realizar un análisis factorial. Representa la proporción de varianza común entre las variables frente a la varianza única.
+
+
+```{r}
+#| echo: true
+df <- dass |> select(starts_with("Item"))
+
+KMO(df)
+```
+
+
+Valores cercanos a 1 indican que el análisis factorial es apropiado; valores bajos (por debajo de 0.5)
+# Referencias
+
+- Husson, F., Lê, S., & Pagès, J. (2017). Exploratory multivariate analysis by example using R. CRC press.
+
+- Hair, J. F., Black, W. C., Babin, B. J., Anderson, R. E., & Tatham, R. L. (2006). Multivariate data analysis 6th Edition.  https://doi.org/10.1201/9780367409913
+
+-	Aldás Manzano, J., & Uriel Jiménez, E. (2017). Análisis multivariante aplicado con R. Ediciones Paraninfo, SA. 
