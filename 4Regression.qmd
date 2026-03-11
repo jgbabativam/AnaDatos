@@ -42,17 +42,20 @@ knitr::include_graphics(here::here("images/Correlacion.png"))
 
 ## Diagramas de dispersión
 
-Descripción del conjunto de datos `precios_viviendas.rds`^[Tomado de [openintro](https://openintro-ims.netlify.app/)]
+**Conjunto de datos:** `precios_viviendas.rds`  
+Fuente: [openintro](https://openintro-ims.netlify.app/)
 
-| Variable            | Descripción                                                                 |
-|---------------------|------------------------------------------------------------------------------|
-| **precio**          | Precio de venta, en millones de COP                                          |
-| **habitaciones**    | Número de habitaciones                                                       |
-| **banos**           | Número de baños                                                             |
-| **área**            | Área de la casa en metros cuadrados                                          |
-| **anio_construccion** | Año en que se construyó la casa                                             |
-| **lote**            | Área de toda la propiedad                                   |
-| **zona**            | Ubicación de la vivienda                                   |
+
+| Variable | Descripción |
+|:--|:--|
+| **precio** | Precio de venta *(millones de COP)* |
+| **habitaciones** | Número de habitaciones |
+| **baños** | Número de baños |
+| **área** | Área de la vivienda *(m²)* |
+| **año_construcción** | Año de construcción |
+| **lote** | Área total del terreno |
+| **zona** | Ubicación o sector de la vivienda |
+
 
 ## Diagramas de dispersión
 
@@ -122,15 +125,6 @@ pairs.panels(precios_viviendas |> select(-zona))
 
 ::: {.panel-tabset}
 
-### Matriz
-
-```{r}
-#| echo: true
-#| eval: true
-
-(r <- cor(precios_viviendas |> select(-zona), use="complete.obs"))
-
-```
 ### Gráfica
 
 ```{r}
@@ -140,6 +134,16 @@ pairs.panels(precios_viviendas |> select(-zona))
 r <- cor(precios_viviendas |> select(-zona), use="complete.obs")
 corrplot(r, method = "color", type = "upper", addCoef.col = "black", tl.col = "black", tl.srt = 45,
          col = colorRampPalette(c("darkred", "white", "steelblue"))(200))
+
+```
+
+### Matriz
+
+```{r}
+#| echo: true
+#| eval: true
+
+(r <- cor(precios_viviendas |> select(-zona), use="complete.obs"))
 
 ```
 
@@ -205,29 +209,25 @@ En cada caso indique si el objetivo del modelo debe ser explicativo o predictivo
 
 ## Especificación del modelo
 
-. . .
-\vspace{2cm}
+</br>
 
 ![](images/EspecificaM.png){fig-align="center"}
 
 ## ¿Es un buen modelo?
 
-. . .
-\vspace{2cm}
+</br></br>
 
 ![](images/EspecificaM2.png){fig-align="center"}
 
 ## Análisis de los residuales
 
-. . .
-\vspace{2cm}
+</br>
 
 ![](images/EspecificaM3.png){fig-align="center"}
 
 ## Pronósticos
 
-. . .
-\vspace{2cm}
+</br>
 
 ![](images/EspecificaM4.png){fig-align="center"}
 
@@ -248,7 +248,7 @@ Algunos modelos son:
 ## Formulación del modelo
 
 <div style="text-align: justify;">
-Sea $\mathcal{D}=\{(y_i, \mathbf{x}_i): i=1,\ldots,n\}$, con $y_i$ la $i$-ésima respuesta medida en una escala continua; $\mathbf{x}_i=(x_{i1},\ldots,x_{ip})^t \in \mathbb{R}^p$ es el vector de variables predictoras; y $n$ $(\gg p)$ es el tamaño de la muestra. El modelo lineal se especifica así:
+Sea $\mathcal{D}=\{(y_i, \mathbf{x}_i): i=1,\ldots,n\}$, con $y_i$ la $i$-ésima respuesta medida en una escala continua; $\mathbf{x}_i=(x_{i1},\ldots,x_{ip})^T \in \mathbb{R}^p$ es el vector de variables predictoras; y $n$ $(\gg p)$ es el tamaño de la muestra. El modelo lineal se especifica así:
 </div>
 
 . . .
