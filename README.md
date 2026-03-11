@@ -17,9 +17,9 @@ interactivos.
 El proceso de investigación puede entenderse como la articulación de
 cuatro etapas:
 
-1.  Formulación de la pregunta de investigación\
-2.  Recolección de datos\
-3.  **Análisis de datos**\
+1.  Formulación de la pregunta de investigación
+2.  Recolección de datos
+3.  **Análisis de datos**
 4.  Comunicación de resultados
 
 Este curso se centra en la **fase de análisis de datos**, presentando
@@ -36,8 +36,8 @@ A lo largo del curso se introducen métodos para:
 El curso utiliza **R** como herramienta principal para el análisis de
 datos y la generación de documentos reproducibles.
 
-Al finalizar el curso, los estudiantes estarán en capacidad de **aplicar
-estas técnicas en proyectos de investigación o consultoría**.
+Al finalizar el curso, los estudiantes estarán en capacidad de aplicar
+estas técnicas en proyectos de investigación o consultoría.
 
 ------------------------------------------------------------------------
 
@@ -46,13 +46,13 @@ estas técnicas en proyectos de investigación o consultoría**.
 Al finalizar el curso, los estudiantes podrán:
 
 -   Utilizar **R** para el análisis de datos.
--   Realizar **análisis exploratorio de datos**.
--   Aplicar **modelos de regresión lineal y logística**.
--   Implementar **técnicas multivariadas** como PCA, análisis de correspondencias
+-   Realizar análisis exploratorio de datos.
+-   Aplicar modelos de regresión lineal y logística.
+-   Implementar técnicas multivariadas como PCA, análisis de correspondencias
     y clúster.
 -   Interpretar y comunicar resultados cuantitativos.
--   Aplicar herramientas de análisis de datos a **problemas del
-    desarrollo**.
+-   Aplicar herramientas de análisis de datos a problemas del
+    desarrollo.
 
 ------------------------------------------------------------------------
 
@@ -80,7 +80,7 @@ Video guía de instalación:
 | Bienvenida | [Video de bienvenida](https://youtu.be/ySKIVbcQrhk)<br/>[Instalación de R](https://youtu.be/TKplIIwwdEk) | [Ver material](https://jgbabativam.github.io/AnaDatos/0Intro.html) |
 | Introducción a R (parte 1) | [Introducción a R](https://youtu.be/TlOKN0UzbB0) <br/>[Importar datos](https://youtu.be/FkpIpLgI7es) | [Ver material](https://jgbabativam.github.io/AnaDatos/1Intro.html) |
 | Introducción a R (parte 2) | [Operador pipeline](https://youtu.be/8V1IzCRsSd8) <br/>[Seleccionar filas o columnas](https://youtu.be/FduWB2BRcBo) <br/> [Crear nuevas columnas](https://youtu.be/5hoBTWEpDbo) <br/> [Estadísticos de resumen](https://youtu.be/NTrjYX0rf9Q) <br/> [Documentos Reproducibles](https://youtu.be/dI11RlFP99o)| [Ver material](https://jgbabativam.github.io/AnaDatos/2Intro.html) |
-| Visualización de datos y análisis exploratorio |[Video 14 de Agosto](https://youtu.be/hF9GphkRH74) <br/>[Video 21 de Agosto](https://youtu.be/_3k10rWXqkc)  | [Ver material](https://jgbabativam.github.io/AnaDatos/3Exploratorio.html) |
+| Visualización de datos y análisis exploratorio | - | [Ver material](https://jgbabativam.github.io/AnaDatos/3Exploratorio.html) |
 | Regresión Lineal | - | [Ver material](https://jgbabativam.github.io/AnaDatos/4Regression.html) |
 | Regresión logística | -  | [Ver material](https://jgbabativam.github.io/AnaDatos/5LogitRegression.html) |
 | Introducción a las técnicas multivariantes |  | [Ver material](https://jgbabativam.github.io/AnaDatos/6PCA.html) |
