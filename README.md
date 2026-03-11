@@ -1,6 +1,6 @@
-# Analítica de Datos aplicada a estudios sobre desarrollo
+# Analítica de Datos Aplicada a Estudios sobre Desarrollo
 
-Repositorio con los materiales del curso **Analítica de Datos aplicada a
+Repositorio con los materiales del curso **Analítica de datos aplicada a
 estudios sobre desarrollo**.
 
 🌐 **Página web del curso:**\
