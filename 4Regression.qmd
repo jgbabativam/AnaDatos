@@ -94,7 +94,7 @@ precios_viviendas |>
 
 # Cargar librerías necesarias
 library(pacman)
-p_load(tidyverse, psych)
+p_load(tidyverse, psych, corrplot)
 
 # Cargar datos desde GitHub
 datos <- "https://github.com/jgbabativam/AnaDatos/raw/main/datos/precios_viviendas.rds"
@@ -153,7 +153,7 @@ corrplot(r, method = "color", type = "upper", addCoef.col = "black", tl.col = "b
 
 ## DASS 21
 
-- El instrumento del DASS 21 permite construir una escala de Depresión, Ansiedad y Estrés (DASS-21). Investigue más sobre su contrucción y propiedades psicométricas. Una versión del instrumento puede ser consultada [aquí](https://blogs.konradlorenz.edu.co/files/dass-21.pdf)
+- El instrumento del DASS 21 permite construir una escala de Depresión, Ansiedad y Estrés (DASS-21). Investigue más sobre su contrucción y propiedades psicométricas. Una versión del instrumento puede ser consultada [aquí](https://la.konradlorenz.edu.co/wp-content/uploads/2025/09/dass-21-2.pdf)
 
 - Explore el conjunto del datos `DASS21.sav` el cual contiene los resultados para una muestra de 800 personas de Colombia realizada en el año 2022.
 
@@ -297,7 +297,7 @@ Considere los datos sobre los `precios_vivienda`
 #| echo: true
 
 library(pacman)
-p_load(tidyverse, psych, corrplot, broom, performance)
+p_load(tidyverse, psych, corrplot, broom, performance, gtsummary)
 
 datos <- "https://github.com/jgbabativam/AnaDatos/raw/main/datos/precios_viviendas.rds"
 load(url(datos))
