@@ -242,7 +242,7 @@ $$OR = \frac{Odds_{\text{Madre sin estudios}}}{Odds_{\text{Madre bachiller}}} = 
 
 . . . 
 
-Es 11 veces más probable que un niño cuya madre no tiene estudios abandone sus estudios en comparación con los niños cuyas madres tienen un nivel de bachillerato.
+Los  *odds* de deserción de un niño cuya madre no tiene estudios son 11.2 veces mayores que los *odds* de deserción de un niño cuya madre tiene un nivel de bachillerato.
 
 
 ## Modelo de regresión logística
