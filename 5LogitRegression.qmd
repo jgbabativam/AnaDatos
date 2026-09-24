@@ -10,6 +10,21 @@ embed-resources: true
 highlight-style: dracula
 ---
 
+## Sobre Mi
+
+<div style="text-align: justify;">
+
+PhD en Estadística, MSc en Analytics & Big Data, MSc en Estadística. Con 20 años de experiencia, actual director de analítica en el CNC, miembro del comité de expertos en pobreza en el DANE y consultor de la División de Estadística de la CEPAL. Ex-decano de la Facultad de Estadística USTA, ex-director de operaciones en el ICFES, PM CEV ...
+
+> Puedes encontrarme en:
+
+- {{< ai google-scholar >}} [Google scholar](https://scholar.google.es/citations?user=2NJRNg8AAAAJ&hl=es)
+- {{< fa brands github >}} [GitHub. https://github.com/jgbabativam](https://github.com/jgbabativam)
+- {{< fa brands linkedin >}} [linkedin](https://www.linkedin.com/in/giovany-babativa-marquez/?originalSubdomain=co)
+- {{< fa solid envelope >}} j.babativamarquez@uniandes.edu.co
+
+</div>
+
 ## Proceso de analítica
 
 
@@ -103,7 +118,7 @@ Sea $\mathcal{D}=\{(y_i, \mathbf{x}_i): i=1,\ldots,n\}$, con $y_i$ la $i$-ésima
 
 <br>
 
-$$y_i = \beta_0 + \beta_1 x_{i1} + \cdots + \beta_p x_{ip} + \varepsilon_i \hspace{0.25cm} \text{con  } \varepsilon_i \overset{\text{iid}}{\sim} \mathcal{N}(\mu, \sigma^2)$$
+$$y_i = \beta_0 + \beta_1 x_{i1} + \cdots + \beta_p x_{ip} + \varepsilon_i \hspace{0.25cm} \text{con  } \varepsilon_i \overset{\text{iid}}{\sim} \mathcal{N}(0, \sigma^2)$$
 
 # REGRESIÓN NO LINEAL {background-color="#0077b6"}
 
@@ -157,7 +172,7 @@ Se usan cuando la variable dependiente es de tipo discreto, nominal o multinomia
 
 - La clasificación del nivel de estrés en la escala: Sin estrés, con estrés leve, estrés moderado, estrés severo y estrés extremadamente severo. 
 
-- Clasifiación de pobreza: Con pobreza extrema, en estado de pobreza, no pobre. 
+- Clasificación de pobreza: Con pobreza extrema, en estado de pobreza, no pobre. 
 
 En este caso: 
 
@@ -225,12 +240,12 @@ $$Odds_{A} = \frac{0.71}{1-0.71} = 2.45$$
 
 . . .
 
-Por cada niño que no deserta, hay casi 3 que si lo hacen cuando la madre no tienen ningún nivel de estudios.
+Por cada niño que no deserta, hay casi 3 que si lo hacen cuando la madre no tiene ningún nivel de estudios.
 
 
 ## Razón de Riesgos (Odds-Ratio - OR)
 
-$$OR = \frac{Odss_A}{Odds_B}$$
+$$OR = \frac{Odds_A}{Odds_B}$$
 
 . . .
 
@@ -263,7 +278,7 @@ $$\ln\left(\frac{\pi(x)}{1-\pi(x)}\right) = \beta_0+\beta_1x_1+\beta_2x_2+\cdots
 :::: {.columns}
 
 ::: {.column width="50%"}
-La estimación de los parámetros debe hacerse por métodos iterativos debido a que la función de pérdida no es convexa.
+Los parámetros se estiman por máxima verosimilitud. Como las ecuaciones de estimación no tienen una solución cerrada (una fórmula explícita como en MCO), se usan métodos iterativos:
 
 - Newton – Raphson
 - Descenso del gradiente
@@ -370,7 +385,7 @@ Evalúa la capacidad predictiva del modelo. Se eligen varios puntos de corte y s
 
 ## DASS 21
 
-- El instrumento del DASS 21 permite construir una escala de Depresión, Ansiedad y Estrés (DASS-21). Investigue más sobre su construcción y propiedades psicométricas. Una versión del instrumento puede ser consultada [aquí](https://blogs.konradlorenz.edu.co/files/dass-21.pdf)
+- El instrumento del DASS 21 permite construir una escala de Depresión, Ansiedad y Estrés (DASS-21). Investigue más sobre su construcción y propiedades psicométricas. Una versión del instrumento puede ser consultada [aquí](https://la.konradlorenz.edu.co/wp-content/uploads/2025/09/dass-21-2.pdf)
 
 - Explore el conjunto del datos `DASS21.sav` el cual contiene los resultados para una muestra de 800 personas de Colombia realizada en el año 2022.
 
@@ -387,9 +402,20 @@ dass <- read_sav(url)
 Puede usar `lapply(dass, function(x) attributes(x)$label)` para ver las etiquetas de las preguntas.
 
 
+## Variables del conjunto `DASS21` {.smaller}
+
+| Variables | Descripción | Escala |
+|:----------|:------------|:-------|
+| `sexo` | Sexo | Hombre / Mujer |
+| `P1_1` a `P1_6` | Satisfacción con: vivienda, trabajo, amigos, vecinos, barrio y familia | 1: Muy insatisfecho, ..., 5: Muy satisfecho (8: No tiene, se convierte en `NA`) |
+| `P2_1` a `P2_8` | Participación en: actividades recreativas, culturales, socialización de experiencias, *coaching*, redes académicas, comunidades de aprendizaje, prácticas restaurativas y entrenamiento socioemocional | SÍ / NO |
+| `P3_1` a `P3_7` | Frecuencia de actividades culturales, deportivas y de viajes | 1: Nunca, ..., 4: Mensual |
+| `Item1` a `Item21` | Ítems del instrumento DASS-21 | 0 a 3 |
+| `DEPRESION`, `ANSIEDAD`, `ESTRES` | Puntaje de cada escala | 0 a 21 |
+
 ## Factores de riesgo
 
-De acuerdo con la escala DASS, una persona con un puntaje de 8 o más puede ser considerada con problemas de depresesión, ansiedad o estrés. 
+En la escala de ansiedad del DASS-21, un puntaje de 8 o más corresponde a un nivel de **ansiedad severa o extremadamente severa** (ver la variable `Nivel_ANSIEDAD`).
 
 
 Ajuste un modelo que le permita identificar los **factores de riesgo** y los **factores de protección** contra la ansiedad, para ello utilice las variables del sexo, satisfacción y participación que se encuentran dentro del instrumento aplicado.
@@ -403,12 +429,14 @@ Ajuste un modelo que le permita identificar los **factores de riesgo** y los **f
 prepara <- dass |> 
            mutate(ansi = ifelse(ANSIEDAD >= 8, 1, 0)) |> 
            mutate(sexo = as_factor(sexo),
-                  across(starts_with("P2"), ~relevel(as_factor(.), ref = "NO"))) 
+                  across(starts_with("P1"), ~replace(., . == 8, NA)),
+                  across(starts_with("P2"), ~relevel(as_factor(.), ref = "NO"))) |>
+           drop_na(starts_with("P1")) 
 ```
 
 <div style="margin-top: 1cm"></div>
 
-Explore el conjunto de datos e identifique las diferencias frente a los datos iniciales.
+Explore el conjunto de datos e identifique las diferencias frente a los datos iniciales. ¿Por qué se convierte la opción *No tiene* (código 8) en `NA`?
 
 ## Análisis exploratorio: Box-plot
 
@@ -418,7 +446,7 @@ Explore el conjunto de datos e identifique las diferencias frente a los datos in
 ggplot(prepara, aes(x = as.factor(ansi), y = P1_3, fill = as.factor(ansi))) +
   geom_boxplot() +
   labs(x = "Ansiedad (0 = No, 1 = Sí)", y = label_attribute(prepara$P1_3)) +
-  ylim(1, 8) +
+  ylim(1, 5) +
   theme_minimal() +
   theme(legend.position = "none") 
 ```
@@ -434,7 +462,7 @@ grafica <- function(variable) {
   ggplot(prepara, aes(x = as.factor(ansi), y = {{variable}}, fill = as.factor(ansi))) +
     geom_boxplot() +
     labs(x = "Ansiedad (0 = No, 1 = Sí)", y = label_y) +
-    ylim(1, 8) +
+    ylim(1, 5) +
     theme_minimal() +
     theme(legend.position = "none") 
 } 
@@ -454,7 +482,7 @@ grafica <- function(variable) {
   ggplot(prepara, aes(x = as.factor(ansi), y = {{variable}}, fill = as.factor(ansi))) +
     geom_boxplot() +
     labs(x = "Ansiedad (0 = No, 1 = Sí)", y = label_y) +
-    ylim(1, 8) +
+    ylim(1, 5) +
     theme_minimal() +
     theme(legend.position = "none") 
 } 
@@ -523,7 +551,7 @@ step(modelo_logit)
 var_label(prepara$P2_7) <- var_label(dass$P2_7)  
 var_label(prepara$P2_8) <- var_label(dass$P2_8)
 
-modelo_final <- glm(ansi ~ P1_1 + P1_2 + P1_4 + P1_6 + P2_7 + P2_8, 
+modelo_final <- glm(ansi ~ P1_2 + P1_4 + P1_6 + P2_7 + P2_8, 
                     data = prepara,
                     family = binomial)
 ```
@@ -536,6 +564,46 @@ tbl_regression(modelo_final, exponentiate = TRUE) |>
   bold_labels() 
 ```
 
+## ¿La satisfacción con la familia es un factor de riesgo?
+
+El OR de la satisfacción con la familia es mayor que 1. ¿Tiene sentido? Compare el OR sin ajustar con el OR del modelo final:
+
+```{r}
+#| echo: true
+m_familia <- glm(ansi ~ P1_6, data = prepara, family = binomial)
+
+bind_rows(tidy(m_familia, exponentiate = TRUE) |> mutate(Modelo = "Sin ajustar"),
+          tidy(modelo_final, exponentiate = TRUE) |> mutate(Modelo = "Modelo final")) |>
+  filter(term == "P1_6") |>
+  select(Modelo, OR = estimate, `Valor p` = p.value) |>
+  knitr::kable(digits = 3)
+```
+
+. . .
+
+```{r}
+#| echo: true
+cor(prepara[c("P1_2", "P1_4", "P1_6")], method = "spearman") |> round(2)
+```
+
+## Efecto de supresión {.smaller}
+
+- **Sin ajustar**, la satisfacción con la familia es protectora (OR < 1), aunque no es significativa.
+
+- Las satisfacciones están **correlacionadas**. Al controlar por trabajo y vecinos, el coeficiente de familia mide cuánto más satisfecha con su familia está una persona **de lo que se esperaría** por su satisfacción en otros ámbitos.
+
+. . .
+
+- El OR ajustado se interpreta **manteniendo constantes las demás variables**: entre personas con igual satisfacción con el trabajo y los vecinos, más satisfacción con la familia se asocia con mayores *odds* de ansiedad severa.
+
+. . .
+
+> Una lectura posible: alguien insatisfecho con el trabajo y con los vecinos que dice estar muy satisfecho con su familia se parece más a quien tiene ansiedad. Puede ser porque se refugia en la familia o porque tiende a responder "muy satisfecho" en esa pregunta. Es un efecto condicional, no causal. En el modelo, trabajo y vecinos "absorben" la parte protectora que comparten con familia.
+
+. . .
+
+- **Cautela**: solo hay 43 casos de ansiedad severa, el 90 % responde 4 o 5 en esta pregunta, el valor p está en el límite y los valores p después de `step()` son optimistas.
+
 ## Predicción
 
 <div style="margin-top: 2cm"></div>
@@ -546,8 +614,8 @@ tbl_regression(modelo_final, exponentiate = TRUE) |>
 summary(modelo_final)
 ```
 
-$$\ln\left(\frac{\pi}{1-\pi}\right)=-1.38-0.26 S.Viv - 0.30 S.Trab - 0.43 S.Vec \\ \hspace{5cm} + 0.49 S.Flia + 1.6 P.Resta - 0.98 Hab.Soc$$
-¿Cómo calcularía la probabilidad de que una persona con las siguientes características sufra de ansidad? Sat.Viv = 2, Sat.Trab = 1, Sat.Vec = 2, Sat.Flia = 3, Parti.Pract.Restau = Si, Entrenamiento SocEmo = No. ¿Qué se esperaría si la persona cambia a un trabajo que en verdad le haga muy feliz (5)?
+$$\ln\left(\frac{\pi}{1-\pi}\right)=-1.56 - 0.36 S.Trab - 0.50 S.Vec \\ \hspace{5cm} + 0.42 S.Flia + 1.53 P.Resta - 0.93 Hab.Soc$$
+¿Cómo calcularía la probabilidad de que una persona con las siguientes características sufra de ansiedad severa? Sat.Trab = 1, Sat.Vec = 2, Sat.Flia = 3, Parti.Pract.Restau = Si, Entrenamiento SocEmo = No. ¿Qué se esperaría si la persona cambia a un trabajo que en verdad le haga muy feliz (5)?
 
 ## Curva ROC
 
@@ -557,116 +625,15 @@ predicciones <- predict(modelo_final, prepara, type = "response")
 roc_curve <- roc(prepara$ansi, predicciones,  plot = TRUE, print.auc = TRUE)
 ```
 
-# Taller en casa {background-color="#0077b6"}
+# TALLER {background-color="#0077b6"}
 
-## Violencia contra las mujeres
+## Taller 3: Regresión logística
 
-<span style="color:##81b622; font-size: 25px;">
+Desarrolle el Taller 3 en los grupos de trabajo conformados. El taller tiene dos partes:
 
-El estudio de `Oxfam` y `La Casa de la Mujer` publicado [aquí](https://www.oxfamcolombia.org/encuesta-de-prevalencia-de-violencia-sexual-en-contra-de-las-mujeres-en-el-contexto-del-conflicto-armado-colombiano/). La investigación se realizó en el marco de la Campaña “Violaciones y otras Violencias: Saquen mi cuerpo de la guerra”. El estudio se enfocó en zonas donde se tenían alertas tempranas de la Defensoría del Pueblo y tuvo como periodo de referencia los años 2010 a 2014.
+1. **Deserción escolar (ENDE - DANE)**: análisis exploratorio y pruebas Chi-cuadrado, modelo logístico del riesgo de deserción en función del índice de calidad de vida (ICV) y otras variables, interpretación de los OR y comparación de modelos con la curva ROC.
 
-</span>
-
-```{r}
-#| echo: true
-library(pacman)
-
-p_load(tidyverse, broom, haven, labelled, performance,
-       skimr, corrplot, psych, gt, gtsummary, pROC, patchwork)
-
-url <- "https://github.com/jgbabativam/AnaDatos/raw/main/datos/VolenciaMujer.sav"
-mujeres <- read_sav(url) |> as_factor()
-```
-
-<span style="color:##81b622; font-size: 25px;">
-
- - Use `lapply(mujeres, function(x) attributes(x)$label)` para ver las etiquetas de las preguntas.
- - Use `create_report` para hacer un análisis exploratorio de los datos.
-
-</span> 
-
-## Ejercicios
-
-Teniendo en cuenta que la variable de resultado es `VICTIMA`:
-
-1. Realice un gráfico de barras que le presente el porcentaje de mujeres que han sido víctimas y no han sido víctimas de violencia sexual.
-
-2. Para la mujeres que han sido víctimas, calcule el porcentaje que denunciaron los hechos `P41D266_DENUNCIO_HECHO`.
-
-3. Realice la prueba Chi-Cuadrado para identificar si existe asociación entre ser víctima de violencia sexual y las variables: edad, estrato, estado civil, nivel educativo, actividad y tamaño del municipio (`ESTRATOM`).
-
-## Ejercicios
-
-4. Usando solo las variables que resultaron significativas, ajuste un modelo de regresión logística usando una eliminación por pasos.
-
-5. Imprima los resultados en una tabla e interprete los coeficientes a partir del OR.
-
-6. Haga un pronóstico: ¿cuál es la probabilidad de que una mujer que vive en unión libre en el estrato 2 de una ciudad principal sea víctima de violencia sexual?
-
-
-```{r}
-#| echo: false
-#| eval: false
-
-variables <- c("ESTRATO", "EDAD", "EST_CIVIL", "NIVEL_EDU", "ACTIVIDAD", "ESTRATOM")
-
-df <- mujeres |> 
-      select(VICTIMA, any_of(variables)) |> 
-      mutate(across(where(is.factor), ~as.character(.)))
-
-res_chi2 <- data.frame(Variable = character(),
-                       PValue = numeric(),
-                       stringsAsFactors = FALSE)
-
-for (var in variables) {
-  tabla <- table(df$VICTIMA, df[[var]])
-  
-  prueba <- chisq.test(tabla)
-  res_chi2 <- rbind(res_chi2, 
-                    data.frame(Variable = var, PValue = prueba$p.value))
-}
-
-res_chi2
-```
-
-
-```{r}
-#| echo: false
-#| eval: false
- 
-vars_sig <- res_chi2 |> 
-            filter(PValue < 0.05) |> 
-            pull(Variable)
-
-df$VICTIMA <- as.factor(df$VICTIMA)
-df$EDAD <- as.factor(df$EDAD)
-df$ESTRATO <- as.factor(df$ESTRATO)
-
-df$EDAD <- relevel(df$EDAD, ref = "35 a 44")
-df$ESTRATO <- relevel(df$ESTRATO, ref = "Estrato 4")
-
-eq1 <- as.formula(paste("VICTIMA ~", paste(vars_sig, collapse = " + ")))
-
-mod_muj <- glm(eq1, 
-               data = df, 
-               family = binomial)
-
-summary(mod_muj) ## Algunos no son significativos
-
-tbl_regression(mod_muj, exponentiate = TRUE) |> 
-  bold_labels()
-
-step(mod_muj)
-
-mod_final <- glm(formula = VICTIMA ~ ESTRATO + EST_CIVIL + ESTRATOM, 
-                 family = binomial, 
-                 data = df)
-
-tbl_regression(mod_final, exponentiate = TRUE) |> 
-  bold_labels()
-```
-
-
+2. **Violencia contra las mujeres (Oxfam - Casa de la Mujer)**: pruebas Chi-cuadrado, selección de variables con `step()`, interpretación de los OR y pronóstico de la probabilidad de ser víctima de violencia sexual.
 
 # GRACIAS! {background-color="#ddf3ff"}
 
