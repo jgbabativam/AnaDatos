@@ -1,4 +1,4 @@
-# 📊 Analítica de Datos Aplicada a Estudios sobre Desarrollo
+# 📊 Analítica de Datos
 
 Repositorio con materiales académicos del curso **Analítica de datos aplicada a estudios sobre desarrollo** del Centro Interdisciplinario de Estudios sobre Desarrollo (CIDER) de la Universidad de los Andes. En este repositorio se incluyen diapositivas, talleres, bases de datos, recursos en R y contenidos de apoyo para el aprendizaje de los métodos cuantitativos más utilizados en los estudios sobre desarrollo.
 
