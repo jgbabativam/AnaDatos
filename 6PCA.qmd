@@ -207,6 +207,25 @@ El *PCA* se usa para tratar variables cuantitativas que tienen algún grado de a
 - Observar la proximidad entre individuos y entre variables.
 - Hacer un pre-procesamiento para el análisis de clúster.
 
+## Reglas de interpretación de las coordenadas {style="font-size: 88%;"}
+
+::: {.incremental}
+- **Puntos fila, columna o mixtos cercanos entre sí** → los encuestados que contestaron una modalidad también contestaron la otra; sus distribuciones son similares.
+
+- **Puntos cercanos al centro del plano** → modalidades con frecuencias **altas** de respuesta; representan la opinión de la mayoría (punto promedio o modal).
+
+- **Puntos lejanos del origen** → modalidades con frecuencias **bajas** de respuesta; son las que más distinguen a los individuos.
+
+- **Puntos en extremos opuestos del plano** → baja frecuencia de respuesta **y** distribuciones opuestas; indican opiniones contrapuestas.
+:::
+
+::: {.fragment}
+::: {.callout-warning}
+El ACS **aleja del origen** las modalidades poco frecuentes, identificando así las características que más distinguen a los objetos.
+:::
+:::
+
+
 ## Estructura del conjunto de datos
 
 <br> 
@@ -307,7 +326,137 @@ corrplot(res$var$cos2, is.corr=FALSE, tl.col = "black")
 fviz_mca_var(res, repel = TRUE, col.var = "blue")
 ```
 
-# ESTUDIO DE CASO {background-color="#0077b6"}
+# ESTUDIO DE CASO 1: Confianza en la justicia en 38 países {background-color="#0077b6"}
+
+## Encuesta Mundial de Valores {style="font-size: 88%;"}
+
+La **Encuesta Mundial de Valores** se realiza periódicamente desde 1981 e indaga opiniones sobre democracia, tolerancia, religión, medio ambiente y diversidad, entre otros temas.
+
+::: {.fragment}
+Una de sus preguntas interroga por el **grado de confianza en la justicia** en 38 países, incluyendo varios latinoamericanos. La variable-fila es el **país** y la variable-columna es el **nivel de confianza** declarado por los encuestados.
+:::
+
+::: {.fragment}
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+library(pacman)
+p_load(tidyverse, janitor, FactoMineR, factoextra, corrplot)
+
+url <- "https://github.com/jgbabativam/AnaDatos/raw/main/datos/"
+conf_just <- read.csv2(paste0(url, "ConfianzaJUsticia.csv")) |> 
+             column_to_rownames("Pais") |> 
+             arrange(desc(muchis.))
+
+```
+:::
+
+---
+
+## Tabla de contingencia: Países × Niveles de confianza
+
+<div style="height:420px; overflow-y:auto;">
+```{r}
+#| message: false
+#| warning: false
+conf_just |>
+  rownames_to_column("País") |>
+  gt() |>
+  opt_row_striping() |>
+  tab_style(style = cell_text(weight = "bold"),
+            locations = cells_column_labels()) |>
+  tab_options(table.font.size = px(14), data_row.padding = px(2),
+              table.width = pct(100)) |>
+  tab_header(title = "Grados de confianza en la justicia (Encuesta Mundial de Valores)")
+```
+</div>
+
+---
+
+## ACS: Confianza en la justicia
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+acs_conf <- CA(conf_just, graph = FALSE)
+#round(get_eigenvalue(acs_conf), 3)
+```
+
+::: {.fragment}
+```{r}
+#| echo: true
+#| fig-align: center
+#| fig-width: 10
+#| fig-height: 4.5
+fviz_eig(acs_conf, addlabels = TRUE, barfill = "#0077b6", barcolor = "#0077b6", linecolor = "#C0392B") +
+  labs(title = "Gráfico de sedimentación — Confianza en la justicia", x = "Dimensión", y = "% inercia explicada") + theme_bw()
+```
+:::
+
+---
+
+## Plano de columnas: niveles de confianza {style="font-size: 90%;"}
+
+```{r}
+#| echo: true
+#| fig-align: center
+#| fig-width: 9
+#| fig-height: 5.5
+fviz_ca_col(acs_conf, repel = TRUE,
+            col.col = "contrib",
+            gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+            title = "Niveles de confianza — por contribución") + theme_bw()
+```
+
+---
+
+## Plano de filas: países {style="font-size: 90%;"}
+
+```{r}
+#| echo: true
+#| fig-align: center
+#| fig-width: 10
+#| fig-height: 5.5
+fviz_ca_row(acs_conf, repel = TRUE, labelsize = 3,
+            col.row = "cos2",
+            gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+            title = "Países — grado de confianza en la justicia (cos²)") + theme_bw()
+```
+
+---
+
+## Representación simultánea: países y niveles de confianza {style="font-size: 90%;"}
+
+```{r}
+#| echo: true
+#| fig-align: center
+#| fig-width: 10
+#| fig-height: 5.5
+fviz_ca_biplot(acs_conf, repel = TRUE, labelsize = 3,
+               col.row = "#0077b6", col.col = "#C0392B",
+               title = "Asociación entre países y niveles de confianza en la justicia") +
+  theme_bw()
+```
+
+---
+
+## Interpretación {style="font-size: 88%;"}
+
+::: {.incremental}
+- Los países cercanos al **extremo positivo del Factor 1** se caracterizan por una **alta proporción de confianza** ("mucho" o "bastante") en la justicia.
+
+- Los países en el extremo **negativo del Factor 1** presentan **baja o ninguna confianza** en la justicia.
+
+- Los países cercanos al **origen del plano** tienen distribuciones similares al promedio mundial.
+
+- Los países en extremos **opuestos del eje 2** difieren en los grados intermedios de confianza.
+
+- Los países latinoamericanos tienden a agruparse, reflejando patrones culturales comunes respecto a la percepción del sistema judicial.
+:::
+
+# ESTUDIO DE CASO 2 {background-color="#0077b6"}
 
 ## Ambiente político
 
